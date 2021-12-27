@@ -21,8 +21,11 @@ GtMagritteElementBuilder >> asElement [
 
 	[ 
 	self visit: self objectDescription.
-	aForm := self form ] ensure: [ form := nil ].
-	
+	aForm := self form.
+	aForm userData at: #magrittePresenter put: self presenter ] ensure: [ 
+		form := nil.
+		presenter := nil ].
+
 	^ aForm
 ]
 
@@ -33,8 +36,6 @@ GtMagritteElementBuilder >> createFormElement [
 		  columnCount: 2;
 		  cellSpacing: 0;
 		  padding: (BlInsets all: self defaultSpacing);
-		  in: [ :theElement | 
-			  theElement userData at: #magrittePresenter put: self presenter ];
 		  hMatchParent;
 		  vFitContent
 ]

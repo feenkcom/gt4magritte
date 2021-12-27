@@ -84,7 +84,7 @@ GtMagritteEditableElementBuilder >> addInputFieldUsing: aDescription [
 GtMagritteEditableElementBuilder >> asElement [
 
 	<return: #BlElement>
-	| anElement aForm |
+	| anElement aForm aPresenter |
 	aForm := super asElement.
 	self hasActions ifFalse: [ ^ aForm ].
 
@@ -94,11 +94,12 @@ GtMagritteEditableElementBuilder >> asElement [
 		             addChild: aForm;
 		             yourself.
 
-	anElement userData at: #magrittePresenter put: self presenter.
+	aPresenter := aForm userData at: #magrittePresenter.
+	anElement userData at: #magrittePresenter put: aPresenter.
 
 	anElement addChild: (GtMagritteBuilderUtility
 			 newToolbarWithActions: self actions
-			 presenter: self presenter).
+			 presenter: aPresenter).
 
 	^ anElement
 ]
