@@ -36,8 +36,8 @@ GtMagritteElementBuilder >> createFormElement [
 		  columnCount: 2;
 		  cellSpacing: 0;
 		  padding: (BlInsets all: self defaultSpacing);
-		  hMatchParent;
-		  vFitContent
+		  vFitContent;
+		  hFitContent
 ]
 
 { #category : #'private - accessing' }

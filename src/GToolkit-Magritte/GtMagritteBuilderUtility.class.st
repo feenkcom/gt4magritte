@@ -32,12 +32,11 @@ GtMagritteBuilderUtility class >> newEditableLabelWithSpace: aSpaceNumber mement
 		  vFitContent;
 		  hFitContentLimited;
 		  when: BrEditorAcceptWish do: [ :aWish | 
-			  GtMagritteBuilderUtility
+			  self
 				  writeString: aDescription
 				  value: aWish text greaseString
 				  to: aMemento ];
-		  text:
-			  (GtMagritteBuilderUtility readString: aDescription from: aMemento);
+		  text: (self readString: aDescription from: aMemento);
 		  margin:
 			  (BlInsets bottom:
 					   (aSpaceNumber ifNil: [ self defaultSpaceNumber ]));
@@ -63,6 +62,20 @@ GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aD
 				   right: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
 				   bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
 				   left: 0);
+		  constraintsDo: [ :c | c grid vertical alignCenter ]
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newLabelWithSpace: aSpaceNumber memento: aMemento using: aDescription [
+
+	^ BrLabel new
+		  aptitude: BrGlamorousLabelAptitude new glamorousRegularFontAndSize;
+		  vFitContent;
+		  hFitContentLimited;
+		  text: (self readString: aDescription from: aMemento);
+		  margin:
+			  (BlInsets bottom:
+					   (aSpaceNumber ifNil: [ self defaultSpaceNumber ]));
 		  constraintsDo: [ :c | c grid vertical alignCenter ]
 ]
 

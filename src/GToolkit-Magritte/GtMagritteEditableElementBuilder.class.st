@@ -90,7 +90,7 @@ GtMagritteEditableElementBuilder >> asElement [
 
 	anElement := BrVerticalPane new
 		             vFitContent;
-		             hMatchParent;
+		             hFitContent;
 		             addChild: aForm;
 		             yourself.
 
