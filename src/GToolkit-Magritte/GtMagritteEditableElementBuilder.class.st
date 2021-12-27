@@ -59,7 +59,23 @@ GtMagritteEditableElementBuilder >> addInputField: anInputElement using: aDescri
 GtMagritteEditableElementBuilder >> addInputFieldUsing: aDescription [
 
 	| anInputElement |
-	anInputElement := GtMagritteBuilderUtility newEditableLabelWithSpace: nil memento: self memento using: aDescription.
+	anInputElement := GtMagritteBuilderUtility
+		                  newEditableLabelWithSpace: nil
+		                  memento: self memento
+		                  using: aDescription.
+
+	anInputElement when: GtMagritteAcceptWish do: [ :anEvent | 
+		anEvent consumed: true.
+		anEvent currentTarget acceptEdition. ].
+
+	anInputElement when: GtMagritteCancelWish do: [ :anEvent | 
+		anEvent consumed: true.
+		anEvent currentTarget cancelEdition.
+		anEvent currentTarget text: (GtMagritteBuilderUtility
+				 readString: aDescription
+				 from: anEvent memento) ].
+				 
+	self presenter addElement: anInputElement.
 
 	self addInputField: anInputElement using: aDescription
 ]
