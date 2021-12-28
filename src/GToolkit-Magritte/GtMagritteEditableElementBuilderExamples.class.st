@@ -18,6 +18,24 @@ GtMagritteEditableElementBuilderExamples >> basicBuilder [
 	^ aBuilder
 ]
 
+{ #category : #'examples - baseline' }
+GtMagritteEditableElementBuilderExamples >> builderWithBaselineOf [
+
+	<gtExample>
+	| aBuilder aBaseline aDescription |
+	aBuilder := self basicBuilder.
+	aBaseline := self simpleBaseline.
+	aDescription := self simpleBaselineDescription.
+
+	aBuilder object: aBaseline.
+	aBuilder objectDescription: aDescription.
+
+	self assert: aBuilder object equals: aBaseline.
+	self assert: aBuilder objectDescription equals: aDescription.
+
+	^ aBuilder
+]
+
 { #category : #'examples - simple address' }
 GtMagritteEditableElementBuilderExamples >> builderWithSimpleAddress [
 
@@ -103,4 +121,20 @@ GtMagritteEditableElementBuilderExamples >> simpleAddressDescription [
 				   accessor: (MADictionaryAccessor key: #city);
 				   comment: 'City name';
 				   beRequired) }
+]
+
+{ #category : #'examples - baseline' }
+GtMagritteEditableElementBuilderExamples >> simpleBaseline [
+
+	<gtExample>
+	^ { (#baselineOf -> 'DemoMagritte') } asDictionary
+]
+
+{ #category : #'examples - baseline' }
+GtMagritteEditableElementBuilderExamples >> simpleBaselineDescription [
+
+	<gtExample>
+	^ MAPriorityContainer withAll: { (GtMagritteBaselineDescription new
+			   accessor: (MADictionaryAccessor key: #baselineOf);
+			   comment: 'Baseline name') }
 ]

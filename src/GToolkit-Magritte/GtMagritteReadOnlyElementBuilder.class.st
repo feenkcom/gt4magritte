@@ -1,7 +1,7 @@
 Class {
 	#name : #GtMagritteReadOnlyElementBuilder,
 	#superclass : #GtMagritteElementBuilder,
-	#category : #'GToolkit-Magritte-Core'
+	#category : #'GToolkit-Magritte-Builders'
 }
 
 { #category : #'private - building' }

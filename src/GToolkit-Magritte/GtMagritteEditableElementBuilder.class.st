@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'actions'
 	],
-	#category : #'GToolkit-Magritte-Core'
+	#category : #'GToolkit-Magritte-Builders'
 }
 
 { #category : #accessing }
@@ -118,6 +118,12 @@ GtMagritteEditableElementBuilder >> gtActionsFor: aView [
 GtMagritteEditableElementBuilder >> hasActions [
 
 	^ self actions isNotEmpty
+]
+
+{ #category : #visiting }
+GtMagritteEditableElementBuilder >> visitBaselineDescription: aDescription [
+
+	self visitStringDescription: aDescription
 ]
 
 { #category : #visiting }

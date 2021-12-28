@@ -7,7 +7,7 @@ Class {
 		'object',
 		'objectDescription'
 	],
-	#category : #'GToolkit-Magritte-Core'
+	#category : #'GToolkit-Magritte-Builders'
 }
 
 { #category : #converting }
