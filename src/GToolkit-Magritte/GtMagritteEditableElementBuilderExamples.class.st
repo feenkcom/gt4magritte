@@ -19,7 +19,7 @@ GtMagritteEditableElementBuilderExamples >> basicBuilder [
 ]
 
 { #category : #'examples - baseline' }
-GtMagritteEditableElementBuilderExamples >> builderWithBaselineOf [
+GtMagritteEditableElementBuilderExamples >> builderWithBaseline [
 
 	<gtExample>
 	| aBuilder aBaseline aDescription |
@@ -67,6 +67,20 @@ GtMagritteEditableElementBuilderExamples >> builderWithSimpleAddressAndActions [
 	self assert: aBuilder actions size equals: 2.
 
 	^ aBuilder
+]
+
+{ #category : #'examples - baseline' }
+GtMagritteEditableElementBuilderExamples >> elementWithBaseline [
+
+	<gtExample>
+	| aBuilder anElement |
+	aBuilder := self builderWithBaseline.
+
+	anElement := aBuilder asElement.
+
+	self assert: anElement childrenCount equals: 2.
+
+	^ anElement
 ]
 
 { #category : #'examples - simple address' }
