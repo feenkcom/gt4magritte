@@ -18,7 +18,7 @@ BaselineOfGToolkitMagritte >> baseline: spec [
 	spec for: #common do: [ 
 		spec
 			baseline: 'Magritte'
-			with: [ spec repository: 'github://magritte-metamodel/Magritte' ].
+			with: [ spec repository: 'github://magritte-metamodel/magritte:master/source' ]. 
 
 		spec
 			package: 'GToolkit-Magritte'
