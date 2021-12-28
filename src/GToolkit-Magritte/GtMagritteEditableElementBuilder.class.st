@@ -66,7 +66,7 @@ GtMagritteEditableElementBuilder >> addInputFieldUsing: aDescription [
 
 	anInputElement when: GtMagritteAcceptWish do: [ :anEvent | 
 		anEvent consumed: true.
-		anEvent currentTarget acceptEdition. ].
+		anEvent currentTarget acceptEdition ].
 
 	anInputElement when: GtMagritteCancelWish do: [ :anEvent | 
 		anEvent consumed: true.
@@ -74,7 +74,12 @@ GtMagritteEditableElementBuilder >> addInputFieldUsing: aDescription [
 		anEvent currentTarget text: (GtMagritteBuilderUtility
 				 readString: aDescription
 				 from: anEvent memento) ].
-				 
+
+
+	aDescription blocCompletion ifNotNil: [ :aStencil | 
+		(GtCompletionController on: anInputElement strategy: aStencil create)
+			install ].
+
 	self presenter addElement: anInputElement.
 
 	self addInputField: anInputElement using: aDescription
