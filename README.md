@@ -3,7 +3,7 @@ Magritte implementation for Glamorous Toolkit.
 
 ## Installation
 
-``Smalltalk
+```Smalltalk
 [
 EpMonitor current disable.
 NonInteractiveTranscript stdout install.
