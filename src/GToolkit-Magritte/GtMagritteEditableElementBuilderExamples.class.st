@@ -131,11 +131,20 @@ GtMagritteEditableElementBuilderExamples >> simpleAddressDescription [
 	^ MAPriorityContainer withAll: { 
 			  (MAStringDescription new
 				   accessor: (MADictionaryAccessor key: #street);
-				   comment: 'Street name and number').
+				   comment: 'Street name and number';
+				   addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
+				   labelled: 'Street must be non empty';
+				   addCondition: [ :aValue | 
+					   (aValue select: [ :e | e isDigit ]) isNotEmpty ]
+				   labelled: 'Street must include street number').
 			  (MAStringDescription new
 				   accessor: (MADictionaryAccessor key: #city);
 				   comment: 'City name';
-				   beRequired) }
+				   beRequired;
+				   addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
+				   labelled: 'City must be non empty';
+				   addCondition: [ :aValue | aValue allSatisfy: #isLetter ]
+				   labelled: 'City must include letters only') }
 ]
 
 { #category : #'examples - baseline' }

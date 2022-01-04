@@ -4,7 +4,7 @@ Class {
 	#traits : 'MATDescriptionPresenter',
 	#classTraits : 'MATDescriptionPresenter classTrait',
 	#instVars : [
-		'elements'
+		'viewModels'
 	],
 	#category : #'GToolkit-Magritte-Support'
 }
@@ -31,9 +31,9 @@ GtMagritteContainerPresenter class >> memento: aMemento description: aDescriptio
 ]
 
 { #category : #adding }
-GtMagritteContainerPresenter >> addElement: anElement [
+GtMagritteContainerPresenter >> addViewModel: anElement [
 
-	self elements: (self elements copyWith: anElement)
+	self viewModels: (self viewModels copyWith: anElement)
 ]
 
 { #category : #actions }
@@ -41,9 +41,8 @@ GtMagritteContainerPresenter >> cancel [
 
 	self reset.
 
-	self elements do: [ :eachElement | 
-		eachElement dispatchEvent:
-			(GtMagritteCancelWish new memento: self memento) ].
+	self viewModels do: [ :eachViewModel | 
+		eachViewModel notifyCanceled ].
 ]
 
 { #category : #actions }
@@ -52,16 +51,27 @@ GtMagritteContainerPresenter >> commit [
 	self memento commit
 ]
 
-{ #category : #accessing }
-GtMagritteContainerPresenter >> elements [
+{ #category : #'gt - extensions' }
+GtMagritteContainerPresenter >> gtMementoFor: aView [
 
-	^ elements ifNil: [ #(  ) ]
+	<gtView>
+	self memento ifNil: [ ^ aView empty ].
+
+	^ aView forward
+		  title: 'Memento';
+		  priority: 1;
+		  object: [ self memento ];
+		  view: #maGtFormFor:;
+		  actionButtonIcon: BrGlamorousVectorIcons inspect
+		  tooltip: 'Inspect memento'
+		  action: [ :aButton | aButton phlow spawnObject: self memento ]
 ]
 
-{ #category : #accessing }
-GtMagritteContainerPresenter >> elements: aCollection [
+{ #category : #'private - notifying' }
+GtMagritteContainerPresenter >> notifyValidationError: anError [
 
-	elements := aCollection
+	self viewModels do: [ :eachViewModel | 
+		eachViewModel notifyValidationError: anError ]
 ]
 
 { #category : #actions }
@@ -69,11 +79,13 @@ GtMagritteContainerPresenter >> save [
 
 	[ self validate ]
 		on: MAValidationError
-		do: [ :err | ^ self inform: err greaseString ].
+		do: [ :anError | 
+			self notifyValidationError: anError.
+			self inform: anError greaseString.
+			^ self ].
 
-	self elements do: [ :eachElement | 
-		eachElement dispatchEvent:
-			(GtMagritteAcceptWish new memento: self memento) ].
+	self viewModels do: [ :eachViewModel | 
+		eachViewModel notifyValidatedAndAccepted ].
 
 	self commit
 ]
@@ -82,4 +94,16 @@ GtMagritteContainerPresenter >> save [
 GtMagritteContainerPresenter >> validate [
 
 	self memento validate
+]
+
+{ #category : #accessing }
+GtMagritteContainerPresenter >> viewModels [
+
+	^ viewModels ifNil: [ #(  ) ]
+]
+
+{ #category : #accessing }
+GtMagritteContainerPresenter >> viewModels: aCollection [
+
+	viewModels := aCollection
 ]

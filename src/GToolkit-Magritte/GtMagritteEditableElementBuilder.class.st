@@ -58,31 +58,36 @@ GtMagritteEditableElementBuilder >> addInputField: anInputElement using: aDescri
 { #category : #'private - building' }
 GtMagritteEditableElementBuilder >> addInputFieldUsing: aDescription [
 
-	| anInputElement |
-	anInputElement := GtMagritteBuilderUtility
-		                  newEditableLabelWithSpace: nil
-		                  memento: self memento
-		                  using: aDescription.
+	| anInputElement aContainerViewModel aMemento |
+	aContainerViewModel := GtMagritteFieldWithValidationErrorsViewModel
+		                       new.
+	aContainerViewModel description: aDescription.
+	aMemento := self memento.
+	aContainerViewModel memento: aMemento.
 
-	anInputElement when: GtMagritteAcceptWish do: [ :anEvent | 
-		anEvent consumed: true.
-		anEvent currentTarget acceptEdition ].
+	aContainerViewModel fieldStencil: [ 
+		anInputElement := GtMagritteBuilderUtility
+			                  newEditableLabelWithSpace: nil
+			                  memento: aMemento
+			                  using: aDescription.
 
-	anInputElement when: GtMagritteCancelWish do: [ :anEvent | 
-		anEvent consumed: true.
-		anEvent currentTarget cancelEdition.
-		anEvent currentTarget text: (GtMagritteBuilderUtility
-				 readString: aDescription
-				 from: anEvent memento) ].
+		anInputElement
+			when: GtMagritteValueUpdateWish
+			do: [ :anEvent | 
+				anEvent consumed: true.
+				anEvent currentTarget cancelEdition.
+				anEvent currentTarget text: anEvent value ].
 
+		aDescription blocCompletion ifNotNil: [ :aStencil | 
+			(GtCompletionController
+				 on: anInputElement
+				 strategy: aStencil create) install ].
 
-	aDescription blocCompletion ifNotNil: [ :aStencil | 
-		(GtCompletionController on: anInputElement strategy: aStencil create)
-			install ].
+		anInputElement ].
 
-	self presenter addElement: anInputElement.
+	self presenter addViewModel: aContainerViewModel.
 
-	self addInputField: anInputElement using: aDescription
+	self addInputField: aContainerViewModel asElement using: aDescription
 ]
 
 { #category : #converting }
