@@ -27,7 +27,12 @@ GtMagritteDummyPostalAddress >> descriptionCity [
 	^ MAStringDescription new
 		  accessor: #city;
 		  default: '';
-		  priority: 2
+		  priority: 2;
+		  beRequired;
+		  addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
+		  labelled: 'City must be non empty';
+		  addCondition: [ :aValue | aValue allSatisfy: #isLetter ]
+		  labelled: 'City must include letters only'
 ]
 
 { #category : #'magritte-accessing' }
@@ -37,7 +42,13 @@ GtMagritteDummyPostalAddress >> descriptionStreet [
 	^ MAStringDescription new
 		  accessor: #street;
 		  default: '';
-		  priority: 1
+		  priority: 1;
+		  beRequired;
+		  addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
+		  labelled: 'Street must be non empty';
+		  addCondition: [ :aValue | 
+			  (aValue select: [ :e | e isDigit ]) isNotEmpty ]
+		  labelled: 'Street must include street number'
 ]
 
 { #category : #accessing }

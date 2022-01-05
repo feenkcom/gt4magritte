@@ -5,7 +5,8 @@ Class {
 		'form',
 		'presenter',
 		'object',
-		'objectDescription'
+		'objectDescription',
+		'memento'
 	],
 	#category : #'GToolkit-Magritte-Builders'
 }
@@ -40,12 +41,18 @@ GtMagritteElementBuilder >> createFormElement [
 		  hFitContent
 ]
 
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> createMemento [
+
+	^ self object mementoClass
+		  model: self object
+		  description: self objectDescription
+]
+
 { #category : #'private - accessing' }
 GtMagritteElementBuilder >> createPresenter [
 
-	^ GtMagritteContainerPresenter memento: (self object mementoClass
-			   model: self object
-			   description: self objectDescription)
+	^ GtMagritteContainerPresenter memento: self memento
 ]
 
 { #category : #'private - building' }
@@ -75,7 +82,13 @@ GtMagritteElementBuilder >> gtLiveFor: aView [
 { #category : #'private - accessing' }
 GtMagritteElementBuilder >> memento [
 
-	^ self presenter memento
+	^ memento ifNil: [ memento := self createMemento ]
+]
+
+{ #category : #accessing }
+GtMagritteElementBuilder >> memento: anObject [
+
+	memento := anObject
 ]
 
 { #category : #accessing }
@@ -89,6 +102,7 @@ GtMagritteElementBuilder >> object: anObject [
 
 	object := anObject.
 	presenter := nil.
+	memento := nil.
 ]
 
 { #category : #accessing }
@@ -101,7 +115,8 @@ GtMagritteElementBuilder >> objectDescription [
 GtMagritteElementBuilder >> objectDescription: anObject [
 
 	objectDescription := anObject.
-	presenter := nil
+	presenter := nil.
+	memento := nil.
 ]
 
 { #category : #'private - accessing' }

@@ -81,7 +81,6 @@ GtMagritteContainerPresenter >> save [
 		on: MAValidationError
 		do: [ :anError | 
 			self notifyValidationError: anError.
-			self inform: anError greaseString.
 			^ self ].
 
 	self viewModels do: [ :eachViewModel | 
