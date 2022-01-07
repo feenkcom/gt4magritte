@@ -8,8 +8,8 @@ Magritte implementation for Glamorous Toolkit.
 EpMonitor current disable.
 NonInteractiveTranscript stdout install.
 [ Metacello new
-  baseline: 'GToolkitMagritte';
-  repository: 'github://feenkcom/gtoolkit-magritte:main/src';
+  baseline: 'GToolkit4Magritte';
+  repository: 'github://feenkcom/gt4magritte:main/src';
   load  ] ensure: [ 
   	EpMonitor current enable.
   	GtTranscript installDefault ].
