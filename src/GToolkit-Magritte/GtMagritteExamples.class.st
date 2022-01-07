@@ -4,7 +4,7 @@ Class {
 	#category : #'GToolkit-Magritte-Examples'
 }
 
-{ #category : #accessing }
+{ #category : #'examples - address' }
 GtMagritteExamples >> address [
 
 	<gtExample>
@@ -19,6 +19,20 @@ GtMagritteExamples >> address [
 ]
 
 { #category : #'examples - address' }
+GtMagritteExamples >> addressTwo [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self basicAddress.
+
+	anAddress
+		street: 'Básníkova 72/21';
+		city: 'Hodonín'.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
 GtMagritteExamples >> basicAddress [
 
 	<gtExample>
@@ -26,4 +40,37 @@ GtMagritteExamples >> basicAddress [
 	anAddress := GtMagritteDummyPostalAddress new.
 
 	^ anAddress
+]
+
+{ #category : #'examples - person' }
+GtMagritteExamples >> basicPerson [
+
+	<gtExample>
+	| aPerson |
+	aPerson := GtMagritteDummyPerson new.
+
+	self assert: aPerson name isNil.
+	self assert: aPerson addresses isEmpty.
+
+	^ aPerson
+]
+
+{ #category : #'examples - person' }
+GtMagritteExamples >> personWithTwoAddresses [
+
+	<gtExample>
+	| aPerson anAddressOne anAddressTwo |
+	aPerson := self basicPerson.
+
+	aPerson name: 'Joe'.
+	anAddressOne := self address.
+	anAddressTwo := self addressTwo.
+	aPerson addresses: { 
+			self address.
+			self addressTwo }.
+
+	self assert: aPerson name equals: 'Joe'.
+	self assert: aPerson addresses size equals: 2.
+
+	^ aPerson
 ]

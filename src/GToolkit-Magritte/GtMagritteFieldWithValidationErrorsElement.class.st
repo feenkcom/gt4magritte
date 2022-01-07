@@ -64,6 +64,8 @@ GtMagritteFieldWithValidationErrorsElement >> initialize [
 
 	self addChild: fieldElement as: #field.
 	self addChild: issuesElement as: #issues.
+	
+	self addAptitude: (BrLayoutResizerAptitude inherit inherit: fieldElement).
 
 	self hFitContentLimited.
 	self vFitContent

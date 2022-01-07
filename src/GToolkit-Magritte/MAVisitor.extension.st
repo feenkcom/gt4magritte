@@ -1,7 +1,7 @@
 Extension { #name : #MAVisitor }
 
 { #category : #'*GToolkit-Magritte' }
-MAVisitor >> visitBaselineDescription: aVisitor [
+MAVisitor >> visitGridDescription: aVisitor [
 
 	self visitElementDescription: aVisitor
 ]

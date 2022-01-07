@@ -2,7 +2,8 @@ Class {
 	#name : #GtMagritteEditableElementBuilder,
 	#superclass : #GtMagritteElementBuilder,
 	#instVars : [
-		'actions'
+		'actions',
+		'element'
 	],
 	#category : #'GToolkit-Magritte-Builders'
 }
@@ -33,6 +34,38 @@ GtMagritteEditableElementBuilder >> addButtons: aCollection [
 	"
 
 	self actions: (aCollection collect: #asGtMagritteAction)
+]
+
+{ #category : #'private - building' }
+GtMagritteEditableElementBuilder >> addGridUsing: aDescription [
+
+	| aGridElement aContainerViewModel aMemento anElement |
+	aContainerViewModel := GtMagritteFieldWithValidationErrorsViewModel
+		                       new.
+	aContainerViewModel description: aDescription.
+	aMemento := self memento.
+	aContainerViewModel memento: aMemento.
+
+	aContainerViewModel fieldStencil: [ 
+		aGridElement := BrGridList new matchParent.
+		aGridElement items:
+			((aMemento readUsing: aDescription) collect: #asGtMagritteViewModel).
+		aGridElement stencil: aDescription stencil.
+
+		aGridElement when: GtMagritteValueUpdateWish do: [ :anEvent | 
+			anEvent consumed: true.
+			anEvent currentTarget items: anEvent value ].
+
+		aGridElement ].
+
+	self presenter addViewModel: aContainerViewModel.
+	anElement := aContainerViewModel asElement.
+	anElement matchParent.
+
+	self form matchParent.
+	self element matchParent.
+
+	self addInputField: anElement using: aDescription
 ]
 
 { #category : #'private - building' }
@@ -94,15 +127,14 @@ GtMagritteEditableElementBuilder >> addInputFieldUsing: aDescription [
 GtMagritteEditableElementBuilder >> asElement [
 
 	<return: #BlElement>
-	| anElement aForm aPresenter |
+	| aForm aPresenter anElement |
+	anElement := BrVerticalPane new fitContent.
+	element := anElement.
+
 	aForm := super asElement.
 	self hasActions ifFalse: [ ^ aForm ].
 
-	anElement := BrVerticalPane new
-		             vFitContent;
-		             hFitContent;
-		             addChild: aForm;
-		             yourself.
+	anElement addChild: aForm.
 
 	aPresenter := aForm userData at: #magrittePresenter.
 	anElement userData at: #magrittePresenter put: aPresenter.
@@ -111,7 +143,15 @@ GtMagritteEditableElementBuilder >> asElement [
 			 newToolbarWithActions: self actions
 			 presenter: aPresenter).
 
+	element := nil.
+
 	^ anElement
+]
+
+{ #category : #'private - accessing' }
+GtMagritteEditableElementBuilder >> element [
+
+	^ element
 ]
 
 { #category : #'gt - extensions' }
@@ -131,15 +171,15 @@ GtMagritteEditableElementBuilder >> hasActions [
 ]
 
 { #category : #visiting }
-GtMagritteEditableElementBuilder >> visitBaselineDescription: aDescription [
-
-	self visitStringDescription: aDescription
-]
-
-{ #category : #visiting }
 GtMagritteEditableElementBuilder >> visitContainer: aDescription [
 
 	aDescription do: [ :each | self visit: each ]
+]
+
+{ #category : #visiting }
+GtMagritteEditableElementBuilder >> visitGridDescription: aDescription [
+
+	self addGridUsing: aDescription
 ]
 
 { #category : #visiting }

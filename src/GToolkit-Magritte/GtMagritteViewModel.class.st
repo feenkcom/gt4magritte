@@ -23,6 +23,12 @@ GtMagritteViewModel >> asElement [
 	^ aBuilder asElement
 ]
 
+{ #category : #converting }
+GtMagritteViewModel >> asGtMagritteViewModel [
+
+	^ self
+]
+
 { #category : #accessing }
 GtMagritteViewModel >> builder [
 
