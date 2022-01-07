@@ -1,18 +1,18 @@
 Class {
-	#name : #BaselineOfGToolkitMagritte,
+	#name : #BaselineOfGToolkit4Magritte,
 	#superclass : #BaselineOf,
-	#category : #BaselineOfGToolkitMagritte
+	#category : #BaselineOfGToolkit4Magritte
 }
 
 { #category : #accessing }
-BaselineOfGToolkitMagritte class >> gtDependencyAnalysisPreloadedBaselines [
+BaselineOfGToolkit4Magritte class >> gtDependencyAnalysisPreloadedBaselines [
 
 	^ super gtDependencyAnalysisPreloadedBaselines copyWith:
 		  BaselineOfGToolkit
 ]
 
 { #category : #baselines }
-BaselineOfGToolkitMagritte >> baseline: spec [
+BaselineOfGToolkit4Magritte >> baseline: spec [
 
 	<baseline>
 	spec for: #common do: [ 
