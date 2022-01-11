@@ -75,6 +75,8 @@ GtMagritteEditableElementBuilder >> addInputField: anInputElement using: aDescri
 		          newFieldLabelWithSpace: nil
 		          using: aDescription.
 
+	aLabel padding: aLabel padding + (BlInsets top: 5).
+
 	aDescription hasComment ifTrue: [ 
 		GtMagritteBuilderUtility
 			addCommentTooltip: aLabel

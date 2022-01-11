@@ -62,14 +62,14 @@ GtMagritteExamples >> personWithTwoAddresses [
 	| aPerson anAddressOne anAddressTwo |
 	aPerson := self basicPerson.
 
-	aPerson name: 'Joe'.
+	aPerson name: 'Adélka'.
 	anAddressOne := self address.
 	anAddressTwo := self addressTwo.
 	aPerson addresses: { 
 			self address.
 			self addressTwo }.
 
-	self assert: aPerson name equals: 'Joe'.
+	self assert: aPerson name equals: 'Adélka'.
 	self assert: aPerson addresses size equals: 2.
 
 	^ aPerson

@@ -41,6 +41,7 @@ GtMagritteDummyPerson >> desriptionAddresses [
 		  accessor: #addresses;
 		  default: #(  );
 		  priority: 2;
+		  beModifiable;
 		  blocItemStencil: [ :anItemObject :anItemIndex | 
 			  anItemObject asElement
 				  fitContent;

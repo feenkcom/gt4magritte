@@ -15,7 +15,7 @@ Class {
 { #category : #accessing }
 GtMagritteFieldWithValidationErrorsElement >> defaultLayout [
 
-	^ BlLinearLayout horizontal
+	^ BlLinearLayout vertical
 ]
 
 { #category : #'private - accessing' }
