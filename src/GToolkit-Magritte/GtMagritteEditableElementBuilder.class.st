@@ -37,23 +37,39 @@ GtMagritteEditableElementBuilder >> addButtons: aCollection [
 ]
 
 { #category : #'private - building' }
-GtMagritteEditableElementBuilder >> addGridUsing: aDescription [
+GtMagritteEditableElementBuilder >> addFlowListUsing: aDescription [
 
-	| aGridElement aContainerViewModel aMemento anElement |
-	aContainerViewModel := GtMagritteFieldWithValidationErrorsViewModel new.
+	| aContainerViewModel aMemento anElement |
+	aContainerViewModel := GtMagritteFieldWithValidationErrorsViewModel
+		                       new.
 	aContainerViewModel description: aDescription.
 	aMemento := self memento.
 	aContainerViewModel memento: aMemento.
 
 	aContainerViewModel fieldStencil: [ 
-		aGridElement := BrGridList new matchParent.
-		aGridElement items:
-			((aMemento readUsing: aDescription) collect: #asGtMagritteViewModel).
+		| aGridElement aViewModels |
+		aGridElement := BrFlowList new matchParent.
+		aViewModels := (aMemento readUsing: aDescription) collect:
+			               #asGtMagritteViewModel.
+
+		(aDescription definitive or: [ aDescription newItemStencil isNil ]) 
+			ifFalse: [ 
+				aViewModels := aViewModels copyWith: ((GtMagritteAddItemViewModel new
+					memento: aMemento;
+					description: aDescription;
+					stencil: aDescription newItemStencil;
+					items: aViewModels;
+					callback: [ :newItems | aGridElement items: newItems ])) ].
+
+		aGridElement items: aViewModels.
+
 		aGridElement stencil: aDescription blocItemStencil.
 
 		aGridElement when: GtMagritteValueUpdateWish do: [ :anEvent | 
 			anEvent consumed: true.
 			anEvent currentTarget items: anEvent value ].
+
+
 
 		aGridElement ].
 
@@ -186,5 +202,5 @@ GtMagritteEditableElementBuilder >> visitStringDescription: aDescription [
 { #category : #visiting }
 GtMagritteEditableElementBuilder >> visitToManyRelationDescription: aDescription [
 
-	self addGridUsing: aDescription
+	self addFlowListUsing: aDescription
 ]

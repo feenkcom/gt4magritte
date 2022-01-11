@@ -49,9 +49,14 @@ GtMagritteDummyPerson >> desriptionAddresses [
 					  (BlBorder
 						   paint: BrGlamorousColors disabledButtonBorderColor
 						   width: 1);
-				  margin: ((BlInsets top: 0 right: 5 bottom: 5 left: 0));
+				  margin: (BlInsets
+						   top: 0
+						   right: 5
+						   bottom: 5
+						   left: 0);
 				  padding: (BlInsets all: 5);
-				  background: Color white ]
+				  background: Color white ];
+		  newItemStencil: [ GtMagritteDummyPostalAddress new ]
 ]
 
 { #category : #initialization }
