@@ -40,8 +40,7 @@ GtMagritteEditableElementBuilder >> addButtons: aCollection [
 GtMagritteEditableElementBuilder >> addGridUsing: aDescription [
 
 	| aGridElement aContainerViewModel aMemento anElement |
-	aContainerViewModel := GtMagritteFieldWithValidationErrorsViewModel
-		                       new.
+	aContainerViewModel := GtMagritteFieldWithValidationErrorsViewModel new.
 	aContainerViewModel description: aDescription.
 	aMemento := self memento.
 	aContainerViewModel memento: aMemento.
@@ -50,7 +49,7 @@ GtMagritteEditableElementBuilder >> addGridUsing: aDescription [
 		aGridElement := BrGridList new matchParent.
 		aGridElement items:
 			((aMemento readUsing: aDescription) collect: #asGtMagritteViewModel).
-		aGridElement stencil: aDescription stencil.
+		aGridElement stencil: aDescription blocItemStencil.
 
 		aGridElement when: GtMagritteValueUpdateWish do: [ :anEvent | 
 			anEvent consumed: true.
@@ -177,13 +176,13 @@ GtMagritteEditableElementBuilder >> visitContainer: aDescription [
 ]
 
 { #category : #visiting }
-GtMagritteEditableElementBuilder >> visitGridDescription: aDescription [
-
-	self addGridUsing: aDescription
-]
-
-{ #category : #visiting }
 GtMagritteEditableElementBuilder >> visitStringDescription: aDescription [
 
 	self addInputFieldUsing: aDescription
+]
+
+{ #category : #visiting }
+GtMagritteEditableElementBuilder >> visitToManyRelationDescription: aDescription [
+
+	self addGridUsing: aDescription
 ]

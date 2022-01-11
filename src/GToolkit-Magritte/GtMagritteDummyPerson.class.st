@@ -37,11 +37,11 @@ GtMagritteDummyPerson >> descriptionName [
 GtMagritteDummyPerson >> desriptionAddresses [
 
 	<magritteDescription>
-	^ MAGridDescription new
+	^ MAToManyRelationDescription new
 		  accessor: #addresses;
 		  default: #(  );
 		  priority: 2;
-		  stencil: [ :anItemObject :anItemIndex | 
+		  blocItemStencil: [ :anItemObject :anItemIndex | 
 			  anItemObject asElement
 				  fitContent;
 				  border:
