@@ -210,7 +210,7 @@ GtMagritteMemento >> notifyValidationChanged: aResult [
 		announcer announce:
 			(GtMagritteMementoValidationChangedAnnouncement new
 				 memento: self;
-				 result: aResult) ]
+				 result: theResult) ]
 ]
 
 { #category : #'private - notifying' }

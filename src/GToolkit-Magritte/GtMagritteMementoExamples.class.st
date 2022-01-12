@@ -185,16 +185,37 @@ GtMagritteMementoExamples >> mementoWithValidAddress_ValidationPromiseResult [
 GtMagritteMementoExamples >> mementoWithValidAddress_WritePromiseResult [
 
 	<gtExample>
-	| aMemento aPromise aResult aDescription |
+	| aMemento aPromise aResult aDescription aCollection aSemaphore aTimeout |
 	aMemento := self mementoWithValidAddress. 
 	aDescription := aMemento memento magritteDescription at: 1.
 	
+	aCollection := OrderedCollection new.
+	aMemento
+		when: GtMagritteMementoAnnouncement
+		send: #add:
+		to: aCollection.
+		
 	aPromise := aMemento writePromise: 'Werkstraße' using: aDescription.
 	aResult := aPromise wait.
 	
 	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 	self assert: aResult value equals: 'Werkstraße'.
+	
+	aSemaphore := Semaphore new.
+	aPromise asyncThen: [ :theResult | aSemaphore signal ].
+	aTimeout := aSemaphore waitTimeoutSeconds: 5.
+	self
+		assert: aTimeout not
+		description: [ 'Semaphore must not timeout' ].
+
+	self assert: aCollection size equals: 1.
+	self
+		assert: aCollection first class
+		equals: GtMagritteModelValueChangedAnnouncement.
+	self assert: aCollection first value equals: aResult value.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
 	
 	^ aResult
 ]
