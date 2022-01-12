@@ -99,9 +99,9 @@ GtMagritteFieldWithValidationErrorsViewModel >> memento [
 ]
 
 { #category : #accessing }
-GtMagritteFieldWithValidationErrorsViewModel >> memento: anObject [
+GtMagritteFieldWithValidationErrorsViewModel >> memento: aMemento [
 
-	memento := anObject
+	memento := aMemento
 ]
 
 { #category : #'api - notifying' }

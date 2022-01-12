@@ -50,9 +50,11 @@ GtMagritteViewModel >> createBuilder [
 { #category : #'private - building' }
 GtMagritteViewModel >> createMemento [
 
-	^ self object mementoClass
-		  model: self object
-		  description: self objectDescription
+	| aMemento |
+	aMemento := self object mementoClass
+		            model: self object
+		            description: self objectDescription.
+	^ aMemento
 ]
 
 { #category : #'private - building' }
@@ -78,9 +80,9 @@ GtMagritteViewModel >> memento [
 ]
 
 { #category : #accessing }
-GtMagritteViewModel >> memento: anObject [
+GtMagritteViewModel >> memento: aMemento [
 
-	memento := anObject
+	memento := aMemento
 ]
 
 { #category : #accessing }
