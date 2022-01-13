@@ -76,7 +76,28 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress [
 	^ aMemento
 ]
 
-{ #category : #accessing }
+{ #category : #'examples - memento' }
+GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Commit [
+
+	<gtExample>
+	| aMemento aPromise aResult aDescription aCollection |
+	aMemento := self mementoWithChangedInvalidAddress.
+	aDescription := aMemento memento magritteDescription at: 1.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+
+	aPromise := aMemento commitPromise.
+	aResult := aPromise wait.
+
+	self assert: aPromise isFulfilled.
+	self assert: aResult isSuccess.
+
+	self waitExtra: aPromise.
+	self assertAnnouncements: aCollection equals: {  }.
+
+	^ aMemento
+]
+
+{ #category : #'examples - memento' }
 GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Reset [
 
 	<gtExample>

@@ -75,19 +75,27 @@ GtMagritteMemento >> commit [
 { #category : #'private - accessing' }
 GtMagritteMemento >> commitFuture [
 
-	[ self computeCommit ] asAsyncFuture
+	^ [ self computeCommit ] asAsyncFuture
 ]
 
 { #category : #'api - actions' }
 GtMagritteMemento >> commitPromise [
 
-	^ self commitFuture asAsyncStream
+	^ self commitFuture asAsyncPromise
 ]
 
 { #category : #'private - actions' }
 GtMagritteMemento >> computeCommit [
 
-	stateMutex critical: [ self memento commit ]
+	stateMutex critical: [ 
+		[ self memento commit ]
+			on: Error
+			do: [ :anError | 
+				^ GtMagritteCommitError new
+					  memento: self;
+					  exception: anError ] ].
+
+	^ GtMagritteCommitSuccess new memento: self
 ]
 
 { #category : #'private - accessing' }
@@ -141,7 +149,7 @@ GtMagritteMemento >> computeReset [
 						 anOldResult isSuccess not ] ]) ifTrue: [ 
 					self notifyValueChanged: aNewResult value using: aDescription ] ] ] ].
 
-	"return either about reset failure or success"
+	"return either reset failure or success result"
 	^ aResult ifNil: [ GtMagritteResetSuccess new memento: self ]
 ]
 
