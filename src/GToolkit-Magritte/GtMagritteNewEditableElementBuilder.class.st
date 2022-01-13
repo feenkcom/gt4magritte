@@ -61,7 +61,9 @@ GtMagritteNewEditableElementBuilder >> asElement [
 
 	[ 
 	self visit: self objectDescription.
-	aForm := self form ] ensure: [ form := nil ].
+	aForm := self form.
+	aForm userData at: #magritteMemento put: self memento ] ensure: [ 
+		form := nil ].
 
 	^ aForm
 ]

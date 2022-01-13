@@ -26,25 +26,29 @@ GtMagritteNewBuilderUtility class >> defaultSpaceNumber [
 { #category : #'api - ui' }
 GtMagritteNewBuilderUtility class >> newEditableLabelWithSpace: aSpaceNumber memento: aMemento using: aDescription [
 
-	^ BrEditableLabel new
-		  aptitude:
-			  BrGlamorousEditableLabelAptitude new glamorousRegularFontAndSize;
-		  vFitContent;
-		  hFitContentLimited;
-		  when: BrEditorAcceptWish do: [ :aWish | 
-			  self
-				  writeString: aDescription
-				  value: aWish text greaseString
-				  to: aMemento ];
-		  in: [ :theEditor | 
-			  self
-				  readString: aDescription
-				  from: aMemento
-				  intoEditor: theEditor ];
-		  margin:
-			  (BlInsets bottom:
-					   (aSpaceNumber ifNil: [ self defaultSpaceNumber ]));
-		  constraintsDo: [ :c | c grid vertical alignCenter ]
+	| anEditor |
+	anEditor := BrEditableLabel new.
+
+	anEditor
+		aptitude:
+			BrGlamorousEditableLabelAptitude new glamorousRegularFontAndSize;
+		vFitContent;
+		hFitContentLimited;
+		when: BrEditorAcceptWish do: [ :aWish | 
+			| aPromise |
+			aPromise := self
+				writeString: aDescription
+				value: aWish text greaseString
+				to: aMemento.
+			aPromise then: [ :aResult | 
+				aMemento validationPromiseUsing: aDescription ] ];
+		margin:
+			(BlInsets bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ]));
+		constraintsDo: [ :c | c grid vertical alignCenter ].
+
+	self readString: aDescription from: aMemento intoEditor: anEditor.
+
+	^ anEditor
 ]
 
 { #category : #'api - ui' }
@@ -107,7 +111,9 @@ GtMagritteNewBuilderUtility class >> newValidationContainerWith: aFieldElement m
 
 	| aContainer anIssuesElement |
 	aContainer := BrVerticalPane new.
-	aContainer hFitContentLimited; vFitContent.
+	aContainer
+		hFitContentLimited;
+		vFitContent.
 
 	anIssuesElement := BrEditor new
 		                   aptitude: (BrGlamorousRegularEditorAptitude new
@@ -124,6 +130,14 @@ GtMagritteNewBuilderUtility class >> newValidationContainerWith: aFieldElement m
 	aContainer addChild: aFieldElement as: #field.
 	aContainer addChild: anIssuesElement as: #issues.
 
+	aMemento
+		when: GtMagritteMementoDescriptionValidationChangedAnnouncement
+		send: #onAnnouncement:
+		to: (GtMagritteDescriptionValidationHandler new
+				 memento: aMemento;
+				 description: aDescription;
+				 editorElement: anIssuesElement).
+
 	^ aContainer
 ]
 
@@ -133,10 +147,10 @@ GtMagritteNewBuilderUtility class >> readString: aDescription from: aMemento int
 	| aPromise |
 	aPromise := aMemento readPromiseUsing: aDescription.
 
-	aPromise then: [ :aResult | 
-		aResult isSuccess ifTrue: [ 
-			anEditor enqueueTask:
-				(BlTaskAction new action: [ anEditor text: aResult value ]) ] ]
+	^ aPromise then: [ :aResult | 
+		  aResult isSuccess ifTrue: [ 
+			  anEditor enqueueTask:
+				  (BlTaskAction new action: [ anEditor text: aResult value ]) ] ]
 ]
 
 { #category : #'api - memento' }
@@ -145,4 +159,6 @@ GtMagritteNewBuilderUtility class >> writeString: aDescription value: aText to: 
 	| aPromise aString |
 	aString := aText asString.
 	aPromise := aMemento writePromise: aString using: aDescription.
+	
+	^ aPromise
 ]

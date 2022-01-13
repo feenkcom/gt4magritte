@@ -23,6 +23,17 @@ MAMultipleErrors >> gtMagritteErrorsDo: aBlock [
 ]
 
 { #category : #'*GToolkit-Magritte' }
+MAMultipleErrors >> gtMagritteErrorsDo: aMainBlock separatedBy: aSeparationBlock [
+
+	self collection
+		do: [ :eachError | 
+			eachError
+				gtMagritteErrorsDo: aMainBlock
+				separatedBy: aSeparationBlock ]
+		separatedBy: aSeparationBlock
+]
+
+{ #category : #'*GToolkit-Magritte' }
 MAMultipleErrors >> gtMagritteErrorsViewChildren [
 
 	^ self collection ifNil: [ #(  ) ]

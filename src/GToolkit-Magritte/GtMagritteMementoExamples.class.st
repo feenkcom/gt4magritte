@@ -123,6 +123,33 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Reset [
 ]
 
 { #category : #'examples - memento' }
+GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_ValidateOneDescription [
+
+	<gtExample>
+	| aMemento aPromise aResult aDescription aCollection |
+	aMemento := self mementoWithChangedInvalidAddress.
+	aDescription := aMemento memento magritteDescription at: 1.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+
+	aPromise := aMemento validationPromiseUsing: aDescription.
+	aResult := aPromise wait.
+
+	self assert: aPromise isFulfilled.
+	self assert: aResult isSuccess not.
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals:
+		{ GtMagritteMementoDescriptionValidationChangedAnnouncement }.
+	self assert: aCollection first result equals: aResult.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
+
+	^ aMemento
+]
+
+{ #category : #'examples - memento' }
 GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_ValidatePromiseResult [
 
 	<gtExample>
@@ -228,6 +255,33 @@ GtMagritteMementoExamples >> mementoWithValidAddress_ReadPromiseResult [
 	self assertAnnouncements: aCollection equals: #(  ).
 
 	^ aResult
+]
+
+{ #category : #'examples - memento' }
+GtMagritteMementoExamples >> mementoWithValidAddress_ValidateOneDescription [
+
+	<gtExample>
+	| aMemento aPromise aResult aDescription aCollection |
+	aMemento := self mementoWithValidAddress.
+	aDescription := aMemento memento magritteDescription at: 1.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+
+	aPromise := aMemento validationPromiseUsing: aDescription.
+	aResult := aPromise wait.
+
+	self assert: aPromise isFulfilled.
+	self assert: aResult isSuccess.
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals:
+		{ GtMagritteMementoDescriptionValidationChangedAnnouncement }.
+	self assert: aCollection first result equals: aResult.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
+
+	^ aMemento
 ]
 
 { #category : #'examples - memento' }
