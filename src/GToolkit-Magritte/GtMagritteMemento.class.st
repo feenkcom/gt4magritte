@@ -112,17 +112,24 @@ GtMagritteMemento >> computeReadUsing: aDescription [
 GtMagritteMemento >> computeReset [
 
 	| allValues aResult |
-	stateMutex critical: [ "cache old values"
+	stateMutex critical: [ 
+		"cache locally old values"
 		allValues := cache copy.
 
+		"reset memento"
 		[ self memento reset ]
 			on: Error
 			do: [ :anError | 
 			aResult := GtMagritteResetFailure new exception: anError ].
 
+			
+		"clear cached values"
 		allValues keysDo: [ :aDescription | 
 			self clearStateUsing: aDescription ] ].
 
+	"notify on value changes 
+	- we notify only about previously cached values
+	  as they are the only one users were previously interested"
 	allValues keysAndValuesDo: [ :aDescription :anOldPromise | 
 		anOldPromise asyncThen: [ :anOldResult | 
 			| aNewPromise |
@@ -134,6 +141,7 @@ GtMagritteMemento >> computeReset [
 						 anOldResult isSuccess not ] ]) ifTrue: [ 
 					self notifyValueChanged: aNewResult value using: aDescription ] ] ] ].
 
+	"return either about reset failure or success"
 	^ aResult ifNil: [ GtMagritteResetSuccess new memento: self ]
 ]
 
