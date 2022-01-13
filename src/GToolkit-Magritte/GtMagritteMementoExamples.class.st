@@ -76,6 +76,31 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress [
 	^ aMemento
 ]
 
+{ #category : #accessing }
+GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Reset [
+
+	<gtExample>
+	| aMemento aPromise aResult aDescription aCollection |
+	aMemento := self mementoWithChangedInvalidAddress.
+	aDescription := aMemento memento magritteDescription at: 1.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+
+	aPromise := aMemento resetPromise.
+	aResult := aPromise wait.
+
+	self assert: aPromise isFulfilled.
+	self assert: aResult isSuccess.
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals: { GtMagritteModelValueChangedAnnouncement }.
+	self assert: aCollection first value equals: 'Werkstrasse 18'.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
+	^ aMemento
+]
+
 { #category : #'examples - memento' }
 GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_ValidatePromiseResult [
 
@@ -252,7 +277,10 @@ GtMagritteMementoExamples >> waitExtra: aPromise [
 
 	| aTimeout aSemaphore |
 	aSemaphore := Semaphore new.
-	aPromise asyncThen: [ :theResult | aSemaphore signal ].
+	aPromise asyncThen: [ :theResult | 
+		AsyncFuturePromise new
+			future: [ aSemaphore signal ] asAsyncFuture
+			configuration: AsyncFutureExecutionConfiguration new lowPriority ].
 	aTimeout := aSemaphore waitTimeoutSeconds: 5.
 	self
 		assert: aTimeout not
