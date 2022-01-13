@@ -18,6 +18,19 @@ GtMagritteMementoExamples >> addressObject [
 	^ GtMagritteModelExamples new addressObject
 ]
 
+{ #category : #support }
+GtMagritteMementoExamples >> assertAnnouncements: aReceivedAnnouncements equals: aCollectionOfClasses [
+
+	self
+		assert: aReceivedAnnouncements size
+		equals: aCollectionOfClasses size.
+
+	aReceivedAnnouncements
+		with: aCollectionOfClasses
+		do: [ :eachAnnouncement :aClass | 
+			self assert: eachAnnouncement class equals: aClass ]
+]
+
 { #category : #'examples - memento' }
 GtMagritteMementoExamples >> basicMemento [
 
@@ -41,17 +54,25 @@ GtMagritteMementoExamples >> invalidAddressObject [
 GtMagritteMementoExamples >> mementoWithChangedInvalidAddress [
 
 	<gtExample>
-	| aMemento aPromise aResult aDescription |
-	aMemento := self mementoWithValidAddress. 
+	| aMemento aPromise aResult aDescription aCollection |
+	aMemento := self mementoWithValidAddress.
 	aDescription := aMemento memento magritteDescription at: 1.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
 	
 	aPromise := aMemento writePromise: 'Werkstraße' using: aDescription.
 	aResult := aPromise wait.
-	
+
 	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 	self assert: aResult value equals: 'Werkstraße'.
-	
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals: { GtMagritteModelValueChangedAnnouncement }.
+	self assert: aCollection first value equals: aResult value.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
 	^ aMemento
 ]
 
@@ -61,12 +82,7 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_ValidatePromiseRes
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection aSemaphore aTimeout |
 	aMemento := self mementoWithChangedInvalidAddress.
-
-	aCollection := OrderedCollection new.
-	aMemento
-		when: GtMagritteMementoAnnouncement
-		send: #add:
-		to: aCollection.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
 
 	aPromise := aMemento validationPromise.
 	aResult := aPromise wait.
@@ -75,17 +91,10 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_ValidatePromiseRes
 	self assert: aResult isSuccess not.
 	self assert: aResult exception isNotNil.
 
-	aSemaphore := Semaphore new.
-	aPromise asyncThen: [ :theResult | aSemaphore signal ].
-	aTimeout := aSemaphore waitTimeoutSeconds: 5.
+	self waitExtra: aPromise.
 	self
-		assert: aTimeout not
-		description: [ 'Semaphore must not timeout' ].
-
-	self assert: aCollection size equals: 1.
-	self
-		assert: aCollection first class
-		equals: GtMagritteMementoValidationChangedAnnouncement.
+		assertAnnouncements: aCollection
+		equals: { GtMagritteMementoValidationChangedAnnouncement }.
 	self assert: aCollection first result equals: aResult.
 
 	^ aResult
@@ -113,8 +122,9 @@ GtMagritteMementoExamples >> mementoWithInvalidAddress [
 GtMagritteMementoExamples >> mementoWithInvalidAddress_ValidationPromiseResult [
 
 	<gtExample>
-	| aMemento aPromiseOne aResult aPromiseTwo |
+	| aMemento aPromiseOne aResult aPromiseTwo aCollection |
 	aMemento := self mementoWithInvalidAddress.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
 
 	aPromiseOne := aMemento validationPromise.
 	aPromiseTwo := aMemento validationPromise.
@@ -125,6 +135,11 @@ GtMagritteMementoExamples >> mementoWithInvalidAddress_ValidationPromiseResult [
 
 	self assert: aPromiseOne isFulfilled.
 	self assert: aResult isSuccess not.
+
+	self waitExtra: aPromiseOne.
+	self
+		assertAnnouncements: aCollection
+		equals: { GtMagritteMementoValidationChangedAnnouncement }.
 
 	^ aResult
 ]
@@ -151,17 +166,21 @@ GtMagritteMementoExamples >> mementoWithValidAddress [
 GtMagritteMementoExamples >> mementoWithValidAddress_ReadPromiseResult [
 
 	<gtExample>
-	| aMemento aPromise aResult aDescription |
-	aMemento := self mementoWithValidAddress. 
+	| aMemento aPromise aResult aDescription aCollection |
+	aMemento := self mementoWithValidAddress.
 	aDescription := aMemento memento magritteDescription at: 1.
-	
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+
 	aPromise := aMemento readPromiseUsing: aDescription.
 	aResult := aPromise wait.
-	
+
 	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 	self assert: aResult value equals: 'Werkstrasse 18'.
-	
+
+	self waitExtra: aPromise.
+	self assertAnnouncements: aCollection equals: #(  ).
+
 	^ aResult
 ]
 
@@ -169,15 +188,22 @@ GtMagritteMementoExamples >> mementoWithValidAddress_ReadPromiseResult [
 GtMagritteMementoExamples >> mementoWithValidAddress_ValidationPromiseResult [
 
 	<gtExample>
-	| aMemento aPromise aResult |
-	aMemento := self mementoWithValidAddress. 
-	
+	| aMemento aPromise aResult aCollection |
+	aMemento := self mementoWithValidAddress.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+
 	aPromise := aMemento validationPromise.
 	aResult := aPromise wait.
-	
+
 	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
-	
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals: { GtMagritteMementoValidationChangedAnnouncement }.
+	self assert: aCollection first result equals: aResult.
+
 	^ aResult
 ]
 
@@ -186,36 +212,49 @@ GtMagritteMementoExamples >> mementoWithValidAddress_WritePromiseResult [
 
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection aSemaphore aTimeout |
-	aMemento := self mementoWithValidAddress. 
+	aMemento := self mementoWithValidAddress.
 	aDescription := aMemento memento magritteDescription at: 1.
-	
-	aCollection := OrderedCollection new.
-	aMemento
-		when: GtMagritteMementoAnnouncement
-		send: #add:
-		to: aCollection.
-		
+
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+
 	aPromise := aMemento writePromise: 'Werkstraße' using: aDescription.
 	aResult := aPromise wait.
-	
+
 	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 	self assert: aResult value equals: 'Werkstraße'.
-	
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals: { GtMagritteModelValueChangedAnnouncement }.
+	self assert: aCollection first value equals: aResult value.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
+
+	^ aResult
+]
+
+{ #category : #support }
+GtMagritteMementoExamples >> subscribeToMementoAnnouncements: aMemento [
+
+	| aCollection |
+	aCollection := OrderedCollection new.
+	aMemento
+		when: Announcement
+		send: #add:
+		to: aCollection.
+	^ aCollection
+]
+
+{ #category : #support }
+GtMagritteMementoExamples >> waitExtra: aPromise [
+
+	| aTimeout aSemaphore |
 	aSemaphore := Semaphore new.
 	aPromise asyncThen: [ :theResult | aSemaphore signal ].
 	aTimeout := aSemaphore waitTimeoutSeconds: 5.
 	self
 		assert: aTimeout not
-		description: [ 'Semaphore must not timeout' ].
-
-	self assert: aCollection size equals: 1.
-	self
-		assert: aCollection first class
-		equals: GtMagritteModelValueChangedAnnouncement.
-	self assert: aCollection first value equals: aResult value.
-	self assert: aCollection first description equals: aDescription.
-	self assert: aCollection first memento equals: aMemento.
-	
-	^ aResult
+		description: [ 'Semaphore must not timeout' ]
 ]
