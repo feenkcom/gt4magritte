@@ -8,7 +8,8 @@ Class {
 		'cache',
 		'resetPromise',
 		'promiseMutex',
-		'stateMutex'
+		'stateMutex',
+		'commitPromise'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -55,7 +56,8 @@ GtMagritteMemento >> cacheAt: aDescription ifAbsentPut: aBlock [
 GtMagritteMemento >> clearState [
 
 	validationPromise := nil.
-	resetPromise := nil
+	resetPromise := nil.
+	commitPromise := nil.
 ]
 
 { #category : #'private - actions' }
@@ -81,7 +83,9 @@ GtMagritteMemento >> commitFuture [
 { #category : #'api - actions' }
 GtMagritteMemento >> commitPromise [
 
-	^ self commitFuture asAsyncPromise
+	^ promiseMutex critical: [ 
+		  commitPromise ifNil: [ 
+			  commitPromise := self commitFuture asAsyncPromise ] ]
 ]
 
 { #category : #'private - actions' }
@@ -237,6 +241,12 @@ GtMagritteMemento >> initialize [
 	cache := SmallDictionary new.
 ]
 
+{ #category : #'api - accessing' }
+GtMagritteMemento >> magritteDescription [
+
+	^ self memento magritteDescription
+]
+
 { #category : #'private - accessing' }
 GtMagritteMemento >> memento [
 
@@ -251,6 +261,12 @@ GtMagritteMemento >> memento: aMemento [
 		description: [ 'Memento can be initialized only once' ].
 
 	memento := aMemento
+]
+
+{ #category : #'api - accessing' }
+GtMagritteMemento >> model [
+
+	^ self memento model
 ]
 
 { #category : #'private - notifying' }
