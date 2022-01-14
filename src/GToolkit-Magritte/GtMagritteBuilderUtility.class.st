@@ -17,6 +17,27 @@ GtMagritteBuilderUtility class >> addCommentTooltip: anElement using: aDescripti
 		(BrGlamorousWithLabelTooltipAptitude new text: aText)
 ]
 
+{ #category : #'api - magritte' }
+GtMagritteBuilderUtility class >> computeMementoForObject: anObject description: aDescription [
+
+	| aResult aMemento |
+	[ 
+	aMemento := anObject mementoClass
+		            model: anObject
+		            description: aDescription ]
+		on: Error
+		do: [ :anError | 
+			aResult := GtMagritteMementoCreationFailure new
+				           object: anObject;
+				           description: aDescription ].
+
+	^ aResult ifNil: [ 
+		  GtMagritteMementoCreationSuccess new
+			  memento: aMemento;
+			  object: anObject;
+			  description: aDescription ]
+]
+
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> defaultSpaceNumber [
 

@@ -2,7 +2,6 @@ Class {
 	#name : #GtMagritteMemento,
 	#superclass : #Object,
 	#instVars : [
-		'memento',
 		'announcer',
 		'validationPromise',
 		'resetPromise',
@@ -10,7 +9,9 @@ Class {
 		'stateMutex',
 		'commitPromise',
 		'readCache',
-		'validationCache'
+		'validationCache',
+		'mementoPromise',
+		'memento'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -18,18 +19,22 @@ Class {
 { #category : #'api - instance creation' }
 GtMagritteMemento class >> forMemento: aMemento [
 
-	^ self new memento: aMemento
+	| aPromise |
+	aPromise := aMemento asAsyncPromise.
+
+	^ self new mementoPromise: aPromise
 ]
 
 { #category : #'api - instance creation' }
 GtMagritteMemento class >> forObject: anObject description: aDescription [
 
-	| aMemento |
-	aMemento := anObject mementoClass
-		            model: anObject
-		            description: aDescription.
+	| aPromise |
+	aPromise := [ 
+	            GtMagritteBuilderUtility
+		            computeMementoForObject: anObject
+		            description: aDescription ] asAsyncPromise.
 
-	^ self forMemento: aMemento
+	^ self new mementoPromise: aPromise
 ]
 
 { #category : #'api - converting' }
@@ -42,9 +47,9 @@ GtMagritteMemento >> asGtMagritteMemento [
 GtMagritteMemento >> asGtMagritteViewModel [
 
 	^ GtMagritteViewModel new
+		  memento: self;
 		  object: self;
-		  description: self memento magritteDescription;
-		  memento: self
+		  description: self magritteDescription
 ]
 
 { #category : #'private - accessing' }
@@ -94,7 +99,7 @@ GtMagritteMemento >> commitPromise [
 GtMagritteMemento >> computeCommit [
 
 	stateMutex critical: [ 
-		[ self memento commit ]
+		[ self mementoDo: [ :aMemento | aMemento commit ] ]
 			on: Error
 			do: [ :anError | 
 				^ GtMagritteCommitError new
@@ -110,7 +115,8 @@ GtMagritteMemento >> computeReadUsing: aDescription [
 	| aValue |
 	[ 
 	stateMutex critical: [ 
-		aValue := self memento readUsing: aDescription ] ]
+		self mementoDo: [ :aMemento | 
+			aValue := aMemento readUsing: aDescription ] ] ]
 		on: Error
 		do: [ :anError | 
 			^ GtMagritteReadFailure new
@@ -128,17 +134,16 @@ GtMagritteMemento >> computeReadUsing: aDescription [
 GtMagritteMemento >> computeReset [
 
 	| allValues aResult |
-	stateMutex critical: [ 
-		"cache locally old values"
+	stateMutex critical: [ "cache locally old values"
 		allValues := readCache copy.
 
 		"reset memento"
-		[ self memento reset ]
+		[ self mementoDo: [ :aMemento | aMemento reset ] ]
 			on: Error
 			do: [ :anError | 
 			aResult := GtMagritteResetFailure new exception: anError ].
 
-			
+
 		"clear cached values"
 		allValues keysDo: [ :aDescription | 
 			self clearStateUsing: aDescription ] ].
@@ -167,7 +172,7 @@ GtMagritteMemento >> computeValidation [
 	| aResult |
 	stateMutex critical: [ 
 		[ 
-		self memento validate.
+		self mementoDo: [ :aMemento | aMemento validate ].
 		aResult := GtMagritteValidationSuccess new memento: self ]
 			on: MAValidationError
 			do: [ :anError | 
@@ -215,7 +220,9 @@ GtMagritteMemento >> computeWriteOld: anOldValue new: aNewValue using: aDescript
 			  value: anOldValue ].
 
 	stateMutex critical: [ 
-		[ self memento write: aNewValue using: aDescription ]
+		[ 
+		self mementoDo: [ :aMemento | 
+			aMemento write: aNewValue using: aDescription ] ]
 			on: Error
 			do: [ :anError | 
 				self clearStateUsing: aDescription.
@@ -250,12 +257,16 @@ GtMagritteMemento >> ensureAnnouncer [
 GtMagritteMemento >> gtGtMagritteFor: aView context: aContext [
 
 	<gtView>
-	self memento ifNil: [ ^ aView empty ].
+	self mementoPromise ifNil: [ ^ aView empty ].
 
 	^ aView forward
 		  title: 'Memento';
 		  priority: 1;
-		  object: [ self memento ];
+		  object: [ 
+			  | aMemento |
+			  aMemento := nil.
+			  self mementoDo: [ :theMemento | aMemento := theMemento ].
+			  aMemento ];
 		  view: #gtGtMagritteFor:context:
 ]
 
@@ -273,29 +284,58 @@ GtMagritteMemento >> initialize [
 { #category : #'api - accessing' }
 GtMagritteMemento >> magritteDescription [
 
-	^ self memento magritteDescription
+	self mementoDo: [ :aMemento | ^ aMemento magritteDescription ].
+
+	^ nil
 ]
 
 { #category : #'private - accessing' }
-GtMagritteMemento >> memento [
+GtMagritteMemento >> mementoDo: aBlock [
 
-	^ memento
+	"I should be used only inside of other future computations.
+	Block is executed inside of a current process that calls this method."
+
+	| aSemaphore |
+	memento ifNotNil: [ :aMemento | 
+		aBlock cull: aMemento.
+		^ self ].
+
+	aSemaphore := Semaphore new.
+	self mementoPromise
+		then: [ :aResult | 
+			aResult isSuccess ifTrue: [ 
+				stateMutex critical: [ 
+					memento ifNil: [ memento := aResult memento ] ] ].
+			aSemaphore signal ]
+		otherwise: [ :anError | aSemaphore signal ].
+
+	aSemaphore wait.
+
+	memento ifNotNil: [ :aMemento | aBlock cull: aMemento ]
+]
+
+{ #category : #'private - accessing' }
+GtMagritteMemento >> mementoPromise [
+
+	^ mementoPromise
 ]
 
 { #category : #'api - initialization' }
-GtMagritteMemento >> memento: aMemento [
+GtMagritteMemento >> mementoPromise: aPromise [
 
 	self
-		assert: [ memento isNil ]
-		description: [ 'Memento can be initialized only once' ].
+		assert: [ mementoPromise isNil ]
+		description: [ 'Memento promise can be initialized only once' ].
 
-	memento := aMemento
+	mementoPromise := aPromise
 ]
 
 { #category : #'api - accessing' }
 GtMagritteMemento >> model [
 
-	^ self memento model
+	self mementoDo: [ :aMemento | ^ aMemento model ].
+
+	^ nil
 ]
 
 { #category : #'private - notifying' }
@@ -339,13 +379,17 @@ GtMagritteMemento >> notifyValueChanged: aValue using: aDescription [
 { #category : #printing }
 GtMagritteMemento >> printOn: aStream [
 
+	| aModel |
 	super printOn: aStream.
 
-	self memento ifNil: [ ^ self ].
+	self mementoPromise ifNil: [ ^ self ].
+
+	aModel := nil.
+	self mementoDo: [ :aMemento | aModel := aMemento model ].
 
 	aStream
 		nextPut: $(;
-		print: self memento model;
+		print: aModel;
 		nextPut: $)
 ]
 

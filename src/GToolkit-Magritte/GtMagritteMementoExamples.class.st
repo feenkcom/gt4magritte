@@ -38,7 +38,7 @@ GtMagritteMementoExamples >> basicMemento [
 	| aMemento |
 	aMemento := GtMagritteMemento new.
 
-	self assert: aMemento memento isNil.
+	self assert: aMemento mementoPromise isNil.
 
 	^ aMemento
 ]
@@ -56,7 +56,7 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress [
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection |
 	aMemento := self mementoWithValidAddress.
-	aDescription := aMemento memento magritteDescription at: 1.
+	aDescription := aMemento magritteDescription at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
 	
 	aPromise := aMemento writePromise: 'Werkstraße' using: aDescription.
@@ -82,7 +82,7 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Commit [
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection |
 	aMemento := self mementoWithChangedInvalidAddress.
-	aDescription := aMemento memento magritteDescription at: 1.
+	aDescription := aMemento magritteDescription at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
 
 	aPromise := aMemento commitPromise.
@@ -103,7 +103,7 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Reset [
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection |
 	aMemento := self mementoWithChangedInvalidAddress.
-	aDescription := aMemento memento magritteDescription at: 1.
+	aDescription := aMemento magritteDescription at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
 
 	aPromise := aMemento resetPromise.
@@ -128,7 +128,7 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_ValidateOneDescrip
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection |
 	aMemento := self mementoWithChangedInvalidAddress.
-	aDescription := aMemento memento magritteDescription at: 1.
+	aDescription := aMemento magritteDescription at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
 
 	aPromise := aMemento validationPromiseUsing: aDescription.
@@ -184,9 +184,9 @@ GtMagritteMementoExamples >> mementoWithInvalidAddress [
 		            forObject: anObject
 		            description: aDescription.
 
-	self assert: aMemento memento isNotNil.
-	self assert: aMemento memento model equals: anObject.
-	self assert: aMemento memento magritteDescription equals: aDescription.
+	self assert: aMemento mementoPromise isNotNil.
+	self assert: aMemento model equals: anObject.
+	self assert: aMemento magritteDescription equals: aDescription.
 
 	^ aMemento
 ]
@@ -228,9 +228,9 @@ GtMagritteMementoExamples >> mementoWithValidAddress [
 		            forObject: anObject
 		            description: aDescription.
 
-	self assert: aMemento memento isNotNil.
-	self assert: aMemento memento model equals: anObject.
-	self assert: aMemento memento magritteDescription equals: aDescription.
+	self assert: aMemento mementoPromise isNotNil.
+	self assert: aMemento model equals: anObject.
+	self assert: aMemento magritteDescription equals: aDescription.
 
 	^ aMemento
 ]
@@ -241,7 +241,7 @@ GtMagritteMementoExamples >> mementoWithValidAddress_ReadPromiseResult [
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection |
 	aMemento := self mementoWithValidAddress.
-	aDescription := aMemento memento magritteDescription at: 1.
+	aDescription := aMemento magritteDescription at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
 
 	aPromise := aMemento readPromiseUsing: aDescription.
@@ -263,7 +263,7 @@ GtMagritteMementoExamples >> mementoWithValidAddress_ValidateOneDescription [
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection |
 	aMemento := self mementoWithValidAddress.
-	aDescription := aMemento memento magritteDescription at: 1.
+	aDescription := aMemento magritteDescription at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
 
 	aPromise := aMemento validationPromiseUsing: aDescription.
@@ -313,7 +313,7 @@ GtMagritteMementoExamples >> mementoWithValidAddress_WritePromiseResult [
 	<gtExample>
 	| aMemento aPromise aResult aDescription aCollection aSemaphore aTimeout |
 	aMemento := self mementoWithValidAddress.
-	aDescription := aMemento memento magritteDescription at: 1.
+	aDescription := aMemento magritteDescription at: 1.
 
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
 
