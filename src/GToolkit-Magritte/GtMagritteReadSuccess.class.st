@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'description',
 		'value',
-		'context'
+		'context',
+		'original'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -34,9 +35,27 @@ GtMagritteReadSuccess >> description: anObject [
 ]
 
 { #category : #testing }
+GtMagritteReadSuccess >> isChanged [
+
+	^ self original ~= self value
+]
+
+{ #category : #testing }
 GtMagritteReadSuccess >> isSuccess [
 
 	^ true
+]
+
+{ #category : #accessing }
+GtMagritteReadSuccess >> original [
+
+	^ original
+]
+
+{ #category : #accessing }
+GtMagritteReadSuccess >> original: anObject [
+
+	original := anObject
 ]
 
 { #category : #accessing }

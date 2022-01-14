@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'value',
 		'description',
-		'context'
+		'context',
+		'original'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -34,9 +35,27 @@ GtMagritteWriteUnchanged >> description: anObject [
 ]
 
 { #category : #testing }
+GtMagritteWriteUnchanged >> isChanged [
+
+	^ self original ~= self value
+]
+
+{ #category : #testing }
 GtMagritteWriteUnchanged >> isSuccess [
 
 	^ true
+]
+
+{ #category : #accessing }
+GtMagritteWriteUnchanged >> original [
+
+	^ original
+]
+
+{ #category : #accessing }
+GtMagritteWriteUnchanged >> original: anObject [
+
+	original := anObject
 ]
 
 { #category : #accessing }

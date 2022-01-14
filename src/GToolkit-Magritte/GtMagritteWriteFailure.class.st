@@ -6,7 +6,8 @@ Class {
 		'oldValue',
 		'newValue',
 		'exception',
-		'context'
+		'context',
+		'original'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -69,4 +70,16 @@ GtMagritteWriteFailure >> oldValue [
 GtMagritteWriteFailure >> oldValue: anObject [
 
 	oldValue := anObject
+]
+
+{ #category : #accessing }
+GtMagritteWriteFailure >> original [
+
+	^ original
+]
+
+{ #category : #accessing }
+GtMagritteWriteFailure >> original: anObject [
+
+	original := anObject
 ]

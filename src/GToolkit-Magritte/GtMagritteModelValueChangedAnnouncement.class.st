@@ -2,8 +2,8 @@ Class {
 	#name : #GtMagritteModelValueChangedAnnouncement,
 	#superclass : #GtMagritteMementoAnnouncement,
 	#instVars : [
-		'value',
-		'description'
+		'description',
+		'result'
 	],
 	#category : #'GToolkit-Magritte-Announcements'
 }
@@ -21,13 +21,13 @@ GtMagritteModelValueChangedAnnouncement >> description: anObject [
 ]
 
 { #category : #accessing }
-GtMagritteModelValueChangedAnnouncement >> value [
+GtMagritteModelValueChangedAnnouncement >> result [
 
-	^ value
+	^ result
 ]
 
 { #category : #accessing }
-GtMagritteModelValueChangedAnnouncement >> value: anObject [
+GtMagritteModelValueChangedAnnouncement >> result: anObject [
 
-	value := anObject
+	result := anObject
 ]

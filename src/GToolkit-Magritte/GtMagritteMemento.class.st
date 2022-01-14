@@ -91,10 +91,10 @@ GtMagritteMemento >> commitPromise [
 
 	^ promiseMutex critical: [ 
 		  commitPromise ifNil: [ 
-			  commitPromise := self mementoPromise then: [ :aResult | 
+			  commitPromise := self validationPromise then: [ :aResult | 
 				                   aResult isSuccess
 					                   ifTrue: [ 
-					                   (self commitFutureContext: aResult)
+					                   (self commitFutureContext: aResult context)
 						                   asAsyncPromise ]
 					                   ifFalse: [ aResult ] ] ] ]
 ]
@@ -102,25 +102,52 @@ GtMagritteMemento >> commitPromise [
 { #category : #'private - actions' }
 GtMagritteMemento >> computeCommitContext: aContext [
 
-	| aResult |
-	stateMutex critical: [ 
+	| aResult allValues |
+	stateMutex critical: [ "cache locally old values"
+		allValues := readCache copy.
+
+		"commit values"
 		[ aContext memento commit ]
 			on: Error
 			do: [ :anError | 
 				aResult := GtMagritteCommitError new
 					           memento: self;
-					           exception: anError ] ].
+					           exception: anError ].
 
-	^ aResult ifNil: [ GtMagritteCommitSuccess new memento: self ]
+		"clear cached values"
+		allValues keysDo: [ :aDescription | 
+			self clearStateUsing: aDescription ] ].
+
+	"notify on value changes 
+	- we notify only about previously cached values
+	  as they are the only one users were previously interested"
+	aResult ifNil: [ 
+		allValues keysAndValuesDo: [ :aDescription :anOldPromise | 
+			anOldPromise asyncThen: [ :anOldResult | 
+				((anOldResult isSuccess and: [ anOldResult isChanged ]) or: [ 
+					 anOldResult isSuccess not ]) ifTrue: [ 
+					| aNewPromise |
+					aNewPromise := self readPromiseUsing: aDescription.
+					aNewPromise then: [ :aNewResult | 
+						aNewResult isSuccess ifTrue: [ 
+							self notifyValueCommitted: aNewResult using: aDescription ] ] ] ] ] ].
+
+	aResult := aResult ifNil: [ 
+		           GtMagritteCommitSuccess new memento: self ].
+
+	self notifyCommitResult: aResult.
+
+	^ aResult
 ]
 
 { #category : #'private - actions' }
 GtMagritteMemento >> computeReadUsing: aDescription context: aContext [
 
-	| aValue aResponse |
+	| aValue aResponse anOriginalValue |
 	[ 
 	stateMutex critical: [ 
-		aValue := aContext memento readUsing: aDescription ] ]
+		aValue := aContext memento readUsing: aDescription.
+		anOriginalValue := aContext memento readOriginalUsing: aDescription ] ]
 		on: Error
 		do: [ :anError | 
 			aResponse := GtMagritteReadFailure new
@@ -134,6 +161,7 @@ GtMagritteMemento >> computeReadUsing: aDescription context: aContext [
 			  memento: self;
 			  description: aDescription;
 			  value: aValue;
+			  original: anOriginalValue;
 			  context: aContext ]
 ]
 
@@ -141,7 +169,8 @@ GtMagritteMemento >> computeReadUsing: aDescription context: aContext [
 GtMagritteMemento >> computeResetContext: aContext [
 
 	| allValues aResult |
-	stateMutex critical: [ "cache locally old values"
+	stateMutex critical: [ 
+		"cache locally old values"
 		allValues := readCache copy.
 
 		"reset memento"
@@ -167,7 +196,7 @@ GtMagritteMemento >> computeResetContext: aContext [
 					 (anOldResult isSuccess and: [ 
 						  anOldResult value ~= aNewResult value ]) or: [ 
 						 anOldResult isSuccess not ] ]) ifTrue: [ 
-					self notifyValueChanged: aNewResult value using: aDescription ] ] ] ].
+					self notifyValueChanged: aNewResult using: aDescription ] ] ] ].
 
 	"return either reset failure or success result"
 	^ aResult ifNil: [ GtMagritteResetSuccess new memento: self ]
@@ -204,12 +233,15 @@ GtMagritteMemento >> computeValidationContext: aContext [
 	stateMutex critical: [ 
 		[ 
 		aContext memento validate.
-		aResult := GtMagritteValidationSuccess new memento: self ]
+		aResult := GtMagritteValidationSuccess new
+			           memento: self;
+			           context: aContext ]
 			on: MAValidationError
 			do: [ :anError | 
 				aResult := GtMagritteValidationFailure new
 					           memento: self;
-					           exception: anError ] ].
+					           exception: anError;
+					           context: aContext ] ].
 
 	self notifyValidationChanged: aResult.
 
@@ -217,14 +249,15 @@ GtMagritteMemento >> computeValidationContext: aContext [
 ]
 
 { #category : #'private - actions' }
-GtMagritteMemento >> computeWriteOld: anOldValue new: aNewValue using: aDescription context: aContext [
+GtMagritteMemento >> computeWriteOld: anOldResult new: aNewValue using: aDescription context: aContext [
 
 	| aResult aReadPromise |
-	anOldValue = aNewValue ifTrue: [ 
+	anOldResult value = aNewValue ifTrue: [ 
 		^ GtMagritteWriteUnchanged new
 			  memento: self;
 			  description: aDescription;
-			  value: anOldValue;
+			  value: anOldResult value;
+			  original: anOldResult original;
 			  context: aContext ].
 
 	stateMutex critical: [ 
@@ -235,21 +268,24 @@ GtMagritteMemento >> computeWriteOld: anOldValue new: aNewValue using: aDescript
 				^ GtMagritteWriteFailure new
 					  memento: self;
 					  description: aDescription;
-					  oldValue: anOldValue;
+					  original: anOldResult original;
+					  oldValue: anOldResult value;
 					  newValue: aNewValue;
 					  exception: anError;
 					  context: aContext ].
+
 		self clearStateUsing: aDescription.
 		aResult := GtMagritteWriteSuccess new
 			           memento: self;
 			           description: aDescription;
+			           original: anOldResult original;
 			           value: aNewValue;
 			           context: aContext.
 		aReadPromise := aResult asAsyncPromise.
 		readCache at: aDescription put: aReadPromise ].
 
 	aReadPromise asyncThen: [ :aReadResult | 
-		self notifyValueChanged: aNewValue using: aDescription ].
+		self notifyValueChanged: aResult using: aDescription ].
 
 	^ aResult
 ]
@@ -284,12 +320,33 @@ GtMagritteMemento >> gtGtMagritteFor: aView context: aContext [
 	self mementoPromise ifNil: [ ^ aView empty ].
 
 	^ aView forward
-		  title: 'Memento';
+		  title: 'Old Memento';
 		  priority: 1;
 		  object: [ self memento ];
 		  view: #gtGtMagritteFor:context:;
 		  actionButtonIcon: BrGlamorousVectorIcons inspect
+		  label: 'RAW'
 		  tooltip: 'Inspect RAW memento'
+		  action: [ :aButton | aButton phlow spawnObject: self memento ]
+]
+
+{ #category : #accessing }
+GtMagritteMemento >> gtGtNewMagritteFor: aView context: aContext [
+
+	<gtView>
+	self mementoPromise ifNil: [ ^ aView empty ].
+
+	^ aView explicit
+		  title: 'New Memento';
+		  priority: 0;
+		  stencil: [ 
+			  GtMagritteNewEditableElementBuilder new
+				  memento: self;
+				  addButtons;
+				  asElement ];
+		  actionButtonIcon: BrGlamorousVectorIcons inspect
+		  label: 'RAW'
+		  tooltip: 'Inspect RAW Memento'
 		  action: [ :aButton | aButton phlow spawnObject: self memento ]
 ]
 
@@ -312,6 +369,17 @@ GtMagritteMemento >> gtReadCacheFor: aView [
 				  ifFalse: [ 
 					  aResult exception messageText asRopedText foreground:
 							  BrGlamorousColors errorBackgroundColor ] ]
+		  weight: 2;
+		  column: 'Original Value' text: [ :anAssoc | 
+			  | aResult |
+			  aResult := anAssoc value wait.
+			  aResult isSuccess
+				  ifTrue: [ 
+					  aResult isChanged
+						  ifTrue: [ aResult original asRopedText foreground:
+							  BrGlamorousColors disabledButtonTextColor ]
+						  ifFalse: [ '' ] ]
+				  ifFalse: [ '' ] ]
 		  weight: 2;
 		  send: [ :anAssoc | anAssoc value wait ];
 		  actionUpdateButtonTooltip: 'Update read cache'
@@ -388,6 +456,17 @@ GtMagritteMemento >> mementoPromise: aPromise [
 ]
 
 { #category : #'private - notifying' }
+GtMagritteMemento >> notifyCommitResult: aResult [
+
+	announcer ifNil: [ ^ self ].
+
+	self commitPromise asyncThen: [ :theResult | 
+		announcer announce: (GtMagritteMementoCommittedAnnouncement new
+				 memento: self;
+				 result: aResult) ]
+]
+
+{ #category : #'private - notifying' }
 GtMagritteMemento >> notifyValidationChanged: aResult [
 
 	announcer ifNil: [ ^ self ].
@@ -415,14 +494,25 @@ GtMagritteMemento >> notifyValidationChanged: aResult using: aDescription [
 ]
 
 { #category : #'private - notifying' }
-GtMagritteMemento >> notifyValueChanged: aValue using: aDescription [
+GtMagritteMemento >> notifyValueChanged: aResult using: aDescription [
 
 	announcer ifNil: [ ^ self ].
 
 	announcer announce: (GtMagritteModelValueChangedAnnouncement new
 			 memento: self;
-			 value: aValue;
+			 result: aResult;
 			 description: aDescription)
+]
+
+{ #category : #'private - notifying' }
+GtMagritteMemento >> notifyValueCommitted: aResult using: aDescription [
+
+	announcer ifNil: [ ^ self ].
+
+	self commitPromise then: [ :theResult | 
+		announcer announce: (GtMagritteMementoValueCommittedAnnouncement new
+				 memento: self;
+				 result: aResult) ]
 ]
 
 { #category : #'api - debug' }
@@ -587,11 +677,11 @@ GtMagritteMemento >> write: anObject using: aDescription [
 ]
 
 { #category : #'private - accessing' }
-GtMagritteMemento >> writeFutureOld: anOldValue new: aNewValue using: aDescription context: aContext [
+GtMagritteMemento >> writeFutureOld: anOldResult new: aNewValue using: aDescription context: aContext [
 
 	^ [ 
 	  self
-		  computeWriteOld: anOldValue
+		  computeWriteOld: anOldResult
 		  new: aNewValue
 		  using: aDescription
 		  context: aContext ] asAsyncFuture
@@ -605,7 +695,7 @@ GtMagritteMemento >> writePromise: anObject using: aDescription [
 			  aResult isSuccess
 				  ifTrue: [ 
 					  (self
-						   writeFutureOld: aResult value
+						   writeFutureOld: aResult
 						   new: anObject
 						   using: aDescription
 						   context: aResult context) asAsyncPromise ]
