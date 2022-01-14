@@ -174,6 +174,59 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_ValidatePromiseRes
 ]
 
 { #category : #'examples - memento' }
+GtMagritteMementoExamples >> mementoWithChangedValidAddress [
+
+	<gtExample>
+	| aMemento aPromise aResult aDescription aCollection |
+	aMemento := self mementoWithValidAddress.
+	aDescription := aMemento description at: 1.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+	
+	aPromise := aMemento writePromise: 'Werkstraße 1008' using: aDescription.
+	aResult := aPromise wait.
+
+	self assert: aPromise isFulfilled.
+	self assert: aResult isSuccess.
+	self assert: aResult value equals: 'Werkstraße 1008'.
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals: { GtMagritteModelValueChangedAnnouncement }.
+	self assert: aCollection first value equals: aResult value.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
+	^ aMemento
+]
+
+{ #category : #'examples - memento' }
+GtMagritteMementoExamples >> mementoWithChangedValidAddress_ChangePromiseResult [
+
+	<gtExample>
+	| aMemento aPromise aResult aDescription aCollection |
+	self flag: #todo.
+	aMemento := self mementoWithChangedValidAddress.
+	aDescription := aMemento description at: 1.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+	
+	aPromise := aMemento writePromise: 'Werkstraße 1008' using: aDescription.
+	aResult := aPromise wait.
+
+	self assert: aPromise isFulfilled.
+	self assert: aResult isSuccess.
+	self assert: aResult value equals: 'Werkstraße 1008'.
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals: { GtMagritteModelValueChangedAnnouncement }.
+	self assert: aCollection first value equals: aResult value.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
+	^ aMemento
+]
+
+{ #category : #'examples - memento' }
 GtMagritteMementoExamples >> mementoWithInvalidAddress [
 
 	<gtExample>

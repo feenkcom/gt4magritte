@@ -3,10 +3,59 @@ Class {
 	#superclass : #GtMagritteNewElementBuilder,
 	#instVars : [
 		'form',
-		'memento'
+		'memento',
+		'actions'
 	],
 	#category : #'GToolkit-Magritte-Builders'
 }
+
+{ #category : #'private - accessing' }
+GtMagritteNewEditableElementBuilder >> actions [
+
+	^ actions ifNil: [ #(  ) ]
+]
+
+{ #category : #'api - building' }
+GtMagritteNewEditableElementBuilder >> actions: aCollection [
+
+	actions := aCollection
+]
+
+{ #category : #'api - building' }
+GtMagritteNewEditableElementBuilder >> addButtons [
+
+	self addButtons: { 
+			(GtMagritteButtonWithIconAction new
+				 icon: BrGlamorousVectorIcons accept;
+				 tooltip: 'Save';
+				 installOn: [ :aMagritte :aButton | 
+					 "aMagritte changesPromise then: [ :aResult | 
+							 aResult isSuccess ifTrue: [ 
+									 aResult hasChanges
+										 ifTrue: [ aButton visibility: BlVisibility visible ]
+										 ifFalse: [ aButton visibility: BlVisibility hidden ] ] ]" ];
+				 action: [ :aMagritte :aButton | 
+					 aMagritte validate then: [ :aResult | 
+							 aResult isSuccess ifTrue: [ aMagritte commit ] ] ]).
+
+			(GtMagritteButtonWithIconAction new
+				 icon: BrGlamorousVectorIcons cancel;
+				 tooltip: 'Cancel';
+				 installOn: [ :aMagritte :aButton |  ];
+				 action: [ :aMagritte :aButton | 
+					 aMagritte validate then: [ :aResult | 
+							 aResult isSuccess ifTrue: [ aMagritte reset ] ] ]) }
+]
+
+{ #category : #'api - building' }
+GtMagritteNewEditableElementBuilder >> addButtons: aCollection [
+
+	"#addButtons: is part of the existing Morphic/Seaside API.
+	We store the selectors instead of constructing the buttons to defer all element creation to first element access
+	"
+
+	self actions: (aCollection collect: #asGtMagritteAction)
+]
 
 { #category : #'private - building' }
 GtMagritteNewEditableElementBuilder >> addFieldElement: aFieldElement using: aDescription [
@@ -61,11 +110,27 @@ GtMagritteNewEditableElementBuilder >> asElement [
 
 	[ 
 	self visit: self objectDescription.
+	self buildActions.
 	aForm := self form.
 	aForm userData at: #magritteMemento put: self memento ] ensure: [ 
 		form := nil ].
 
 	^ aForm
+]
+
+{ #category : #'api - building' }
+GtMagritteNewEditableElementBuilder >> buildActions [
+
+	| aToolbar |
+	self hasActions ifFalse: [ ^ self ].
+
+	aToolbar := GtMagritteNewBuilderUtility
+		            newToolbarWithActions: self actions
+		            memento: self memento.
+
+	aToolbar constraintsDo: [ :c | c grid horizontal span: 2 ].
+
+	self form addChild: aToolbar as: #toolbar
 ]
 
 { #category : #'private - building' }
@@ -89,6 +154,12 @@ GtMagritteNewEditableElementBuilder >> defaultSpacing [
 GtMagritteNewEditableElementBuilder >> form [
 
 	^ form ifNil: [ form := self createFormElement ]
+]
+
+{ #category : #'private - testing' }
+GtMagritteNewEditableElementBuilder >> hasActions [
+
+	^ actions isNotNil and: [ actions isNotEmpty ]
 ]
 
 { #category : #'private - accessing' }

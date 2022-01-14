@@ -87,8 +87,8 @@ GtMagritteNewBuilderUtility class >> newLabelWithSpace: aSpaceNumber memento: aM
 		  constraintsDo: [ :c | c grid vertical alignCenter ]
 ]
 
-{ #category : #'api - ui' }
-GtMagritteNewBuilderUtility class >> newToolbarWithActions: aCollection presenter: aPresenter [
+{ #category : #'api - building' }
+GtMagritteNewBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
 
 	| aToolbar |
 	aToolbar := BrToolbar new
@@ -100,7 +100,7 @@ GtMagritteNewBuilderUtility class >> newToolbarWithActions: aCollection presente
 
 	aCollection do: [ :eachAction | 
 		| aButton |
-		aButton := eachAction asBlocButtonWithPresenter: aPresenter.
+		aButton := eachAction asBlockButtonWithMemento: aMemento.
 		aToolbar addItem: aButton ].
 
 	^ aToolbar
