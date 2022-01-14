@@ -37,11 +37,11 @@ GtMagritteNewBuilderUtility class >> newEditableLabelWithSpace: aSpaceNumber mem
 		when: BrEditorAcceptWish do: [ :aWish | 
 			| aPromise |
 			aPromise := self
-				writeString: aDescription
-				value: aWish text greaseString
-				to: aMemento.
+				            writeString: aDescription
+				            value: aWish text greaseString
+				            to: aMemento.
 			aPromise then: [ :aResult | 
-				aMemento validationPromiseUsing: aDescription ] ];
+					aMemento validationPromiseUsing: aDescription ] ];
 		margin:
 			(BlInsets bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ]));
 		constraintsDo: [ :c | c grid vertical alignCenter ].

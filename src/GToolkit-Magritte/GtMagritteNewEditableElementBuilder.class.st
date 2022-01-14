@@ -110,7 +110,7 @@ GtMagritteNewEditableElementBuilder >> memento: aMemento [
 { #category : #'private - accessing' }
 GtMagritteNewEditableElementBuilder >> objectDescription [
 
-	^ self memento magritteDescription
+	^ self memento description
 ]
 
 { #category : #visiting }

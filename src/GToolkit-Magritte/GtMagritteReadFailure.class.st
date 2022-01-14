@@ -3,10 +3,23 @@ Class {
 	#superclass : #GtMagritteResult,
 	#instVars : [
 		'description',
-		'exception'
+		'exception',
+		'context'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
+
+{ #category : #accessing }
+GtMagritteReadFailure >> context [
+
+	^ context
+]
+
+{ #category : #accessing }
+GtMagritteReadFailure >> context: anObject [
+
+	context := anObject
+]
 
 { #category : #accessing }
 GtMagritteReadFailure >> description [

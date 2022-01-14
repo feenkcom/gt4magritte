@@ -5,10 +5,23 @@ Class {
 		'description',
 		'oldValue',
 		'newValue',
-		'exception'
+		'exception',
+		'context'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
+
+{ #category : #accessing }
+GtMagritteWriteFailure >> context [
+
+	^ context
+]
+
+{ #category : #accessing }
+GtMagritteWriteFailure >> context: anObject [
+
+	context := anObject
+]
 
 { #category : #accessing }
 GtMagritteWriteFailure >> description [

@@ -33,6 +33,19 @@ GtMagritteDescriptionValidationFailure >> exception: anObject [
 	exception := anObject
 ]
 
+{ #category : #'gt - extensions' }
+GtMagritteDescriptionValidationFailure >> gtIssuesDescriptionFor: aView [
+
+	<gtView>
+	self exception ifNil: [ ^ aView empty ].
+
+	^ aView textEditor
+		  title: 'Issues Description';
+		  priority: 2;
+		  glamorousRegularFontAndSize;
+		  text: [ self issuesDescription ]
+]
+
 { #category : #accessing }
 GtMagritteDescriptionValidationFailure >> issuesDescription [
 

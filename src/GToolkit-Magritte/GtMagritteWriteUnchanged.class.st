@@ -3,10 +3,23 @@ Class {
 	#superclass : #GtMagritteResult,
 	#instVars : [
 		'value',
-		'description'
+		'description',
+		'context'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
+
+{ #category : #accessing }
+GtMagritteWriteUnchanged >> context [
+
+	^ context
+]
+
+{ #category : #accessing }
+GtMagritteWriteUnchanged >> context: anObject [
+
+	context := anObject
+]
 
 { #category : #accessing }
 GtMagritteWriteUnchanged >> description [

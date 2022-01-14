@@ -5,7 +5,7 @@ Class {
 		'object',
 		'description'
 	],
-	#category : #'GToolkit-Magritte-Utilities'
+	#category : #'GToolkit-Magritte-Models'
 }
 
 { #category : #accessing }
