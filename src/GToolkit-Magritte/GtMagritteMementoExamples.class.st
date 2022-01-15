@@ -191,8 +191,10 @@ GtMagritteMementoExamples >> mementoWithChangedValidAddress [
 	aMemento := self mementoWithValidAddress.
 	aDescription := aMemento description at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
-	
-	aPromise := aMemento writePromise: 'Werkstraße 1008' using: aDescription.
+
+	aPromise := aMemento
+		            writePromise: 'Werkstraße 1008'
+		            using: aDescription.
 	aResult := aPromise wait.
 
 	self assert: aPromise isFulfilled.
@@ -227,7 +229,11 @@ GtMagritteMementoExamples >> mementoWithChangedValidAddress_Commit [
 	self assert: aResult isSuccess.
 
 	self waitExtra: aPromise.
-	self assertAnnouncements: aCollection equals: {  }.
+	self assertAnnouncements: aCollection equals: { 
+			GtMagritteMementoValidationChangedAnnouncement.
+			GtMagritteMementoCommittedAnnouncement }.
+	self assert: aCollection first result isSuccess.
+	self assert: aCollection second result equals: aResult.
 
 	^ aResult
 ]

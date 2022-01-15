@@ -58,6 +58,13 @@ GtMagritteMemento >> cacheAt: aDescription ifAbsentPut: aBlock [
 ]
 
 { #category : #'private - actions' }
+GtMagritteMemento >> clearReadStateUsing: aDescription [
+
+	stateMutex critical: [ 
+		readCache removeKey: aDescription ifAbsent: [ "ignore" ]. ].
+]
+
+{ #category : #'private - actions' }
 GtMagritteMemento >> clearState [
 
 	validationPromise := nil.
@@ -91,11 +98,10 @@ GtMagritteMemento >> commitPromise [
 
 	^ promiseMutex critical: [ 
 		  commitPromise ifNil: [ 
-			  commitPromise := self validationPromise then: [ :aResult | 
+			  commitPromise := self validationPromise asyncThen: [ :aResult | 
 				                   aResult isSuccess
 					                   ifTrue: [ 
-					                   (self commitFutureContext: aResult context)
-						                   asAsyncPromise ]
+					                   self computeCommitContext: aResult context ]
 					                   ifFalse: [ aResult ] ] ] ]
 ]
 
@@ -116,7 +122,7 @@ GtMagritteMemento >> computeCommitContext: aContext [
 
 		"clear cached values"
 		allValues keysDo: [ :aDescription | 
-			self clearStateUsing: aDescription ] ].
+			self clearReadStateUsing: aDescription ] ].
 
 	"notify on value changes 
 	- we notify only about previously cached values
@@ -231,17 +237,18 @@ GtMagritteMemento >> computeValidationContext: aContext [
 
 	| aResult |
 	stateMutex critical: [ 
-		[ 
-		aContext memento validate.
-		aResult := GtMagritteValidationSuccess new
-			           memento: self;
-			           context: aContext ]
+		[ aContext memento validate ]
 			on: MAValidationError
 			do: [ :anError | 
 				aResult := GtMagritteValidationFailure new
 					           memento: self;
 					           exception: anError;
 					           context: aContext ] ].
+
+	aResult := aResult ifNil: [ 
+		           GtMagritteValidationSuccess new
+			           memento: self;
+			           context: aContext ].
 
 	self notifyValidationChanged: aResult.
 
@@ -460,7 +467,7 @@ GtMagritteMemento >> notifyCommitResult: aResult [
 
 	announcer ifNil: [ ^ self ].
 
-	self commitPromise asyncThen: [ :theResult | 
+	self mementoPromise asyncThen: [ :aMementoResult | 
 		announcer announce: (GtMagritteMementoCommittedAnnouncement new
 				 memento: self;
 				 result: aResult) ]
@@ -471,11 +478,11 @@ GtMagritteMemento >> notifyValidationChanged: aResult [
 
 	announcer ifNil: [ ^ self ].
 
-	self validationPromise then: [ :theResult | 
+	self mementoPromise asyncThen: [ :aMementoResult | 
 		announcer announce:
 			(GtMagritteMementoValidationChangedAnnouncement new
 				 memento: self;
-				 result: theResult) ]
+				 result: aResult) ]
 ]
 
 { #category : #'private - notifying' }
@@ -509,7 +516,7 @@ GtMagritteMemento >> notifyValueCommitted: aResult using: aDescription [
 
 	announcer ifNil: [ ^ self ].
 
-	self commitPromise then: [ :theResult | 
+	self mementoPromise then: [ :theResult | 
 		announcer announce: (GtMagritteMementoValueCommittedAnnouncement new
 				 memento: self;
 				 result: aResult) ]
@@ -641,11 +648,10 @@ GtMagritteMemento >> validationPromise [
 
 	^ promiseMutex critical: [ 
 		  validationPromise ifNil: [ 
-			  validationPromise := self mementoPromise then: [ :aResult | 
+			  validationPromise := self mementoPromise asyncThen: [ :aResult | 
 				                       aResult isSuccess
 					                       ifTrue: [ 
-					                       (self validationFutureContext: aResult)
-						                       asAsyncPromise ]
+					                       	self computeValidationContext: aResult ]
 					                       ifFalse: [ aResult ] ] ] ]
 ]
 
