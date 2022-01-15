@@ -109,7 +109,7 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Commit [
 GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Reset [
 
 	<gtExample>
-	| aMemento aPromise aResult aDescription aCollection |
+	| aMemento aPromise aResult aDescription aCollection aReadPromise aReadResult |
 	aMemento := self mementoWithChangedInvalidAddress.
 	aDescription := aMemento description at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
@@ -129,7 +129,16 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Reset [
 	self assert: aCollection first result isChanged not.
 	self assert: aCollection first description equals: aDescription.
 	self assert: aCollection first memento equals: aMemento.
-	^ aMemento
+	
+	aReadPromise := aMemento readPromiseUsing: aDescription.
+	aReadResult := aReadPromise wait.
+	
+	self assert: aReadResult isSuccess.
+	self assert: aReadResult value equals: 'Werkstrasse 18'.
+	self assert: aReadResult original equals: 'Werkstrasse 18'.
+	self assert: aReadResult isChanged not.
+		
+	^ aResult
 ]
 
 { #category : #'examples - memento' }
@@ -235,6 +244,34 @@ GtMagritteMementoExamples >> mementoWithChangedValidAddress_Commit [
 	self assert: aCollection first result isSuccess.
 	self assert: aCollection second result equals: aResult.
 
+	^ aResult
+]
+
+{ #category : #'examples - memento' }
+GtMagritteMementoExamples >> mementoWithChangedValidAddress_Reset [
+
+	<gtExample>
+	| aMemento aPromise aResult aDescription aCollection |
+	aMemento := self mementoWithChangedValidAddress.
+	aDescription := aMemento description at: 1.
+	aCollection := self subscribeToMementoAnnouncements: aMemento.
+
+	aPromise := aMemento resetPromise.
+	aResult := aPromise wait.
+
+	self assert: aPromise isFulfilled.
+	self assert: aResult isSuccess.
+
+	self waitExtra: aPromise.
+	self
+		assertAnnouncements: aCollection
+		equals: { GtMagritteMementoValueChangedAnnouncement }.
+	self assert: aCollection first result value equals: 'Werkstrasse 18'.
+	self assert: aCollection first result original equals: 'Werkstrasse 18'.
+	self assert: aCollection first result isChanged not.
+	self assert: aCollection first description equals: aDescription.
+	self assert: aCollection first memento equals: aMemento.
+	
 	^ aResult
 ]
 

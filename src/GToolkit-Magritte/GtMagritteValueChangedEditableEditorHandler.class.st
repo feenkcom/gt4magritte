@@ -1,10 +1,8 @@
 Class {
 	#name : #GtMagritteValueChangedEditableEditorHandler,
-	#superclass : #Object,
+	#superclass : #GtMagritteElementHandler,
 	#instVars : [
-		'memento',
-		'description',
-		'editorElement'
+		'description'
 	],
 	#category : #'GToolkit-Magritte-Utilities'
 }
@@ -24,28 +22,13 @@ GtMagritteValueChangedEditableEditorHandler >> description: anObject [
 { #category : #accessing }
 GtMagritteValueChangedEditableEditorHandler >> editorElement [
 
-	^ editorElement
+	^ self element
 ]
 
 { #category : #accessing }
 GtMagritteValueChangedEditableEditorHandler >> editorElement: anElement [
 
-	editorElement := anElement.
-
-	"Keep a reference of me, otherwise garbage collector will destroy me"
-	anElement userData at: self className put: self
-]
-
-{ #category : #accessing }
-GtMagritteValueChangedEditableEditorHandler >> memento [
-
-	^ memento
-]
-
-{ #category : #accessing }
-GtMagritteValueChangedEditableEditorHandler >> memento: anObject [
-
-	memento := anObject
+	self element: anElement.
 ]
 
 { #category : #'api - announcement handling' }
@@ -54,6 +37,6 @@ GtMagritteValueChangedEditableEditorHandler >> onAnnouncement: anAnnouncement [
 	anAnnouncement description = self description ifFalse: [ ^ self ].
 	anAnnouncement result isSuccess ifFalse: [ ^ self ].
 
-	self editorElement enqueueTask: (BlTaskAction new action: [ 
-			 self editorElement text: anAnnouncement result value ])
+	self enqueueAction: [ 
+		self editorElement text: anAnnouncement result value ]
 ]

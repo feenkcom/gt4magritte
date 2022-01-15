@@ -30,6 +30,12 @@ GtMagritteNewBuilderUtility class >> defaultThickness [
 ]
 
 { #category : #'api - ui' }
+GtMagritteNewBuilderUtility class >> enqueueAction: aBlock into: anElement [
+
+	anElement enqueueTask: (BlTaskAction new action: aBlock)
+]
+
+{ #category : #'api - ui' }
 GtMagritteNewBuilderUtility class >> newEditableLabelWithSpace: aSpaceNumber memento: aMemento using: aDescription [
 
 	| anEditor |
@@ -145,7 +151,8 @@ GtMagritteNewBuilderUtility class >> newValidationContainerWith: aFieldElement m
 		to: (GtMagritteValueChangedIndicatorHandler new
 				 memento: aMemento;
 				 description: aDescription;
-				 indicatorElement: aChangeElement).
+				 indicatorElement: aChangeElement;
+				 update).
 
 	aMemento
 		when: GtMagritteMementoCommittedAnnouncement
@@ -178,7 +185,8 @@ GtMagritteNewBuilderUtility class >> newValidationContainerWith: aFieldElement m
 		to: (GtMagritteDescriptionValidationHandler new
 				 memento: aMemento;
 				 description: aDescription;
-				 editorElement: anIssuesElement).
+				 editorElement: anIssuesElement;
+				 update).
 
 	^ aContainer
 ]

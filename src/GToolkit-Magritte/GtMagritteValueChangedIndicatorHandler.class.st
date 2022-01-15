@@ -1,10 +1,8 @@
 Class {
 	#name : #GtMagritteValueChangedIndicatorHandler,
-	#superclass : #Object,
+	#superclass : #GtMagritteElementHandler,
 	#instVars : [
-		'memento',
-		'description',
-		'indicatorElement'
+		'description'
 	],
 	#category : #'GToolkit-Magritte-Utilities'
 }
@@ -21,40 +19,41 @@ GtMagritteValueChangedIndicatorHandler >> description: anObject [
 	description := anObject
 ]
 
+{ #category : #'api - announcement handling' }
+GtMagritteValueChangedIndicatorHandler >> handleResult: aResult [
+
+	self enqueueAction: [ 
+		(aResult isSuccess and: [ aResult isChanged ])
+			ifTrue: [ self indicatorElement visibility: BlVisibility visible ]
+			ifFalse: [ self indicatorElement visibility: BlVisibility hidden ] ]
+]
+
 { #category : #accessing }
 GtMagritteValueChangedIndicatorHandler >> indicatorElement [
 
-	^ indicatorElement
+	^ self element
 ]
 
 { #category : #accessing }
 GtMagritteValueChangedIndicatorHandler >> indicatorElement: anElement [
 
-	indicatorElement := anElement.
-
-	"Keep a reference of me, otherwise garbage collector will destroy me"
-	anElement userData at: self className put: self
-]
-
-{ #category : #accessing }
-GtMagritteValueChangedIndicatorHandler >> memento [
-
-	^ memento
-]
-
-{ #category : #accessing }
-GtMagritteValueChangedIndicatorHandler >> memento: anObject [
-
-	memento := anObject
+	self element: anElement
 ]
 
 { #category : #'api - announcement handling' }
 GtMagritteValueChangedIndicatorHandler >> onAnnouncement: anAnnouncement [
 
+	| aResult |
 	anAnnouncement description = self description ifFalse: [ ^ self ].
 
-	(anAnnouncement result isSuccess and: [ 
-		 anAnnouncement result isChanged ])
-		ifTrue: [ self indicatorElement visibility: BlVisibility visible ]
-		ifFalse: [ self indicatorElement visibility: BlVisibility hidden ]
+	aResult := anAnnouncement result.
+	self handleResult: aResult
+]
+
+{ #category : #'api - actions' }
+GtMagritteValueChangedIndicatorHandler >> update [
+
+	self enqueueAction: [ 
+		(self memento readPromiseUsing: self description) then: [ :aResult | 
+			self handleResult: aResult ] ]
 ]

@@ -1,10 +1,8 @@
 Class {
 	#name : #GtMagritteCommittedIndicatorHandler,
-	#superclass : #Object,
+	#superclass : #GtMagritteElementHandler,
 	#instVars : [
-		'memento',
-		'description',
-		'indicatorElement'
+		'description'
 	],
 	#category : #'GToolkit-Magritte-Utilities'
 }
@@ -24,16 +22,13 @@ GtMagritteCommittedIndicatorHandler >> description: anObject [
 { #category : #accessing }
 GtMagritteCommittedIndicatorHandler >> indicatorElement [
 
-	^ indicatorElement
+	^ self element
 ]
 
 { #category : #accessing }
 GtMagritteCommittedIndicatorHandler >> indicatorElement: anElement [
 
-	indicatorElement := anElement.
-	
-	"Keep a reference of me, otherwise garbage collector will destroy me"
-	anElement userData at: self className put: self
+	self element: anElement
 ]
 
 { #category : #accessing }
@@ -53,5 +48,6 @@ GtMagritteCommittedIndicatorHandler >> onAnnouncement: anAnnouncement [
 
 	anAnnouncement result isSuccess ifFalse: [ ^ self ].
 
-	self indicatorElement visibility: BlVisibility hidden
+	self enqueueAction: [ 
+		self indicatorElement visibility: BlVisibility hidden ]
 ]

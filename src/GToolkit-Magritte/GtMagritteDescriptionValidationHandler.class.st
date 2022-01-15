@@ -1,10 +1,8 @@
 Class {
 	#name : #GtMagritteDescriptionValidationHandler,
-	#superclass : #Object,
+	#superclass : #GtMagritteElementHandler,
 	#instVars : [
-		'memento',
-		'description',
-		'editorElement'
+		'description'
 	],
 	#category : #'GToolkit-Magritte-Utilities'
 }
@@ -24,48 +22,17 @@ GtMagritteDescriptionValidationHandler >> description: anObject [
 { #category : #accessing }
 GtMagritteDescriptionValidationHandler >> editorElement [
 
-	^ editorElement
+	^ self element
 ]
 
 { #category : #accessing }
 GtMagritteDescriptionValidationHandler >> editorElement: anElement [
 
-	self
-		assert: [ editorElement isNil ]
-		description: [ 'Editor element can be initialized only once' ].
-
-	editorElement := anElement.
-
-	"Keep a reference of me, otherwise garbage collector will destroy me"
-	anElement userData at: self className put: self
-]
-
-{ #category : #private }
-GtMagritteDescriptionValidationHandler >> enqueueAction: aBlock [
-
-	self editorElement enqueueTask: (BlTaskAction new action: aBlock)
-]
-
-{ #category : #accessing }
-GtMagritteDescriptionValidationHandler >> memento [
-
-	^ memento
-]
-
-{ #category : #accessing }
-GtMagritteDescriptionValidationHandler >> memento: anObject [
-
-	memento := anObject
+	self element: anElement
 ]
 
 { #category : #'announcement handling' }
-GtMagritteDescriptionValidationHandler >> onAnnouncement: anAnnouncement [
-
-	| aResult |
-	anAnnouncement memento = self memento ifFalse: [ ^ self ].
-	anAnnouncement description = self description ifFalse: [ ^ self ].
-	
-	aResult := anAnnouncement result.
+GtMagritteDescriptionValidationHandler >> handleResult: aResult [
 
 	aResult isSuccess
 		ifTrue: [ 
@@ -78,4 +45,21 @@ GtMagritteDescriptionValidationHandler >> onAnnouncement: anAnnouncement [
 			self enqueueAction: [ 
 				self editorElement visibility: BlVisibility visible.
 				self editorElement text: aText ] ]
+]
+
+{ #category : #'announcement handling' }
+GtMagritteDescriptionValidationHandler >> onAnnouncement: anAnnouncement [
+
+	anAnnouncement memento = self memento ifFalse: [ ^ self ].
+	anAnnouncement description = self description ifFalse: [ ^ self ].
+
+	self handleResult: anAnnouncement result
+]
+
+{ #category : #'api - actions' }
+GtMagritteDescriptionValidationHandler >> update [
+
+	self enqueueAction: [ 
+		(self memento validationPromiseUsing: self description) then: [ 
+			:aResult | self handleResult: aResult ] ]
 ]
