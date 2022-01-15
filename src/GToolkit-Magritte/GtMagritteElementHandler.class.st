@@ -17,6 +17,10 @@ GtMagritteElementHandler >> element [
 { #category : #accessing }
 GtMagritteElementHandler >> element: anElement [
 
+	self
+		assert: [ element isNil ]
+		description: [ 'Element can be initialized only once' ].
+
 	element := anElement.
 
 	"Keep a reference of me, otherwise garbage collector will destroy me"

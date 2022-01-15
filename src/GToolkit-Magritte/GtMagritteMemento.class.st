@@ -77,8 +77,7 @@ GtMagritteMemento >> clearStateUsing: aDescription [
 
 	stateMutex critical: [ 
 		readCache removeKey: aDescription ifAbsent: [ "ignore" ].
-		validationCache removeKey: aDescription ifAbsent: [ "ignore" ] ].
-	self clearState
+		validationCache removeKey: aDescription ifAbsent: [ "ignore" ] ]
 ]
 
 { #category : #'api - actions' }
@@ -175,6 +174,7 @@ GtMagritteMemento >> computeReadUsing: aDescription context: aContext [
 GtMagritteMemento >> computeResetContext: aContext [
 
 	| allValues aResult |
+	
 	stateMutex critical: [ 
 		"cache locally old values"
 		allValues := readCache copy.
@@ -202,10 +202,13 @@ GtMagritteMemento >> computeResetContext: aContext [
 					 (anOldResult isSuccess and: [ 
 						  anOldResult value ~= aNewResult value ]) or: [ 
 						 anOldResult isSuccess not ] ]) ifTrue: [ 
-					self notifyValueChanged: aNewResult using: aDescription ] ] ] ].
+					self notifyValueChanged: aNewResult using: aDescription.
+					self validationPromiseUsing: aDescription ] ] ] ].
 
 	"return either reset failure or success result"
-	^ aResult ifNil: [ GtMagritteResetSuccess new memento: self ]
+	aResult := aResult ifNil: [ GtMagritteResetSuccess new memento: self ].
+	
+	^ aResult.
 ]
 
 { #category : #'private - actions' }
@@ -272,6 +275,7 @@ GtMagritteMemento >> computeWriteOld: anOldResult new: aNewValue using: aDescrip
 			on: Error
 			do: [ :anError | 
 				self clearStateUsing: aDescription.
+				self clearState.
 				^ GtMagritteWriteFailure new
 					  memento: self;
 					  description: aDescription;
@@ -282,6 +286,7 @@ GtMagritteMemento >> computeWriteOld: anOldResult new: aNewValue using: aDescrip
 					  context: aContext ].
 
 		self clearStateUsing: aDescription.
+		self clearState.
 		aResult := GtMagritteWriteSuccess new
 			           memento: self;
 			           description: aDescription;
@@ -584,12 +589,6 @@ GtMagritteMemento >> reset [
 	^ self resetPromise
 ]
 
-{ #category : #'private - accessing' }
-GtMagritteMemento >> resetFutureContext: aContext [
-
-	^ [ self computeResetContext: aContext ] asAsyncFuture
-]
-
 { #category : #'api - actions' }
 GtMagritteMemento >> resetPromise [
 
@@ -597,9 +596,7 @@ GtMagritteMemento >> resetPromise [
 		  resetPromise ifNil: [ 
 			  resetPromise := self mementoPromise then: [ :aResult | 
 				                  aResult isSuccess
-					                  ifTrue: [ 
-					                  (self resetFutureContext: aResult)
-						                  asAsyncPromise ]
+					                  ifTrue: [ self computeResetContext: aResult ]
 					                  ifFalse: [ aResult ] ] ] ]
 ]
 

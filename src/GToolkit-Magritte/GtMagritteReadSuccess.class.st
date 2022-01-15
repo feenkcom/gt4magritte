@@ -58,6 +58,21 @@ GtMagritteReadSuccess >> original: anObject [
 	original := anObject
 ]
 
+{ #category : #printing }
+GtMagritteReadSuccess >> printOn: aStream [
+
+	super printOn: aStream.
+
+	self description ifNil: [ ^ self ].
+
+	aStream
+		nextPut: $(;
+		nextPutAll: self description label asString;
+		nextPut: $=;
+		print: self value;
+		nextPut: $)
+]
+
 { #category : #accessing }
 GtMagritteReadSuccess >> value [
 

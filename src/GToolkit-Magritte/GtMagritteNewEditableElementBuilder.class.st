@@ -28,23 +28,32 @@ GtMagritteNewEditableElementBuilder >> addButtons [
 			(GtMagritteButtonWithIconAction new
 				 icon: BrGlamorousVectorIcons accept;
 				 tooltip: 'Save';
-				 installOn: [ :aMagritte :aButton | 
-					 "aMagritte changesPromise then: [ :aResult | 
-							 aResult isSuccess ifTrue: [ 
-									 aResult hasChanges
-										 ifTrue: [ aButton visibility: BlVisibility visible ]
-										 ifFalse: [ aButton visibility: BlVisibility hidden ] ] ]" ];
-				 action: [ :aMagritte :aButton | 
-					 aMagritte validate then: [ :aResult | 
-							 aResult isSuccess ifTrue: [ aMagritte commit ] ] ]).
+				 installOn: [ :aMemento :aButton | 
+					 | aHandler |
+					 aHandler := GtMagritteElementValidChangesVisibilityHandler new
+						             memento: aMemento;
+						             element: aButton.
+					 aMemento
+						 when: GtMagritteMementoValueChangedAnnouncement
+						 send: #onAnnouncement:
+						 to: aHandler ];
+				 action: [ :aMemento :aButton | 
+					 aMemento validate then: [ :aResult | 
+						 aResult isSuccess ifTrue: [ aMemento commit ] ] ]).
 
 			(GtMagritteButtonWithIconAction new
 				 icon: BrGlamorousVectorIcons cancel;
 				 tooltip: 'Cancel';
-				 installOn: [ :aMagritte :aButton |  ];
-				 action: [ :aMagritte :aButton | 
-					 aMagritte validate then: [ :aResult | 
-							 aResult isSuccess ifTrue: [ aMagritte reset ] ] ]) }
+				 installOn: [ :aMemento :aButton | 
+					 | aHandler |
+					 aHandler := GtMagritteElementValidChangesVisibilityHandler new
+						             memento: aMemento;
+						             element: aButton.
+					 aMemento
+						 when: GtMagritteMementoValueChangedAnnouncement
+						 send: #onAnnouncement:
+						 to: aHandler ];
+				 action: [ :aMemento :aButton | aMemento reset ]) }
 ]
 
 { #category : #'api - building' }

@@ -23,7 +23,9 @@ GtMagritteModelExamples >> addressDescription [
 				   beRequired;
 				   addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
 				   labelled: 'City must be non empty';
-				   addCondition: [ :aValue | aValue allSatisfy: #isLetter ]
+				   addCondition: [ :aValue | 
+					   aValue allSatisfy: [ :each | 
+							   each isLetter or: [ each isSeparator ] ] ]
 				   labelled: 'City must include letters only') }
 ]
 
