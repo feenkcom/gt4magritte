@@ -37,7 +37,7 @@ GtMagritteDescriptionValidationHandler >> editorElement: anElement [
 	editorElement := anElement.
 
 	"Keep a reference of me, otherwise garbage collector will destroy me"
-	anElement userData at: self class name put: self
+	anElement userData at: self className put: self
 ]
 
 { #category : #private }

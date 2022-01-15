@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteModelValueChangedAnnouncement,
+	#name : #GtMagritteMementoValueChangedAnnouncement,
 	#superclass : #GtMagritteMementoAnnouncement,
 	#instVars : [
 		'description',
@@ -9,25 +9,25 @@ Class {
 }
 
 { #category : #accessing }
-GtMagritteModelValueChangedAnnouncement >> description [
+GtMagritteMementoValueChangedAnnouncement >> description [
 
 	^ description
 ]
 
 { #category : #accessing }
-GtMagritteModelValueChangedAnnouncement >> description: anObject [
+GtMagritteMementoValueChangedAnnouncement >> description: anObject [
 
 	description := anObject
 ]
 
 { #category : #accessing }
-GtMagritteModelValueChangedAnnouncement >> result [
+GtMagritteMementoValueChangedAnnouncement >> result [
 
 	^ result
 ]
 
 { #category : #accessing }
-GtMagritteModelValueChangedAnnouncement >> result: anObject [
+GtMagritteMementoValueChangedAnnouncement >> result: anObject [
 
 	result := anObject
 ]

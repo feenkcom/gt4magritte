@@ -71,7 +71,7 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress [
 	self waitExtra: aPromise.
 	self
 		assertAnnouncements: aCollection
-		equals: { GtMagritteModelValueChangedAnnouncement }.
+		equals: { GtMagritteMementoValueChangedAnnouncement }.
 	self assert: aCollection first result equals: aResult.
 	self assert: aCollection first description equals: aDescription.
 	self assert: aCollection first memento equals: aMemento.
@@ -123,7 +123,7 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Reset [
 	self waitExtra: aPromise.
 	self
 		assertAnnouncements: aCollection
-		equals: { GtMagritteModelValueChangedAnnouncement }.
+		equals: { GtMagritteMementoValueChangedAnnouncement }.
 	self assert: aCollection first result value equals: 'Werkstrasse 18'.
 	self assert: aCollection first result original equals: 'Werkstrasse 18'.
 	self assert: aCollection first result isChanged not.
@@ -206,7 +206,7 @@ GtMagritteMementoExamples >> mementoWithChangedValidAddress [
 	self waitExtra: aPromise.
 	self
 		assertAnnouncements: aCollection
-		equals: { GtMagritteModelValueChangedAnnouncement }.
+		equals: { GtMagritteMementoValueChangedAnnouncement }.
 	self assert: aCollection first result equals: aResult.
 	self assert: aCollection first description equals: aDescription.
 	self assert: aCollection first memento equals: aMemento.
@@ -394,7 +394,7 @@ GtMagritteMementoExamples >> mementoWithValidAddress_WritePromiseResult [
 	self waitExtra: aPromise.
 	self
 		assertAnnouncements: aCollection
-		equals: { GtMagritteModelValueChangedAnnouncement }.
+		equals: { GtMagritteMementoValueChangedAnnouncement }.
 	self assert: aCollection first result equals: aResult.
 	self assert: aCollection first description equals: aDescription.
 	self assert: aCollection first memento equals: aMemento.

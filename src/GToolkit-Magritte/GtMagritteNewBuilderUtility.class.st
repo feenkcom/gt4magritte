@@ -24,6 +24,12 @@ GtMagritteNewBuilderUtility class >> defaultSpaceNumber [
 ]
 
 { #category : #'api - ui' }
+GtMagritteNewBuilderUtility class >> defaultThickness [
+
+	^ 3
+]
+
+{ #category : #'api - ui' }
 GtMagritteNewBuilderUtility class >> newEditableLabelWithSpace: aSpaceNumber memento: aMemento using: aDescription [
 
 	| anEditor |
@@ -46,6 +52,14 @@ GtMagritteNewBuilderUtility class >> newEditableLabelWithSpace: aSpaceNumber mem
 			(BlInsets bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ]));
 		constraintsDo: [ :c | c grid vertical alignCenter ].
 
+	aMemento
+		when: GtMagritteMementoValueChangedAnnouncement
+		send: #onAnnouncement:
+		to: (GtMagritteValueChangedEditableEditorHandler new
+				 memento: aMemento;
+				 description: aDescription;
+				 editorElement: anEditor).
+		
 	self readString: aDescription from: aMemento intoEditor: anEditor.
 
 	^ anEditor
@@ -109,11 +123,37 @@ GtMagritteNewBuilderUtility class >> newToolbarWithActions: aCollection memento:
 { #category : #'api - ui' }
 GtMagritteNewBuilderUtility class >> newValidationContainerWith: aFieldElement memento: aMemento using: aDescription [
 
-	| aContainer anIssuesElement |
-	aContainer := BrVerticalPane new.
+	| aContainer anIssuesElement aChangeElement |
+	aContainer := BrHorizontalGrid new.
 	aContainer
+		cellSpacing: 0;
+		columnCount: 2;
 		hFitContentLimited;
 		vFitContent.
+
+	aChangeElement := BrFrame new.
+	aChangeElement hExact: self defaultThickness.
+	aChangeElement vMatchParent.
+	aChangeElement background: BrGlamorousColors textHighlightColor.
+	aChangeElement visibility: BlVisibility hidden.
+	aChangeElement margin: (BlInsets bottom: self defaultSpaceNumber).
+	aChangeElement geometry: (BlRoundedRectangleGeometry cornerRadius: 4).
+
+	aMemento
+		when: GtMagritteMementoValueChangedAnnouncement
+		send: #onAnnouncement:
+		to: (GtMagritteValueChangedIndicatorHandler new
+				 memento: aMemento;
+				 description: aDescription;
+				 indicatorElement: aChangeElement).
+
+	aMemento
+		when: GtMagritteMementoCommittedAnnouncement
+		send: #onAnnouncement:
+		to: (GtMagritteCommittedIndicatorHandler new
+				 memento: aMemento;
+				 description: aDescription;
+				 indicatorElement: aChangeElement).
 
 	anIssuesElement := BrEditor new
 		                   aptitude: (BrGlamorousRegularEditorAptitude new
@@ -127,7 +167,9 @@ GtMagritteNewBuilderUtility class >> newValidationContainerWith: aFieldElement m
 		                   text: '';
 		                   visibility: BlVisibility gone.
 
+	aContainer addChild: aChangeElement as: #changeIndicator.
 	aContainer addChild: aFieldElement as: #field.
+	aContainer addChild: (BlElement new size: 0 @ 0) as: #placeHolder.
 	aContainer addChild: anIssuesElement as: #issues.
 
 	aMemento

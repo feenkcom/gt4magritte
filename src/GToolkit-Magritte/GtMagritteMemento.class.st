@@ -505,7 +505,7 @@ GtMagritteMemento >> notifyValueChanged: aResult using: aDescription [
 
 	announcer ifNil: [ ^ self ].
 
-	announcer announce: (GtMagritteModelValueChangedAnnouncement new
+	announcer announce: (GtMagritteMementoValueChangedAnnouncement new
 			 memento: self;
 			 result: aResult;
 			 description: aDescription)
