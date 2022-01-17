@@ -192,7 +192,8 @@ GtMagritteMemento >> computeResetContext: aContext [
 
 	"notify on value changes 
 	- we notify only about previously cached values
-	  as they are the only one users were previously interested"
+	  as they are the only one users were previously interested
+	- we trigger new validations as values change"
 	allValues keysAndValuesDo: [ :aDescription :anOldPromise | 
 		anOldPromise asyncThen: [ :anOldResult | 
 			| aNewPromise |

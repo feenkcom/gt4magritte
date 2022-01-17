@@ -117,27 +117,33 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_Reset [
 	aPromise := aMemento resetPromise.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 
 	self waitExtra: aPromise.
-	self
-		assertAnnouncements: aCollection
-		equals: { GtMagritteMementoValueChangedAnnouncement }.
+	self assertAnnouncements: aCollection equals: { 
+			GtMagritteMementoValueChangedAnnouncement.
+			GtMagritteMementoDescriptionValidationChangedAnnouncement }.
+
+	self assert: aCollection first result isSuccess.
 	self assert: aCollection first result value equals: 'Werkstrasse 18'.
-	self assert: aCollection first result original equals: 'Werkstrasse 18'.
+	self
+		assert: aCollection first result original
+		equals: 'Werkstrasse 18'.
 	self assert: aCollection first result isChanged not.
 	self assert: aCollection first description equals: aDescription.
 	self assert: aCollection first memento equals: aMemento.
-	
+
+	self assert: aCollection second result isSuccess.
+	self assert: aCollection second description equals: aDescription.
+
 	aReadPromise := aMemento readPromiseUsing: aDescription.
 	aReadResult := aReadPromise wait.
-	
+
 	self assert: aReadResult isSuccess.
 	self assert: aReadResult value equals: 'Werkstrasse 18'.
 	self assert: aReadResult original equals: 'Werkstrasse 18'.
 	self assert: aReadResult isChanged not.
-		
+
 	^ aResult
 ]
 
@@ -251,7 +257,7 @@ GtMagritteMementoExamples >> mementoWithChangedValidAddress_Commit [
 GtMagritteMementoExamples >> mementoWithChangedValidAddress_Reset [
 
 	<gtExample>
-	| aMemento aPromise aResult aDescription aCollection |
+	| aMemento aPromise aResult aDescription aCollection aReadPromise aReadResult |
 	aMemento := self mementoWithChangedValidAddress.
 	aDescription := aMemento description at: 1.
 	aCollection := self subscribeToMementoAnnouncements: aMemento.
@@ -259,19 +265,33 @@ GtMagritteMementoExamples >> mementoWithChangedValidAddress_Reset [
 	aPromise := aMemento resetPromise.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 
 	self waitExtra: aPromise.
-	self
-		assertAnnouncements: aCollection
-		equals: { GtMagritteMementoValueChangedAnnouncement }.
+	self assertAnnouncements: aCollection equals: { 
+			GtMagritteMementoValueChangedAnnouncement.
+			GtMagritteMementoDescriptionValidationChangedAnnouncement }.
+
+	self assert: aCollection first result isSuccess.
 	self assert: aCollection first result value equals: 'Werkstrasse 18'.
-	self assert: aCollection first result original equals: 'Werkstrasse 18'.
+	self
+		assert: aCollection first result original
+		equals: 'Werkstrasse 18'.
 	self assert: aCollection first result isChanged not.
 	self assert: aCollection first description equals: aDescription.
 	self assert: aCollection first memento equals: aMemento.
-	
+
+	self assert: aCollection second result isSuccess.
+	self assert: aCollection second description equals: aDescription.
+
+	aReadPromise := aMemento readPromiseUsing: aDescription.
+	aReadResult := aReadPromise wait.
+
+	self assert: aReadResult isSuccess.
+	self assert: aReadResult value equals: 'Werkstrasse 18'.
+	self assert: aReadResult original equals: 'Werkstrasse 18'.
+	self assert: aReadResult isChanged not.
+
 	^ aResult
 ]
 
