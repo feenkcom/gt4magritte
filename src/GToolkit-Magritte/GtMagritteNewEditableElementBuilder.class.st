@@ -90,6 +90,42 @@ GtMagritteNewEditableElementBuilder >> addFieldElement: aFieldElement using: aDe
 ]
 
 { #category : #'private - building' }
+GtMagritteNewEditableElementBuilder >> addFlowListUsing: aDescription [
+
+	| aMemento aFlowElement |
+	aMemento := self memento.
+
+	aFlowElement := BrFlowList new matchParent.
+	aFlowElement stencil: aDescription blocItemStencil.
+	self form matchParent.
+	self addFieldElement: aFlowElement using: aDescription.
+
+	"aViewModels := [ (aMemento readUsing: aDescription) asAsyncStream ]
+		               asAsyncFuture.
+	aViewModels := aViewModels map: [ :aValue | 
+		               aValue asGtMagritteNewViewModel ]."
+
+	(aMemento readUsing: aDescription) then: [ :aResult | 
+		aResult isSuccess ifTrue: [ 
+			| aViewModels |
+			aViewModels := aResult value collect: #asGtMagritteNewViewModel.
+
+			"(aDescription definitive or: [ aDescription newItemStencil isNil ]) 
+		ifFalse: [ 
+			aViewModels := aViewModels copyWith:
+				               (GtMagritteAddItemViewModel new
+					                memento: aMemento;
+					                description: aDescription;
+					                stencil: aDescription newItemStencil;
+					                items: aViewModels;
+					                callback: [ :newItems | 
+						                aFlowElement items: newItems ]) ]."
+
+			"aFlowElement stream: aViewModels asAsyncStream."
+			aFlowElement items: aViewModels ] ]
+]
+
+{ #category : #'private - building' }
 GtMagritteNewEditableElementBuilder >> addStringFieldUsing: aDescription [
 
 	| aMemento anInputElement aValidationElement |
@@ -203,4 +239,10 @@ GtMagritteNewEditableElementBuilder >> visitContainer: aDescription [
 GtMagritteNewEditableElementBuilder >> visitStringDescription: aDescription [
 
 	self addStringFieldUsing: aDescription
+]
+
+{ #category : #visiting }
+GtMagritteNewEditableElementBuilder >> visitToManyRelationDescription: aDescription [
+
+	self addFlowListUsing: aDescription
 ]

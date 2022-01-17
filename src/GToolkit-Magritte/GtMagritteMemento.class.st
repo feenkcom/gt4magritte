@@ -24,6 +24,17 @@ GtMagritteMemento class >> forMemento: aMemento [
 ]
 
 { #category : #'api - instance creation' }
+GtMagritteMemento class >> forObject: anObject [
+
+	| aPromise |
+	aPromise := [ 
+	            GtMagritteBuilderUtility computeMementoForObject:
+		            anObject ] asAsyncPromise.
+
+	^ self new mementoPromise: aPromise
+]
+
+{ #category : #'api - instance creation' }
 GtMagritteMemento class >> forObject: anObject description: aDescription [
 
 	| aPromise |
@@ -39,6 +50,12 @@ GtMagritteMemento class >> forObject: anObject description: aDescription [
 GtMagritteMemento >> asGtMagritteMemento [
 
 	^ self
+]
+
+{ #category : #'api - converting' }
+GtMagritteMemento >> asGtMagritteNewViewModel [
+
+	^ GtMagritteNewViewModel new memento: self
 ]
 
 { #category : #'api - converting' }
@@ -82,12 +99,6 @@ GtMagritteMemento >> clearStateUsing: aDescription [
 GtMagritteMemento >> commit [
 
 	^ self commitPromise
-]
-
-{ #category : #'private - accessing' }
-GtMagritteMemento >> commitFutureContext: aContext [
-
-	^ [ self computeCommitContext: aContext ] asAsyncFuture
 ]
 
 { #category : #'api - actions' }
@@ -551,12 +562,6 @@ GtMagritteMemento >> printOn: aStream [
 		nextPut: $)
 ]
 
-{ #category : #'private - accessing' }
-GtMagritteMemento >> readFutureUsing: aDescription context: aContext [
-
-	^ [ self computeReadUsing: aDescription context: aContext ] asAsyncFuture
-]
-
 { #category : #'api - actions' }
 GtMagritteMemento >> readPromiseUsing: aDescription [
 
@@ -564,9 +569,7 @@ GtMagritteMemento >> readPromiseUsing: aDescription [
 		  self cacheAt: aDescription ifAbsentPut: [ 
 			  self mementoPromise then: [ :aResult | 
 				  aResult isSuccess
-					  ifTrue: [ 
-					  (self readFutureUsing: aDescription context: aResult)
-						  asAsyncPromise ]
+					  ifTrue: [ self computeReadUsing: aDescription context: aResult ]
 					  ifFalse: [ aResult ] ] ] ]
 ]
 
@@ -613,12 +616,6 @@ GtMagritteMemento >> validateUsing: aDescription [
 	^ self validationPromiseUsing: aDescription
 ]
 
-{ #category : #'private - accessing' }
-GtMagritteMemento >> validationFutureContext: aContext [
-
-	^ [ self computeValidationContext: aContext ] asAsyncFuture
-]
-
 { #category : #'api - actions' }
 GtMagritteMemento >> validationPromise [
 
@@ -659,17 +656,6 @@ GtMagritteMemento >> write: anObject using: aDescription [
 	^ self writePromise: anObject using: aDescription
 ]
 
-{ #category : #'private - accessing' }
-GtMagritteMemento >> writeFutureOld: anOldResult new: aNewValue using: aDescription context: aContext [
-
-	^ [ 
-	  self
-		  computeWriteOld: anOldResult
-		  new: aNewValue
-		  using: aDescription
-		  context: aContext ] asAsyncFuture
-]
-
 { #category : #'api - actions' }
 GtMagritteMemento >> writePromise: anObject using: aDescription [
 
@@ -677,10 +663,10 @@ GtMagritteMemento >> writePromise: anObject using: aDescription [
 		  (self readPromiseUsing: aDescription) then: [ :aResult | 
 			  aResult isSuccess
 				  ifTrue: [ 
-					  (self
-						   writeFutureOld: aResult
-						   new: anObject
-						   using: aDescription
-						   context: aResult context) asAsyncPromise ]
-				  ifFalse: [ aResult asAsyncPromise ] ] ]
+					  self
+						  computeWriteOld: aResult
+						  new: anObject
+						  using: aDescription
+						  context: aResult context ]
+				  ifFalse: [ aResult ] ] ]
 ]

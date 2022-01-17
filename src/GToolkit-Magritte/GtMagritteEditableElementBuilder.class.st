@@ -47,8 +47,8 @@ GtMagritteEditableElementBuilder >> addFlowListUsing: aDescription [
 	aContainerViewModel memento: aMemento.
 
 	aContainerViewModel fieldStencil: [ 
-		| aGridElement aViewModels |
-		aGridElement := BrFlowList new matchParent.
+		| aFlowElement aViewModels |
+		aFlowElement := BrFlowList new matchParent.
 		aViewModels := (aMemento readUsing: aDescription) collect:
 			               #asGtMagritteViewModel.
 
@@ -59,19 +59,19 @@ GtMagritteEditableElementBuilder >> addFlowListUsing: aDescription [
 					description: aDescription;
 					stencil: aDescription newItemStencil;
 					items: aViewModels;
-					callback: [ :newItems | aGridElement items: newItems ])) ].
+					callback: [ :newItems | aFlowElement items: newItems ])) ].
 
-		aGridElement items: aViewModels.
+		aFlowElement items: aViewModels.
 
-		aGridElement stencil: aDescription blocItemStencil.
+		aFlowElement stencil: aDescription blocItemStencil.
 
-		aGridElement when: GtMagritteValueUpdateWish do: [ :anEvent | 
+		aFlowElement when: GtMagritteValueUpdateWish do: [ :anEvent | 
 			anEvent consumed: true.
 			anEvent currentTarget items: anEvent value ].
 
 
 
-		aGridElement ].
+		aFlowElement ].
 
 	self presenter addViewModel: aContainerViewModel.
 	anElement := aContainerViewModel asElement.

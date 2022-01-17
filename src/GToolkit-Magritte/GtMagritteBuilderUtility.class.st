@@ -18,6 +18,28 @@ GtMagritteBuilderUtility class >> addCommentTooltip: anElement using: aDescripti
 ]
 
 { #category : #'api - magritte' }
+GtMagritteBuilderUtility class >> computeMementoForObject: anObject [
+
+	| aResult aMemento aDescription |
+	[ 
+	aDescription := anObject magritteDescription.
+	aMemento := anObject mementoClass
+		            model: anObject
+		            description: aDescription ]
+		on: Error
+		do: [ :anError | 
+			aResult := GtMagritteMementoCreationFailure new
+				           object: anObject;
+				           description: aDescription ].
+
+	^ aResult ifNil: [ 
+		  GtMagritteMementoCreationSuccess new
+			  memento: aMemento;
+			  object: anObject;
+			  description: aDescription ]
+]
+
+{ #category : #'api - magritte' }
 GtMagritteBuilderUtility class >> computeMementoForObject: anObject description: aDescription [
 
 	| aResult aMemento |
