@@ -31,6 +31,20 @@ GtMagritteMementoExamples >> assertAnnouncements: aReceivedAnnouncements equals:
 			self assert: eachAnnouncement class equals: aClass ]
 ]
 
+{ #category : #'examples - model' }
+GtMagritteMementoExamples >> baseline [
+
+	<gtExample>
+	^ GtMagritteExamples new baseline
+]
+
+{ #category : #'examples - model' }
+GtMagritteMementoExamples >> baselineDescription [
+
+	<gtExample>
+	^ GtMagritteExamples new baselineDescription
+]
+
 { #category : #'examples - memento' }
 GtMagritteMementoExamples >> basicMemento [
 
@@ -51,6 +65,24 @@ GtMagritteMementoExamples >> invalidAddressObject [
 ]
 
 { #category : #'examples - memento' }
+GtMagritteMementoExamples >> mementoWithBaseline [
+
+	<gtExample>
+	| aMemento anObject aDescription |
+	anObject := self baseline.
+	aDescription := self baselineDescription.
+	aMemento := GtMagritteMemento
+		            forObject: anObject
+		            description: aDescription.
+
+	self assert: aMemento mementoPromise isNotNil.
+	self assert: aMemento object equals: anObject.
+	self assert: aMemento description equals: aDescription.
+
+	^ aMemento
+]
+
+{ #category : #'examples - memento' }
 GtMagritteMementoExamples >> mementoWithChangedInvalidAddress [
 
 	<gtExample>
@@ -62,7 +94,6 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress [
 	aPromise := aMemento writePromise: 'Werkstraße' using: aDescription.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 	self assert: aResult value equals: 'Werkstraße'.
 	self assert: aResult original equals: 'Werkstrasse 18'.
@@ -211,7 +242,6 @@ GtMagritteMementoExamples >> mementoWithChangedValidAddress [
 		            using: aDescription.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 	self assert: aResult value equals: 'Werkstraße 1008'.
 	self assert: aResult original equals: 'Werkstrasse 18'.
@@ -239,7 +269,6 @@ GtMagritteMementoExamples >> mementoWithChangedValidAddress_Commit [
 	aPromise := aMemento commitPromise.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 
 	self waitExtra: aPromise.
@@ -368,7 +397,6 @@ GtMagritteMementoExamples >> mementoWithValidAddress_ReadPromiseResult [
 	aPromise := aMemento readPromiseUsing: aDescription.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 	self assert: aResult value equals: 'Werkstrasse 18'.
 
@@ -390,7 +418,6 @@ GtMagritteMementoExamples >> mementoWithValidAddress_ValidateOneDescription [
 	aPromise := aMemento validationPromiseUsing: aDescription.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 
 	self waitExtra: aPromise.
@@ -441,7 +468,6 @@ GtMagritteMementoExamples >> mementoWithValidAddress_WritePromiseResult [
 	aPromise := aMemento writePromise: 'Werkstraße' using: aDescription.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess.
 	self assert: aResult value equals: 'Werkstraße'.
 	self assert: aResult original equals: 'Werkstrasse 18'.

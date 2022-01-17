@@ -65,12 +65,6 @@ GtMagritteEditableElementBuilder >> addFlowListUsing: aDescription [
 
 		aFlowElement stencil: aDescription blocItemStencil.
 
-		aFlowElement when: GtMagritteValueUpdateWish do: [ :anEvent | 
-			anEvent consumed: true.
-			anEvent currentTarget items: anEvent value ].
-
-
-
 		aFlowElement ].
 
 	self presenter addViewModel: aContainerViewModel.

@@ -1,6 +1,12 @@
 Extension { #name : #MADescription }
 
 { #category : #'*GToolkit-Magritte' }
+MADescription >> beAlwaysEditable [
+
+	self propertyAt: #alwaysEditable put: true
+]
+
+{ #category : #'*GToolkit-Magritte' }
 MADescription >> gtConditionsFor: aView [
 
 	<gtView>
@@ -13,4 +19,10 @@ MADescription >> gtConditionsFor: aView [
 		  column: 'Valuable' text: #key;
 		  column: 'Description' text: #value;
 		  send: #key
+]
+
+{ #category : #'*GToolkit-Magritte' }
+MADescription >> isAlwaysEditable [
+
+	^ self propertyAt: #alwaysEditable ifAbsent: [ false ]
 ]

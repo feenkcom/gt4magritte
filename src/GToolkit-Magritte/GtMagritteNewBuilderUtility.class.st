@@ -20,7 +20,7 @@ GtMagritteNewBuilderUtility class >> addCommentTooltip: anElement using: aDescri
 { #category : #'api - ui' }
 GtMagritteNewBuilderUtility class >> defaultSpaceNumber [
 
-	^ 5
+	^ 4
 ]
 
 { #category : #'api - ui' }
@@ -105,6 +105,45 @@ GtMagritteNewBuilderUtility class >> newLabelWithSpace: aSpaceNumber memento: aM
 			  (BlInsets bottom:
 					   (aSpaceNumber ifNil: [ self defaultSpaceNumber ]));
 		  constraintsDo: [ :c | c grid vertical alignCenter ]
+]
+
+{ #category : #'api - ui' }
+GtMagritteNewBuilderUtility class >> newOneLineEditorWithSpace: aSpaceNumber memento: aMemento using: aDescription [
+
+	| anEditor |
+	anEditor := BrEditor new.
+
+	anEditor
+		aptitude:
+			BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize;
+		vFitContent;
+		hFitContentLimited;
+		margin:
+			(BlInsets bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ]));
+		constraintsDo: [ :c | 
+			c grid vertical alignCenter.
+			c minWidth: 20 ].
+
+	anEditor editor when: BrTextEditorModifiedEvent do: [ :anEvent | 
+		| aPromise |
+		aPromise := self
+			            writeString: aDescription
+			            value: anEvent text greaseString
+			            to: aMemento.
+		aPromise then: [ :aResult | 
+			aMemento validationPromiseUsing: aDescription ] ].
+
+	aMemento
+		when: GtMagritteMementoValueChangedAnnouncement
+		send: #onAnnouncement:
+		to: (GtMagritteValueChangedEditableEditorHandler new
+				 memento: aMemento;
+				 description: aDescription;
+				 editorElement: anEditor).
+
+	self readString: aDescription from: aMemento intoEditor: anEditor.
+
+	^ anEditor
 ]
 
 { #category : #'api - building' }

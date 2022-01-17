@@ -32,6 +32,30 @@ GtMagritteExamples >> addressTwo [
 	^ anAddress
 ]
 
+{ #category : #'examples - baseline' }
+GtMagritteExamples >> baseline [
+
+	<gtExample>
+	^ { (#baseline -> 'BaselineOfMyProject') } asDictionary
+]
+
+{ #category : #'examples - baseline' }
+GtMagritteExamples >> baselineDescription [
+
+	<gtExample>
+	^ MAPriorityContainer withAll: { (MAStringDescription new
+			   accessor: (MADictionaryAccessor key: #baseline);
+			   beAlwaysEditable;
+			   blocCompletion: [ GtClassesCompletionStrategy new ];
+			   beRequired;
+			   addCondition: [ :aValue | aValue beginsWith: 'BaselineOf' ]
+			   labelled: 'Baseline name must begin with BaselineOf';
+			   addCondition: [ :aValue | 
+				   (Smalltalk globals includesKey: aValue asSymbol) not ]
+			   labelled: 'Baseline name must be a non-existent class';
+			   comment: 'Baseline name') }
+]
+
 { #category : #'examples - address' }
 GtMagritteExamples >> basicAddress [
 

@@ -74,8 +74,7 @@ GtMagritteNewEditableElementBuilder >> addFieldElement: aFieldElement using: aDe
 		          newFieldLabelWithSpace: self defaultSpacing
 		          using: aDescription.
 
-	aLabel padding: aLabel padding
-		+ (BlInsets top: self defaultSpacing ).
+	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing).
 
 	aDescription hasComment ifTrue: [ 
 		GtMagritteNewBuilderUtility
@@ -131,16 +130,27 @@ GtMagritteNewEditableElementBuilder >> addStringFieldUsing: aDescription [
 	| aMemento anInputElement aValidationElement |
 	aMemento := self memento.
 
-	anInputElement := GtMagritteNewBuilderUtility
-		                  newEditableLabelWithSpace: self defaultSpacing
-		                  memento: aMemento
-		                  using: aDescription.
+	aDescription isAlwaysEditable
+		ifFalse: [ 
+			anInputElement := GtMagritteNewBuilderUtility
+				                  newEditableLabelWithSpace: self defaultSpacing
+				                  memento: aMemento
+				                  using: aDescription ]
+		ifTrue: [ 
+			anInputElement := GtMagritteNewBuilderUtility
+				                  newOneLineEditorWithSpace: self defaultSpacing
+				                  memento: aMemento
+				                  using: aDescription ].
+
+	aDescription blocCompletion ifNotNil: [ :aStencil | 
+		(GtCompletionController on: anInputElement strategy: aStencil create)
+			install ].
 
 	aValidationElement := GtMagritteNewBuilderUtility
-		newValidationContainerWith: anInputElement
-		memento: aMemento
-		using: aDescription.
-		
+		                      newValidationContainerWith: anInputElement
+		                      memento: aMemento
+		                      using: aDescription.
+
 	self addFieldElement: aValidationElement using: aDescription
 ]
 
