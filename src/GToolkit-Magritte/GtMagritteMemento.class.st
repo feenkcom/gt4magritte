@@ -9,7 +9,6 @@ Class {
 		'stateMutex',
 		'commitPromise',
 		'readCache',
-		'validationCache',
 		'mementoPromise'
 	],
 	#category : #'GToolkit-Magritte-Models'
@@ -76,8 +75,7 @@ GtMagritteMemento >> clearState [
 GtMagritteMemento >> clearStateUsing: aDescription [
 
 	stateMutex critical: [ 
-		readCache removeKey: aDescription ifAbsent: [ "ignore" ].
-		validationCache removeKey: aDescription ifAbsent: [ "ignore" ] ]
+		readCache removeKey: aDescription ifAbsent: [ "ignore" ]. ]
 ]
 
 { #category : #'api - actions' }
@@ -213,23 +211,26 @@ GtMagritteMemento >> computeResetContext: aContext [
 ]
 
 { #category : #'private - actions' }
-GtMagritteMemento >> computeValidation: anObject using: aDescription [
+GtMagritteMemento >> computeValidation: aReadResult using: aDescription [
 
 	| aResult |
 	stateMutex critical: [ 
-		[ 
-		aDescription validate: anObject.
-		aResult := GtMagritteDescriptionValidationSuccess new
-			           memento: self;
-			           description: aDescription;
-			           value: anObject ]
+		[ aDescription validate: aReadResult value ]
 			on: MAValidationError
 			do: [ :anError | 
 				aResult := GtMagritteDescriptionValidationFailure new
 					           memento: self;
 					           description: aDescription;
-					           value: anObject;
+					           value: aReadResult value;
 					           exception: anError ] ].
+
+	aResult := aResult ifNil: [ 
+		           aResult := GtMagritteDescriptionValidationSuccess new
+			                      memento: self;
+			                      description: aDescription;
+			                      value: aReadResult value ].
+
+	aReadResult validation: aResult.
 
 	self notifyValidationChanged: aResult using: aDescription.
 
@@ -389,41 +390,33 @@ GtMagritteMemento >> gtReadCacheFor: aView [
 			  aResult isSuccess
 				  ifTrue: [ 
 					  aResult isChanged
-						  ifTrue: [ aResult original asRopedText foreground:
-							  BrGlamorousColors disabledButtonTextColor ]
+						  ifTrue: [ 
+							  aResult original asRopedText foreground:
+									  BrGlamorousColors disabledButtonTextColor ]
 						  ifFalse: [ '' ] ]
 				  ifFalse: [ '' ] ]
 		  weight: 2;
-		  send: [ :anAssoc | anAssoc value wait ];
-		  actionUpdateButtonTooltip: 'Update read cache'
-]
-
-{ #category : #accessing }
-GtMagritteMemento >> gtValidationCacheFor: aView [
-
-	<gtView>
-	readCache ifEmpty: [ ^ aView empty ].
-
-	^ aView columnedList
-		  title: 'Validation Cache';
-		  priority: 11;
-		  items: [ 
-			  stateMutex critical: [ validationCache copy associations ] ];
-		  column: 'Description' text: [ :anAssoc | anAssoc key label ];
-		  column: 'Value' text: [ :anAssoc | anAssoc value wait value ];
-		  column: 'Validation Status' text: [ :anAssoc | 
+		  column: 'Validation' text: [ :anAssoc | 
 			  | aResult |
 			  aResult := anAssoc value wait.
 			  aResult isSuccess
 				  ifTrue: [ 
-					  'Success' asRopedText foreground:
-							  BrGlamorousColors successBackgroundColor ]
-				  ifFalse: [ 
-					  aResult issuesDescription asRopedText foreground:
-							  BrGlamorousColors errorBackgroundColor ] ]
+					  aResult isValidated
+						  ifTrue: [ 
+							  aResult validation isSuccess
+								  ifTrue: [ 
+									  'ok' asRopedText foreground:
+											  BrGlamorousColors successBackgroundColor ]
+								  ifFalse: [ 
+									  aResult validation issuesDescription asRopedText 
+										  foreground: BrGlamorousColors errorBackgroundColor ] ]
+						  ifFalse: [ 
+							  'unknown' asRopedText foreground:
+									  BrGlamorousColors disabledButtonTextColor ] ]
+				  ifFalse: [ '' ] ]
 		  weight: 2;
 		  send: [ :anAssoc | anAssoc value wait ];
-		  actionUpdateButtonTooltip: 'Update validation cache'
+		  actionUpdateButtonTooltip: 'Update read cache'
 ]
 
 { #category : #initialization }
@@ -434,7 +427,6 @@ GtMagritteMemento >> initialize [
 	promiseMutex := Mutex new.
 	stateMutex := Mutex new.
 	readCache := SmallDictionary new.
-	validationCache := SmallDictionary new.
 ]
 
 { #category : #'api - debug' }
@@ -622,13 +614,6 @@ GtMagritteMemento >> validateUsing: aDescription [
 ]
 
 { #category : #'private - accessing' }
-GtMagritteMemento >> validationCacheAt: aDescription ifAbsentPut: aBlock [
-
-	^ stateMutex critical: [ 
-		  validationCache at: aDescription ifAbsentPut: aBlock ]
-]
-
-{ #category : #'private - accessing' }
 GtMagritteMemento >> validationFutureContext: aContext [
 
 	^ [ self computeValidationContext: aContext ] asAsyncFuture
@@ -650,12 +635,14 @@ GtMagritteMemento >> validationPromise [
 GtMagritteMemento >> validationPromiseUsing: aDescription [
 
 	^ promiseMutex critical: [ 
-		  self validationCacheAt: aDescription ifAbsentPut: [ 
-			  (self readPromiseUsing: aDescription) then: [ :aResult | 
-				  aResult isSuccess
-					  ifTrue: [ 
-					  self computeValidation: aResult value using: aDescription ]
-					  ifFalse: [ aResult ] ] ] ]
+		  (self readPromiseUsing: aDescription) then: [ :aResult | 
+			  aResult isSuccess
+				  ifTrue: [ 
+					  aResult isValidated
+						  ifTrue: [ aResult validation ]
+						  ifFalse: [ 
+						  self computeValidation: aResult using: aDescription ] ]
+				  ifFalse: [ aResult ] ] ]
 ]
 
 { #category : #'api - subscriptions' }

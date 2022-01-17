@@ -159,7 +159,6 @@ GtMagritteMementoExamples >> mementoWithChangedInvalidAddress_ValidateOneDescrip
 	aPromise := aMemento validationPromiseUsing: aDescription.
 	aResult := aPromise wait.
 
-	self assert: aPromise isFulfilled.
 	self assert: aResult isSuccess not.
 
 	self waitExtra: aPromise.

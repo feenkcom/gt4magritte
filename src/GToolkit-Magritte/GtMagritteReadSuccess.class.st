@@ -5,7 +5,8 @@ Class {
 		'description',
 		'value',
 		'context',
-		'original'
+		'original',
+		'validation'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -46,6 +47,12 @@ GtMagritteReadSuccess >> isSuccess [
 	^ true
 ]
 
+{ #category : #testing }
+GtMagritteReadSuccess >> isValidated [
+
+	^ self validation isNotNil
+]
+
 { #category : #accessing }
 GtMagritteReadSuccess >> original [
 
@@ -71,6 +78,18 @@ GtMagritteReadSuccess >> printOn: aStream [
 		nextPut: $=;
 		print: self value;
 		nextPut: $)
+]
+
+{ #category : #accessing }
+GtMagritteReadSuccess >> validation [
+
+	^ validation
+]
+
+{ #category : #accessing }
+GtMagritteReadSuccess >> validation: aValidationResult [
+
+	validation := aValidationResult
 ]
 
 { #category : #accessing }
