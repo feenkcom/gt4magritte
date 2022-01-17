@@ -221,14 +221,14 @@ GtMagritteMemento >> computeValidation: aReadResult using: aDescription [
 				aResult := GtMagritteDescriptionValidationFailure new
 					           memento: self;
 					           description: aDescription;
-					           value: aReadResult value;
+					           result: aReadResult;
 					           exception: anError ] ].
 
 	aResult := aResult ifNil: [ 
 		           aResult := GtMagritteDescriptionValidationSuccess new
 			                      memento: self;
 			                      description: aDescription;
-			                      value: aReadResult value ].
+			                      result: aReadResult ].
 
 	aReadResult validation: aResult.
 

@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'description',
 		'exception',
-		'value'
+		'result'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -57,13 +57,19 @@ GtMagritteDescriptionValidationFailure >> issuesDescription [
 ]
 
 { #category : #accessing }
-GtMagritteDescriptionValidationFailure >> value [
+GtMagritteDescriptionValidationFailure >> result [
 
-	^ value
+	^ result
 ]
 
 { #category : #accessing }
-GtMagritteDescriptionValidationFailure >> value: anObject [
+GtMagritteDescriptionValidationFailure >> result: aResult [
 
-	value := anObject
+	result := aResult
+]
+
+{ #category : #accessing }
+GtMagritteDescriptionValidationFailure >> value [
+
+	^ self result value
 ]

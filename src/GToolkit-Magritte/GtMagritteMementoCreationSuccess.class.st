@@ -20,6 +20,12 @@ GtMagritteMementoCreationSuccess >> description: anObject [
 	description := anObject
 ]
 
+{ #category : #accessing }
+GtMagritteMementoCreationSuccess >> descriptions [
+
+	^ self description children
+]
+
 { #category : #testing }
 GtMagritteMementoCreationSuccess >> isSuccess [
 

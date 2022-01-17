@@ -3,7 +3,7 @@ Class {
 	#superclass : #GtMagritteResult,
 	#instVars : [
 		'description',
-		'value'
+		'result'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -27,13 +27,19 @@ GtMagritteDescriptionValidationSuccess >> isSuccess [
 ]
 
 { #category : #accessing }
-GtMagritteDescriptionValidationSuccess >> value [
+GtMagritteDescriptionValidationSuccess >> result [
 
-	^ value
+	^ result
 ]
 
 { #category : #accessing }
-GtMagritteDescriptionValidationSuccess >> value: anObject [
+GtMagritteDescriptionValidationSuccess >> result: anObject [
 
-	value := anObject
+	result := anObject
+]
+
+{ #category : #accessing }
+GtMagritteDescriptionValidationSuccess >> value [
+
+	^ self result value
 ]
