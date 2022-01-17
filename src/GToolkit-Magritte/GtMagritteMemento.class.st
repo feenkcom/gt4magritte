@@ -497,13 +497,13 @@ GtMagritteMemento >> notifyValidationChanged: aResult using: aDescription [
 	| aPromise |
 	announcer ifNil: [ ^ self ].
 
-	aPromise := self validationPromiseUsing: aDescription.
-	aPromise then: [ :theResult | 
+	aPromise := self mementoPromise.
+	aPromise asyncThen: [ :aMementoResult | 
 		announcer announce:
 			(GtMagritteMementoDescriptionValidationChangedAnnouncement new
 				 memento: self;
 				 description: aDescription;
-				 result: theResult) ]
+				 result: aResult) ]
 ]
 
 { #category : #'private - notifying' }
@@ -629,13 +629,6 @@ GtMagritteMemento >> validationCacheAt: aDescription ifAbsentPut: aBlock [
 ]
 
 { #category : #'private - accessing' }
-GtMagritteMemento >> validationFuture: anObject using: aDescription [
-
-	^ [ self computeValidation: anObject using: aDescription ]
-		  asAsyncFuture
-]
-
-{ #category : #'private - accessing' }
 GtMagritteMemento >> validationFutureContext: aContext [
 
 	^ [ self computeValidationContext: aContext ] asAsyncFuture
@@ -661,9 +654,8 @@ GtMagritteMemento >> validationPromiseUsing: aDescription [
 			  (self readPromiseUsing: aDescription) then: [ :aResult | 
 				  aResult isSuccess
 					  ifTrue: [ 
-						  (self validationFuture: aResult value using: aDescription)
-							  asAsyncPromise ]
-					  ifFalse: [ aResult asAsyncPromise ] ] ] ]
+					  self computeValidation: aResult value using: aDescription ]
+					  ifFalse: [ aResult ] ] ] ]
 ]
 
 { #category : #'api - subscriptions' }
