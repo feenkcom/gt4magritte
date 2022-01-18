@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'street',
-		'city'
+		'city',
+		'isPrimary'
 	],
 	#category : #'GToolkit-Magritte-Examples - Support'
 }
@@ -36,6 +37,18 @@ GtMagritteDummyPostalAddress >> descriptionCity [
 ]
 
 { #category : #'magritte-accessing' }
+GtMagritteDummyPostalAddress >> descriptionIsPrimary [
+
+	<magritteDescription>
+	^ MABooleanDescription new
+		  accessor: #isPrimary;
+		  default: false;
+		  priority: 10;
+		  trueString: 'primary';
+		  falseString: 'set as primary'
+]
+
+{ #category : #'magritte-accessing' }
 GtMagritteDummyPostalAddress >> descriptionStreet [
 
 	<magritteDescription>
@@ -49,6 +62,18 @@ GtMagritteDummyPostalAddress >> descriptionStreet [
 		  addCondition: [ :aValue | 
 			  (aValue select: [ :e | e isDigit ]) isNotEmpty ]
 		  labelled: 'Street must include street number'
+]
+
+{ #category : #accessing }
+GtMagritteDummyPostalAddress >> isPrimary [
+
+	^ isPrimary ifNil: [ false ]
+]
+
+{ #category : #accessing }
+GtMagritteDummyPostalAddress >> isPrimary: anObject [
+
+	isPrimary := anObject
 ]
 
 { #category : #accessing }

@@ -32,30 +32,6 @@ GtMagritteExamples >> addressTwo [
 	^ anAddress
 ]
 
-{ #category : #'examples - baseline' }
-GtMagritteExamples >> baseline [
-
-	<gtExample>
-	^ { (#baseline -> 'BaselineOfMyProject') } asDictionary
-]
-
-{ #category : #'examples - baseline' }
-GtMagritteExamples >> baselineDescription [
-
-	<gtExample>
-	^ MAPriorityContainer withAll: { (MAStringDescription new
-			   accessor: (MADictionaryAccessor key: #baseline);
-			   beAlwaysEditable;
-			   blocCompletion: [ GtClassesCompletionStrategy new ];
-			   beRequired;
-			   addCondition: [ :aValue | aValue beginsWith: 'BaselineOf' ]
-			   labelled: 'Baseline name must begin with BaselineOf';
-			   addCondition: [ :aValue | 
-				   (Smalltalk globals includesKey: aValue asSymbol) not ]
-			   labelled: 'Baseline name must be a non-existent class';
-			   comment: 'Baseline name') }
-]
-
 { #category : #'examples - address' }
 GtMagritteExamples >> basicAddress [
 
@@ -97,4 +73,16 @@ GtMagritteExamples >> personWithTwoAddresses [
 	self assert: aPerson addresses size equals: 2.
 
 	^ aPerson
+]
+
+{ #category : #'examples - address' }
+GtMagritteExamples >> primaryAddress [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self address.
+
+	anAddress isPrimary: true.
+
+	^ anAddress
 ]

@@ -36,6 +36,39 @@ GtMagritteNewBuilderUtility class >> enqueueAction: aBlock into: anElement [
 ]
 
 { #category : #'api - ui' }
+GtMagritteNewBuilderUtility class >> newCheckboxMemento: aMemento using: aDescription [
+
+	| aCheckbox |
+	aCheckbox := BrCheckbox new
+		             aptitude: BrGlamorousCheckboxAptitude;
+		             withAsyncPromiseDo: [ :anElementPromise | 
+			             anElementPromise whenSuccess: [ :theElement :aResult | 
+					             aResult isSuccess ifTrue: [ 
+							             theElement checked: aResult value ] ] ];
+		             whenCheckedDo: [ aDescription write: true to: aMemento ];
+		             whenUncheckedDo: [ 
+			             aDescription write: false to: aMemento ];
+		             margin: (BlInsets
+				              top: 0
+				              right: 0
+				              bottom: self defaultSpaceNumber
+				              left: 3).
+
+	aCheckbox asyncPromise promise:
+		(aMemento readPromiseUsing: aDescription).
+
+	aMemento
+		when: GtMagritteMementoValueChangedAnnouncement
+		send: #onAnnouncement:
+		to: (GtMagritteAsyncElementPromiseHandler new
+				 memento: aMemento;
+				 description: aDescription;
+				 element: aCheckbox).
+
+	^ aCheckbox
+]
+
+{ #category : #'api - ui' }
 GtMagritteNewBuilderUtility class >> newEditableLabelWithSpace: aSpaceNumber memento: aMemento using: aDescription [
 
 	| anEditor |

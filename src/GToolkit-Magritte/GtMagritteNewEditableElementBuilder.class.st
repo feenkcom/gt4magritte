@@ -21,6 +21,17 @@ GtMagritteNewEditableElementBuilder >> actions: aCollection [
 	actions := aCollection
 ]
 
+{ #category : #'private - building' }
+GtMagritteNewEditableElementBuilder >> addBooleanField: aDescription [
+
+	| anElement |
+	anElement := GtMagritteNewBuilderUtility
+		             newCheckboxMemento: self memento
+		             using: aDescription.
+
+	self addFieldElement: anElement using: aDescription
+]
+
 { #category : #'api - building' }
 GtMagritteNewEditableElementBuilder >> addButtons [
 
@@ -74,8 +85,6 @@ GtMagritteNewEditableElementBuilder >> addFieldElement: aFieldElement using: aDe
 		          newFieldLabelWithSpace: self defaultSpacing
 		          using: aDescription.
 
-	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing).
-
 	aDescription hasComment ifTrue: [ 
 		GtMagritteNewBuilderUtility
 			addCommentTooltip: aLabel
@@ -85,7 +94,9 @@ GtMagritteNewEditableElementBuilder >> addFieldElement: aFieldElement using: aDe
 			using: aDescription ].
 
 	self form addChild: aLabel.
-	self form addChild: aFieldElement
+	self form addChild: aFieldElement.
+
+	^ aLabel
 ]
 
 { #category : #'private - building' }
@@ -127,7 +138,7 @@ GtMagritteNewEditableElementBuilder >> addFlowListUsing: aDescription [
 { #category : #'private - building' }
 GtMagritteNewEditableElementBuilder >> addStringFieldUsing: aDescription [
 
-	| aMemento anInputElement aValidationElement |
+	| aMemento anInputElement aValidationElement aLabel |
 	aMemento := self memento.
 
 	aDescription isAlwaysEditable
@@ -151,7 +162,11 @@ GtMagritteNewEditableElementBuilder >> addStringFieldUsing: aDescription [
 		                      memento: aMemento
 		                      using: aDescription.
 
-	self addFieldElement: aValidationElement using: aDescription
+	aLabel := self
+		          addFieldElement: aValidationElement
+		          using: aDescription.
+
+	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing)
 ]
 
 { #category : #'api - building' }
@@ -237,6 +252,12 @@ GtMagritteNewEditableElementBuilder >> memento: aMemento [
 GtMagritteNewEditableElementBuilder >> objectDescription [
 
 	^ self memento description
+]
+
+{ #category : #visiting }
+GtMagritteNewEditableElementBuilder >> visitBooleanDescription: aDescription [
+
+	self addBooleanField: aDescription
 ]
 
 { #category : #visiting }

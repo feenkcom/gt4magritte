@@ -26,12 +26,12 @@ GtMagritteMemento class >> forMemento: aMemento [
 { #category : #'api - instance creation' }
 GtMagritteMemento class >> forObject: anObject [
 
-	| aPromise |
-	aPromise := [ 
+	| aFuture |
+	aFuture := [ 
 	            GtMagritteBuilderUtility computeMementoForObject:
 		            anObject ] asAsyncPromise.
 
-	^ self new mementoPromise: aPromise
+	^ self new mementoPromise: aFuture
 ]
 
 { #category : #'api - instance creation' }

@@ -133,12 +133,12 @@ GtMagritteEditableElementBuilderExamples >> simpleAddressDescription [
 GtMagritteEditableElementBuilderExamples >> simpleBaseline [
 
 	<gtExample>
-	^ GtMagritteExamples new baseline
+	^ GtMagritteModelExamples new baseline
 ]
 
 { #category : #'examples - baseline' }
 GtMagritteEditableElementBuilderExamples >> simpleBaselineDescription [
 
 	<gtExample>
-	^ GtMagritteExamples new baselineDescription
+	^ GtMagritteModelExamples new baselineDescription
 ]

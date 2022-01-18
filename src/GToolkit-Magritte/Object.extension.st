@@ -34,16 +34,25 @@ Object >> gtGtMagritteFor: aView context: aContext [
 Object >> gtGtNewMagritteFor: aView context: aContext [
 
 	<gtView>
-	| aDescription |
+	| aDescription aViewModel |
 	aDescription := self magritteDescription.
 
 	(aDescription isContainer not or: [ aDescription isEmpty ]) ifTrue: [ 
 		^ aView empty ].
 
+
+
 	^ aView explicit
 		  title: 'Magritte 3';
 		  priority: 48;
 		  stencil: [ 
-			  GtMagritteNewViewModel new memento:
-					  (GtMagritteMemento forObject: self description: aDescription) ]
+			  aViewModel := GtMagritteNewViewModel new memento:
+					                (GtMagritteMemento
+						                 forObject: self
+						                 description: aDescription) ];
+		  actionButtonIcon: BrGlamorousVectorIcons inspect
+		  label: 'Memento'
+		  tooltip: 'Inspect GToolkit Memento'
+		  action: [ :aButton | 
+			  aButton phlow spawnObject: (aViewModel ifNotNil: #memento) ]
 ]

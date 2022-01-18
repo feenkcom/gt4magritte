@@ -35,14 +35,14 @@ GtMagritteMementoExamples >> assertAnnouncements: aReceivedAnnouncements equals:
 GtMagritteMementoExamples >> baseline [
 
 	<gtExample>
-	^ GtMagritteExamples new baseline
+	^ GtMagritteModelExamples new baseline
 ]
 
 { #category : #'examples - model' }
 GtMagritteMementoExamples >> baselineDescription [
 
 	<gtExample>
-	^ GtMagritteExamples new baselineDescription
+	^ GtMagritteModelExamples new baselineDescription
 ]
 
 { #category : #'examples - memento' }
