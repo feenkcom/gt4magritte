@@ -63,7 +63,7 @@ GtMagritteModelExamples >> personObjectWithTwoAddresses [
 	aPerson := self basicPersonObject.
 
 	aPerson name: 'Adélka'.
-	anAddressOne := self addressObject.
+	anAddressOne := self primaryAddressObject.
 	anAddressTwo := self addressTwoObject.
 	aPerson addresses: { 
 			anAddressOne.

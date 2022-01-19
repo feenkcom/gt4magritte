@@ -41,11 +41,14 @@ GtMagritteDummyPostalAddress >> descriptionIsPrimary [
 
 	<magritteDescription>
 	^ MABooleanDescription new
+		  label: 'Primary';
 		  accessor: #isPrimary;
 		  default: false;
 		  priority: 10;
 		  trueString: 'primary';
-		  falseString: 'set as primary'
+		  falseString: '...';
+		  blocActionString: 'set as primary';
+		  blocUseDropdown: true
 ]
 
 { #category : #'magritte-accessing' }

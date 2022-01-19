@@ -24,12 +24,18 @@ GtMagritteNewEditableElementBuilder >> actions: aCollection [
 { #category : #'private - building' }
 GtMagritteNewEditableElementBuilder >> addBooleanField: aDescription [
 
-	| anElement |
+	| anElement aValidationElement aMemento |
+	aMemento := self memento.
 	anElement := GtMagritteNewBuilderUtility
-		             newCheckboxMemento: self memento
+		             newCheckboxMemento: aMemento
 		             using: aDescription.
 
-	self addFieldElement: anElement using: aDescription
+	aValidationElement := GtMagritteNewBuilderUtility
+		                      newValidationContainerWith: anElement
+		                      memento: aMemento
+		                      using: aDescription.
+
+	self addFieldElement: aValidationElement using: aDescription
 ]
 
 { #category : #'api - building' }
