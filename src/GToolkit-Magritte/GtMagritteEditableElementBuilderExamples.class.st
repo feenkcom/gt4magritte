@@ -119,26 +119,26 @@ GtMagritteEditableElementBuilderExamples >> elementWithSimpleAddressAndActions [
 GtMagritteEditableElementBuilderExamples >> simpleAddress [
 
 	<gtExample>
-	^ GtMagritteModelExamples new addressObject
+	^ GtMagritteModelExamples new simpleAddressObject
 ]
 
 { #category : #'examples - simple address' }
 GtMagritteEditableElementBuilderExamples >> simpleAddressDescription [
 
 	<gtExample>
-	^ GtMagritteModelExamples new addressDescription
+	^ GtMagritteModelExamples new simpleAddressDescription
 ]
 
 { #category : #'examples - baseline' }
 GtMagritteEditableElementBuilderExamples >> simpleBaseline [
 
 	<gtExample>
-	^ GtMagritteModelExamples new baseline
+	^ GtMagritteModelExamples new simpleBaselineObject
 ]
 
 { #category : #'examples - baseline' }
 GtMagritteEditableElementBuilderExamples >> simpleBaselineDescription [
 
 	<gtExample>
-	^ GtMagritteModelExamples new baselineDescription
+	^ GtMagritteModelExamples new simpleBaselineDescription
 ]

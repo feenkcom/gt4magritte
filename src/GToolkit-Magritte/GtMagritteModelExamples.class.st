@@ -5,7 +5,90 @@ Class {
 }
 
 { #category : #'examples - address' }
-GtMagritteModelExamples >> addressDescription [
+GtMagritteModelExamples >> addressObject [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self basicAddressObject.
+
+	anAddress
+		street: 'Husova 108/12';
+		city: 'Všetín'.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> addressTwoObject [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self basicAddressObject.
+
+	anAddress
+		street: 'Básníkova 72/21';
+		city: 'Hodonín'.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> basicAddressObject [
+
+	<gtExample>
+	| anAddress |
+	anAddress := GtMagritteDummyPostalAddress new.
+
+	^ anAddress
+]
+
+{ #category : #'examples - person' }
+GtMagritteModelExamples >> basicPersonObject [
+
+	<gtExample>
+	| aPerson |
+	aPerson := GtMagritteDummyPerson new.
+
+	self assert: aPerson name isNil.
+	self assert: aPerson addresses isEmpty.
+
+	^ aPerson
+]
+
+{ #category : #'examples - person' }
+GtMagritteModelExamples >> personObjectWithTwoAddresses [
+
+	<gtExample>
+	| aPerson anAddressOne anAddressTwo |
+	aPerson := self basicPersonObject.
+
+	aPerson name: 'Adélka'.
+	anAddressOne := self addressObject.
+	anAddressTwo := self addressTwoObject.
+	aPerson addresses: { 
+			anAddressOne.
+			anAddressTwo }.
+
+	self assert: aPerson name equals: 'Adélka'.
+	self assert: aPerson addresses size equals: 2.
+
+	^ aPerson
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> primaryAddressObject [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self addressObject.
+
+	anAddress isPrimary: true.
+
+	^ anAddress
+]
+
+{ #category : #'examples - simple address' }
+GtMagritteModelExamples >> simpleAddressDescription [
 
 	<gtExample>
 	^ MAPriorityContainer withAll: { 
@@ -29,8 +112,8 @@ GtMagritteModelExamples >> addressDescription [
 				   labelled: 'City must include letters only') }
 ]
 
-{ #category : #'examples - address' }
-GtMagritteModelExamples >> addressObject [
+{ #category : #'examples - simple address' }
+GtMagritteModelExamples >> simpleAddressObject [
 
 	<gtExample>
 	^ { 
@@ -38,15 +121,8 @@ GtMagritteModelExamples >> addressObject [
 		  (#city -> 'Chamoille') } asDictionary
 ]
 
-{ #category : #'examples - baseline' }
-GtMagritteModelExamples >> baseline [
-
-	<gtExample>
-	^ { (#baseline -> 'BaselineOfMyProject') } asDictionary
-]
-
-{ #category : #'examples - baseline' }
-GtMagritteModelExamples >> baselineDescription [
+{ #category : #'examples - simple baseline' }
+GtMagritteModelExamples >> simpleBaselineDescription [
 
 	<gtExample>
 	^ MAPriorityContainer withAll: { (MAStringDescription new
@@ -62,8 +138,15 @@ GtMagritteModelExamples >> baselineDescription [
 			   comment: 'Baseline name') }
 ]
 
-{ #category : #'examples - address' }
-GtMagritteModelExamples >> invalidAddressObject [
+{ #category : #'examples - simple baseline' }
+GtMagritteModelExamples >> simpleBaselineObject [
+
+	<gtExample>
+	^ { (#baseline -> 'BaselineOfMyProject') } asDictionary
+]
+
+{ #category : #'examples - simple address' }
+GtMagritteModelExamples >> simpleInvalidAddressObject [
 
 	<gtExample>
 	^ { 

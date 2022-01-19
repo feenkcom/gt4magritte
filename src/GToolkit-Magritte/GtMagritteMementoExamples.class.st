@@ -8,14 +8,14 @@ Class {
 GtMagritteMementoExamples >> addressDescription [
 
 	<gtExample>
-	^ GtMagritteModelExamples new addressDescription
+	^ GtMagritteModelExamples new simpleAddressDescription
 ]
 
 { #category : #'examples - model' }
 GtMagritteMementoExamples >> addressObject [
 
 	<gtExample>
-	^ GtMagritteModelExamples new addressObject
+	^ GtMagritteModelExamples new simpleAddressObject
 ]
 
 { #category : #support }
@@ -35,14 +35,14 @@ GtMagritteMementoExamples >> assertAnnouncements: aReceivedAnnouncements equals:
 GtMagritteMementoExamples >> baseline [
 
 	<gtExample>
-	^ GtMagritteModelExamples new baseline
+	^ GtMagritteModelExamples new simpleBaselineObject
 ]
 
 { #category : #'examples - model' }
 GtMagritteMementoExamples >> baselineDescription [
 
 	<gtExample>
-	^ GtMagritteModelExamples new baselineDescription
+	^ GtMagritteModelExamples new simpleBaselineDescription
 ]
 
 { #category : #'examples - memento' }
@@ -61,7 +61,7 @@ GtMagritteMementoExamples >> basicMemento [
 GtMagritteMementoExamples >> invalidAddressObject [
 
 	<gtExample>
-	^ GtMagritteModelExamples new invalidAddressObject
+	^ GtMagritteModelExamples new simpleInvalidAddressObject
 ]
 
 { #category : #'examples - memento' }
