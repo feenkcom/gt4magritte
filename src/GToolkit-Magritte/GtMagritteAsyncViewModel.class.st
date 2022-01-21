@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'mementoFuture'
 	],
-	#category : #'GToolkit-Magritte-New-Models'
+	#category : #'GToolkit-Magritte-Models'
 }
 
 { #category : #'api - instance creation' }

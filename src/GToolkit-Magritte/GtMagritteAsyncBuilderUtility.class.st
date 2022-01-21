@@ -1,8 +1,21 @@
 Class {
 	#name : #GtMagritteAsyncBuilderUtility,
 	#superclass : #Object,
-	#category : #'GToolkit-Magritte-New-Builders'
+	#category : #'GToolkit-Magritte-Support'
 }
+
+{ #category : #'api - ui' }
+GtMagritteAsyncBuilderUtility class >> addCommentTooltip: anElement using: aDescription [
+
+	| aText |
+	aText := aDescription comment asRopedText.
+
+	aDescription isRequired ifTrue: [ 
+		aText append: ' (required)' asRopedText ].
+
+	anElement addAptitude:
+		(BrGlamorousWithLabelTooltipAptitude new text: aText)
+]
 
 { #category : #'api - ui' }
 GtMagritteAsyncBuilderUtility class >> defaultSpaceNumber [
@@ -16,7 +29,7 @@ GtMagritteAsyncBuilderUtility class >> defaultThickness [
 	^ 3
 ]
 
-{ #category : #'private - building' }
+{ #category : #'api - ui' }
 GtMagritteAsyncBuilderUtility class >> newCheckboxMemento: aMemento using: aDescription [
 
 	| aCheckbox |
@@ -67,7 +80,7 @@ GtMagritteAsyncBuilderUtility class >> newEditableLabelWithMemento: aMemento usi
 	^ anEditor
 ]
 
-{ #category : #'private - building' }
+{ #category : #'api - ui' }
 GtMagritteAsyncBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aDescription [
 
 	<return: #BrLabel>
@@ -140,7 +153,7 @@ GtMagritteAsyncBuilderUtility class >> newOneLineEditorWithMemento: aMemento usi
 	^ anEditor
 ]
 
-{ #category : #'private - building' }
+{ #category : #'api - ui' }
 GtMagritteAsyncBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
 
 	| aToolbar |

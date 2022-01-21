@@ -5,7 +5,7 @@ Class {
 		'isChanged',
 		'isValid'
 	],
-	#category : #'GToolkit-Magritte-New-Models'
+	#category : #'GToolkit-Magritte-Models'
 }
 
 { #category : #accessing }

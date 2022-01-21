@@ -6,7 +6,7 @@ Class {
 		'form',
 		'actions'
 	],
-	#category : #'GToolkit-Magritte-New-Builders'
+	#category : #'GToolkit-Magritte-Builders'
 }
 
 { #category : #accessing }
@@ -96,10 +96,10 @@ GtMagritteAsyncElementBuilder >> addFieldElement: aFieldElement using: aDescript
 		          using: aDescription.
 
 	aDescription hasComment ifTrue: [ 
-		GtMagritteNewBuilderUtility
+		GtMagritteAsyncBuilderUtility
 			addCommentTooltip: aLabel
 			using: aDescription.
-		GtMagritteNewBuilderUtility
+		GtMagritteAsyncBuilderUtility
 			addCommentTooltip: aFieldElement
 			using: aDescription ].
 

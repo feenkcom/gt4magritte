@@ -5,7 +5,7 @@ Class {
 		'value',
 		'exception'
 	],
-	#category : #'GToolkit-Magritte-New-Models'
+	#category : #'GToolkit-Magritte-Models'
 }
 
 { #category : #accessing }

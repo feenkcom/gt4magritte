@@ -7,7 +7,7 @@ Class {
 		'overallStatus',
 		'internalStatus'
 	],
-	#category : #'GToolkit-Magritte-New-Models'
+	#category : #'GToolkit-Magritte-Models'
 }
 
 { #category : #testing }

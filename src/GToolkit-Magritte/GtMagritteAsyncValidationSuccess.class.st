@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'value'
 	],
-	#category : #'GToolkit-Magritte-New-Models'
+	#category : #'GToolkit-Magritte-Models'
 }
 
 { #category : #accessing }

@@ -7,7 +7,7 @@ Class {
 		'originalValue',
 		'validation'
 	],
-	#category : #'GToolkit-Magritte-New-Models'
+	#category : #'GToolkit-Magritte-Models'
 }
 
 { #category : #copying }
