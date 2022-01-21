@@ -40,6 +40,7 @@ GtMagritteDummyPerson >> desriptionAddresses [
 	^ MAToManyRelationDescription new
 		  accessor: #addresses;
 		  default: #(  );
+		  classes: { GtMagritteDummyPostalAddress };
 		  priority: 2;
 		  beModifiable;
 		  blocItemStencil: [ :anItemObject :anItemIndex | 

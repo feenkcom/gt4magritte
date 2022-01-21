@@ -1,18 +1,16 @@
 Class {
-	#name : #GtMagritteAddItemViewModel,
+	#name : #GtMagritteAsyncAddItemViewModel,
 	#superclass : #Object,
 	#instVars : [
-		'callback',
-		'stencil',
-		'description',
 		'memento',
-		'items'
+		'description',
+		'stencil'
 	],
-	#category : #'GToolkit-Magritte-FirstImplementation'
+	#category : #'GToolkit-Magritte-Support'
 }
 
 { #category : #converting }
-GtMagritteAddItemViewModel >> asElement [
+GtMagritteAsyncAddItemViewModel >> asElement [
 
 	^ BrButton new
 		  aptitude: BrGlamorousButtonWithIconCircularAptitude;
@@ -24,60 +22,35 @@ GtMagritteAddItemViewModel >> asElement [
 ]
 
 { #category : #accessing }
-GtMagritteAddItemViewModel >> callback [
-
-	^ callback
-]
-
-{ #category : #accessing }
-GtMagritteAddItemViewModel >> callback: anObject [
-
-	callback := anObject
-]
-
-{ #category : #accessing }
-GtMagritteAddItemViewModel >> description [
+GtMagritteAsyncAddItemViewModel >> description [
 
 	^ description
 ]
 
 { #category : #accessing }
-GtMagritteAddItemViewModel >> description: anObject [
+GtMagritteAsyncAddItemViewModel >> description: anObject [
 
 	description := anObject
 ]
 
 { #category : #accessing }
-GtMagritteAddItemViewModel >> items [
-
-	^ items
-]
-
-{ #category : #accessing }
-GtMagritteAddItemViewModel >> items: anObject [
-
-	items := anObject
-]
-
-{ #category : #accessing }
-GtMagritteAddItemViewModel >> memento [
+GtMagritteAsyncAddItemViewModel >> memento [
 
 	^ memento
 ]
 
 { #category : #accessing }
-GtMagritteAddItemViewModel >> memento: anObject [
+GtMagritteAsyncAddItemViewModel >> memento: anObject [
 
 	memento := anObject
 ]
 
 { #category : #'private - event handling' }
-GtMagritteAddItemViewModel >> onClick: anEvent [
+GtMagritteAsyncAddItemViewModel >> onClick: anEvent [
 
 	| aNewItem aNewViewModel anExistingItems aNewItems aNewViewModels |
 	self memento ifNil: [ ^ self ].
 	self description ifNil: [ ^ self ].
-	self items ifNil: [ ^ self ].
 	self stencil ifNil: [ ^ self ].
 
 	aNewItem := self stencil create.
@@ -89,13 +62,13 @@ GtMagritteAddItemViewModel >> onClick: anEvent [
 ]
 
 { #category : #accessing }
-GtMagritteAddItemViewModel >> stencil [
+GtMagritteAsyncAddItemViewModel >> stencil [
 
 	^ stencil
 ]
 
 { #category : #accessing }
-GtMagritteAddItemViewModel >> stencil: aStencil [
+GtMagritteAsyncAddItemViewModel >> stencil: aStencil [
 
 	stencil := aStencil asStencil
 ]

@@ -112,16 +112,22 @@ GtMagritteAsyncElementBuilder >> addFieldElement: aFieldElement using: aDescript
 { #category : #'private - building' }
 GtMagritteAsyncElementBuilder >> addFlowListUsing: aDescription [
 
-	| aMemento aFlowElement |
+	| aMemento aFlowElement aValidationElement |
 	aMemento := self memento.
 
 	aFlowElement := GtMagritteAsyncBuilderUtility
 		                newFlowListMemento: aMemento
 		                using: aDescription.
 
+	aValidationElement := GtMagritteAsyncBuilderUtility
+		                      newValidationContainerWith: aFlowElement
+		                      memento: aMemento
+		                      using: aDescription.
+
+	aValidationElement matchParent.
 	self form matchParent.
 
-	self addFieldElement: aFlowElement using: aDescription
+	self addFieldElement: aValidationElement using: aDescription
 ]
 
 { #category : #'private - building' }

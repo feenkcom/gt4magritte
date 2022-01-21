@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'cache',
-		'mementoBlock'
+		'mementoBlock',
+		'actions'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -19,6 +20,24 @@ GtMagritteAsyncViewModel class >> forObject: anObject description: aDescription 
 
 	^ self new mementoBlock: [ 
 		  GtMagritteAsyncMemento model: anObject description: aDescription ]
+]
+
+{ #category : #accessing }
+GtMagritteAsyncViewModel >> actions [
+
+	^ actions
+]
+
+{ #category : #accessing }
+GtMagritteAsyncViewModel >> actions: anObject [
+
+	actions := anObject
+]
+
+{ #category : #'api - initialization' }
+GtMagritteAsyncViewModel >> addButton: aButtonDefinition [
+
+	self actions: (self actions copyWith: aButtonDefinition)
 ]
 
 { #category : #'api - converting' }
@@ -53,6 +72,7 @@ GtMagritteAsyncViewModel >> asElement [
 						form: theContainer;
 						memento: aMemento;
 						addButtons;
+						addButtons: self actions;
 						build ] ].
 
 	aContainer asyncFuture future: self mementoFuture.
@@ -66,12 +86,25 @@ GtMagritteAsyncViewModel >> asGtMagritteAsyncViewModel [
 	^ self
 ]
 
+{ #category : #accessing }
+GtMagritteAsyncViewModel >> cache [
+
+	^ cache
+]
+
+{ #category : #accessing }
+GtMagritteAsyncViewModel >> cache: anObject [
+
+	cache := anObject
+]
+
 { #category : #initialization }
 GtMagritteAsyncViewModel >> initialize [
 
 	super initialize.
 
-	cache := AsyncFutureCache new
+	cache := AsyncFutureCache new.
+	actions := #(  )
 ]
 
 { #category : #accessing }

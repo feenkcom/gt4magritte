@@ -115,8 +115,32 @@ GtMagritteAsyncBuilderUtility class >> newFlowListMemento: aMemento using: aDesc
 				sink: AsyncPeakSink new;
 				whenUpdate: [ :theFlowElement :aSink | 
 					| aViewModels |
-					aViewModels := aSink value currentValue collect:
-							               #asGtMagritteAsyncViewModel.
+					aViewModels := aSink value currentValue collect: [ :aModel | 
+							               | aViewModel |
+							               aViewModel := aModel asGtMagritteAsyncViewModel.
+							               aDescription definitive ifFalse: [ 
+									               aViewModel addButton:
+											               (GtMagritteButtonWithIconAction new
+												                icon: BrGlamorousVectorIcons remove;
+												                tooltip: 'Remove';
+												                action: [ :anItemMemento :aButton | 
+													                [ 
+													                self
+														                removeItemMemento: aMemento
+														                description: aDescription
+														                item: aModel ] asAsyncFuture await ]) ].
+
+							               aViewModel ].
+
+					(aDescription definitive or: [ aDescription newItemStencil isNil ]) 
+						ifFalse: [ 
+							| anAddViewModel |
+							anAddViewModel := GtMagritteAsyncAddItemViewModel new
+								                  memento: aMemento;
+								                  description: aDescription;
+								                  stencil: aDescription newItemStencil.
+							aViewModels := aViewModels copyWith: anAddViewModel ].
+
 					theFlowElement items: aViewModels ].
 			(aMemento readObservableValueUsing: aDescription) observe:
 				anElementSink ].
@@ -237,4 +261,15 @@ GtMagritteAsyncBuilderUtility class >> newValidationContainerWith: aFieldElement
 	aContainer addChild: anIssuesElement as: #issues.
 
 	^ aContainer
+]
+
+{ #category : #'private - support' }
+GtMagritteAsyncBuilderUtility class >> removeItemMemento: aMemento description: aDescription item: anItem [
+
+	| aNewCollection anObservable aValue |
+	anObservable := aMemento readObservableValueUsing: aDescription.
+	aValue := anObservable valueOrNil.
+	aNewCollection := aValue currentValue copyWithout: anItem.
+	aNewCollection = aValue currentValue ifFalse: [ 
+		anObservable value: (aValue copyWithCurrentValue: aNewCollection) ]
 ]
