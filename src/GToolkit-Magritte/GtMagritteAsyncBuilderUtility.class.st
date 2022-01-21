@@ -16,6 +16,31 @@ GtMagritteAsyncBuilderUtility class >> defaultThickness [
 	^ 3
 ]
 
+{ #category : #'private - building' }
+GtMagritteAsyncBuilderUtility class >> newCheckboxMemento: aMemento using: aDescription [
+
+	| aCheckbox |
+	aCheckbox := BrCheckbox new.
+	aCheckbox
+		aptitude: BrGlamorousCheckboxAptitude;
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeakSink new;
+				whenUpdate: [ :theCheckbox :aSink | 
+					theCheckbox checked: aSink value currentValue ].
+			(aMemento readObservableValueUsing: aDescription) observe:
+				anElementSink ];
+		whenCheckedDo: [ aMemento write: true using: aDescription ];
+		whenUncheckedDo: [ aMemento write: false using: aDescription ];
+		margin: (BlInsets
+				 top: 0
+				 right: 0
+				 bottom: self defaultSpaceNumber
+				 left: 3).
+
+	^ aCheckbox
+]
+
 { #category : #'api - ui' }
 GtMagritteAsyncBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
 
@@ -35,8 +60,8 @@ GtMagritteAsyncBuilderUtility class >> newEditableLabelWithMemento: aMemento usi
 			(aMemento readObservableValueUsing: aDescription) observe:
 				anElementSink ];
 		when: BrEditorAcceptWish do: [ :aWish | 
-		aWish consumed: true.
-		aMemento write: aWish text asString using: aDescription ];
+			aWish consumed: true.
+			aMemento write: aWish text asString using: aDescription ];
 		margin: (BlInsets bottom: self defaultSpaceNumber);
 		constraintsDo: [ :c | c grid vertical alignCenter ].
 
@@ -63,6 +88,28 @@ GtMagritteAsyncBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber usin
 				   bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
 				   left: 0);
 		  constraintsDo: [ :c | c grid vertical alignTop ]
+]
+
+{ #category : #'api - ui' }
+GtMagritteAsyncBuilderUtility class >> newFlowListMemento: aMemento using: aDescription [
+
+	| aFlowElement |
+	aFlowElement := BrFlowList new.
+	aFlowElement
+		matchParent;
+		stencil: aDescription blocItemStencil;
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeakSink new;
+				whenUpdate: [ :theFlowElement :aSink | 
+					| aViewModels |
+					aViewModels := aSink value currentValue collect:
+							               #asGtMagritteAsyncViewModel.
+					theFlowElement items: aViewModels ].
+			(aMemento readObservableValueUsing: aDescription) observe:
+				anElementSink ].
+
+	^ aFlowElement
 ]
 
 { #category : #'api - ui' }

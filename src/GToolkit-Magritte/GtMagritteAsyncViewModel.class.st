@@ -61,6 +61,12 @@ GtMagritteAsyncViewModel >> asElement [
 	^ aContainer
 ]
 
+{ #category : #'api - converting' }
+GtMagritteAsyncViewModel >> asGtMagritteAsyncViewModel [
+
+	^ self
+]
+
 { #category : #'private - accessing' }
 GtMagritteAsyncViewModel >> mementoFuture [
 
