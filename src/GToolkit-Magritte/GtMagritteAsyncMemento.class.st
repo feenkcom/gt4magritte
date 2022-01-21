@@ -68,33 +68,68 @@ GtMagritteAsyncMemento >> gtCacheFor: aView [
 		  priority: 10;
 		  items: [ self cache associations ];
 		  column: 'Name' text: [ :anAssoc | anAssoc key label ];
-		  column: 'Value' text: [ :anAssoc | 
-			  anAssoc value valueOrNil ifNotNil: #currentValue ifNil: [ '?' ] ]
+		  column: 'Value' stencil: [ :anAssoc | 
+			  | aLabel anObservable |
+			  anObservable := anAssoc value.
+			  aLabel := BrLabel new aptitude: BrGlamorousLabelAptitude.
+
+			  aLabel withAsyncSinkDo: [ :anElementSink | 
+					  anElementSink
+						  sink: AsyncPeakSink new;
+						  whenUpdate: [ :theLabel :aSink | 
+							  | aValue |
+							  aValue := aSink value.
+
+							  theLabel text:
+									  (aValue ifNotNil: #currentValue ifNil: [ '?' ]) ].
+					  anObservable observe: anElementSink ].
+
+			  aLabel ]
 		  weight: 2;
-		  column: 'Value' text: [ :anAssoc | 
-			  | aValue anOriginal |
-			  aValue := anAssoc value valueOrNil.
-			  aValue ifNil: [ '?' ] ifNotNil: [ 
-					  aValue isChanged
-						  ifFalse: [ '' ]
-						  ifTrue: [ 
-							  aValue originalValue asString asRopedText foreground:
-									  BrGlamorousColors disabledButtonTextColor ] ] ]
+		  column: 'Original Value' stencil: [ :anAssoc | 
+			  | aLabel anObservable |
+			  anObservable := anAssoc value.
+			  aLabel := BrLabel new aptitude: BrGlamorousLabelAptitude.
+			  aLabel withAsyncSinkDo: [ :anElementSink | 
+				  anElementSink
+					  sink: AsyncPeakSink new;
+					  whenUpdate: [ :theLabel :aSink | 
+						  | aValue |
+						  aValue := aSink value.
+						  aValue ifNil: [ theLabel text: '?' ] ifNotNil: [ 
+								  aValue isChanged
+									  ifFalse: [ theLabel text: '' ]
+									  ifTrue: [ 
+										  theLabel text:
+												  (aValue originalValue asString asRopedText foreground:
+														   BrGlamorousColors disabledButtonTextColor) ] ] ].
+				  anObservable observe: anElementSink ].
+
+			  aLabel ]
 		  weight: 2;
-		  column: 'Validation' text: [ :anAssoc | 
-			  | aValue anOriginal |
-			  aValue := anAssoc value valueOrNil.
-			  aValue ifNil: [ '?' ] ifNotNil: [ 
-					  aValue isValidated
-						  ifFalse: [ '?' ]
-						  ifTrue: [ 
-							  aValue isValid
-								  ifTrue: [ 
-									  'ok' asRopedText foreground:
-											  BrGlamorousColors successBackgroundColor ]
-								  ifFalse: [ 
-									  aValue issuesDescription asRopedText foreground:
-											  BrGlamorousColors errorBackgroundColor ] ] ] ]
+		  column: 'Validation' stencil: [ :anAssoc | 
+			  | aLabel anObservable |
+			  anObservable := anAssoc value.
+			  aLabel := BrLabel new aptitude: BrGlamorousLabelAptitude.
+
+			  aLabel withAsyncSinkDo: [ :anElementSink | 
+				  anElementSink
+					  sink: AsyncPeakSink new;
+					  whenUpdate: [ :theLabel :aSink | 
+						  | aValue aText |
+						  aValue := aSink value.
+						  aText := aValue ifNil: [ '?' ] ifNotNil: [ 
+								           aValue isSuccess
+									           ifTrue: [ 
+										           'ok' asRopedText foreground:
+												           BrGlamorousColors successBackgroundColor ]
+									           ifFalse: [ 
+										           aValue issuesDescription asRopedText foreground:
+												           BrGlamorousColors errorBackgroundColor ] ].
+						  theLabel text: aText ].
+				  (self validatorUsing: anAssoc key) observe: anElementSink ].
+
+			  aLabel ]
 		  weight: 2;
 		  send: [ :anAssoc | anAssoc value valueOrNil ];
 		  actionUpdateButtonTooltip: 'Update the list'
