@@ -103,6 +103,26 @@ GtMagritteAsyncViewModelExamples >> elementWithPrimaryAddress [
 	^ anElement
 ]
 
+{ #category : #'examples - primary address' }
+GtMagritteAsyncViewModelExamples >> elementWithPrimaryAddress_TwiceAsElement [
+
+	<gtExample>
+	| aViewModel anElementOne anElementTwo |
+	aViewModel := self asyncViewModelWithPrimaryAddress.
+	anElementOne := aViewModel asElement.
+	anElementTwo := aViewModel asElement.
+
+	self assert: anElementOne isNotNil.
+	self assert: anElementTwo isNotNil.
+	self assert: anElementOne ~= anElementTwo.
+
+	^ BrVerticalPane new
+		  fitContent;
+		  cellSpacing: 20;
+		  addChild: anElementOne;
+		  addChild: anElementTwo
+]
+
 { #category : #'examples - simple baseline' }
 GtMagritteAsyncViewModelExamples >> elementWithSimpleBaseline [
 
