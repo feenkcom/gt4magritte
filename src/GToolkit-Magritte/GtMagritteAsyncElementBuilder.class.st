@@ -3,10 +3,23 @@ Class {
 	#superclass : #MAVisitor,
 	#instVars : [
 		'memento',
-		'form'
+		'form',
+		'actions'
 	],
 	#category : #'GToolkit-Magritte-New-Builders'
 }
+
+{ #category : #accessing }
+GtMagritteAsyncElementBuilder >> actions [
+
+	^ actions
+]
+
+{ #category : #accessing }
+GtMagritteAsyncElementBuilder >> actions: anObject [
+
+	actions := anObject
+]
 
 { #category : #'private - building' }
 GtMagritteAsyncElementBuilder >> addBooleanField: aDescription [
@@ -23,6 +36,55 @@ GtMagritteAsyncElementBuilder >> addBooleanField: aDescription [
 		                      using: aDescription.
 
 	self addFieldElement: aValidationElement using: aDescription
+]
+
+{ #category : #'api - building' }
+GtMagritteAsyncElementBuilder >> addButtons [
+
+	self addButtons: { 
+			(GtMagritteButtonWithIconAction new
+				 icon: BrGlamorousVectorIcons accept;
+				 tooltip: 'Save';
+				 installOn: [ :aMemento :aButton | 
+					 aButton withAsyncSinkDo: [ :anElementSink | 
+							 anElementSink
+								 sink: AsyncPeakSink new;
+								 whenUpdate: [ :theButton :aSink | 
+									 | aStatus |
+									 aStatus := aSink value.
+									 aStatus isChanged
+										 ifTrue: [ 
+											 theButton visibility: BlVisibility visible.
+											 theButton enabled: aStatus isValid ]
+										 ifFalse: [ theButton visibility: BlVisibility hidden ] ].
+							 aMemento overallStatus observe: anElementSink ] ];
+				 action: [ :aMemento :aButton | 
+				 	[ aMemento commit ] asAsyncFuture await ]).
+
+			(GtMagritteButtonWithIconAction new
+				 icon: BrGlamorousVectorIcons cancel;
+				 tooltip: 'Cancel';
+				 installOn: [ :aMemento :aButton | 
+					 aButton withAsyncSinkDo: [ :anElementSink | 
+							 anElementSink
+								 sink: AsyncPeakSink new;
+								 whenUpdate: [ :theButton :aSink | 
+									 aSink value isChanged
+										 ifTrue: [ theButton visibility: BlVisibility visible ]
+										 ifFalse: [ theButton visibility: BlVisibility hidden ] ].
+							 aMemento overallStatus observe: anElementSink ] ];
+				 action: [ :aMemento :aButton | 
+				 	[ aMemento reset ] asAsyncFuture await ]) }
+]
+
+{ #category : #'api - building' }
+GtMagritteAsyncElementBuilder >> addButtons: aCollection [
+
+	"#addButtons: is part of the existing Morphic/Seaside API.
+	We store the selectors instead of constructing the buttons to defer all element creation to first element access
+	"
+
+	self actions: (self actions copyWithAll: aCollection)
 ]
 
 { #category : #'private - building' }
@@ -108,7 +170,22 @@ GtMagritteAsyncElementBuilder >> build [
 		assert: [ self form isNotNil ]
 		description: [ 'Form element must be defined' ].
 
-	self visit: self objectDescription
+	self visit: self objectDescription.
+	self buildActions
+	
+]
+
+{ #category : #'private - building' }
+GtMagritteAsyncElementBuilder >> buildActions [
+
+	| aToolbar |
+	self hasActions ifFalse: [ ^ self ].
+
+	aToolbar := GtMagritteAsyncBuilderUtility
+		            newToolbarWithActions: self actions
+		            memento: self memento.
+
+	self form addChild: aToolbar as: #toolbar
 ]
 
 { #category : #'private - building' }
@@ -127,6 +204,20 @@ GtMagritteAsyncElementBuilder >> form [
 GtMagritteAsyncElementBuilder >> form: anObject [
 
 	form := anObject
+]
+
+{ #category : #'private - building' }
+GtMagritteAsyncElementBuilder >> hasActions [
+
+	^ self actions isNotEmpty
+]
+
+{ #category : #initialization }
+GtMagritteAsyncElementBuilder >> initialize [
+
+	super initialize.
+
+	actions := #(  )
 ]
 
 { #category : #accessing }

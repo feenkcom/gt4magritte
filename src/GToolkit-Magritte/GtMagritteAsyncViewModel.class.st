@@ -54,6 +54,7 @@ GtMagritteAsyncViewModel >> asElement [
 					GtMagritteAsyncElementBuilder new
 						form: theContainer;
 						memento: aMemento;
+						addButtons;
 						build ] ].
 
 	aContainer asyncFuture future: self mementoFuture.

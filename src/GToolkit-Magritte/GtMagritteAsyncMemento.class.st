@@ -3,7 +3,9 @@ Class {
 	#superclass : #MAMemento,
 	#instVars : [
 		'cache',
-		'validators'
+		'validators',
+		'overallStatus',
+		'internalStatus'
 	],
 	#category : #'GToolkit-Magritte-New-Models'
 }
@@ -18,6 +20,29 @@ GtMagritteAsyncMemento class >> isAbstract [
 GtMagritteAsyncMemento >> cache [
 
 	^ cache
+]
+
+{ #category : #actions }
+GtMagritteAsyncMemento >> commit [
+
+	super commit.
+	self push: self cache.
+	self reset
+]
+
+{ #category : #private }
+GtMagritteAsyncMemento >> computeOverallStatus [
+
+	| isValid isUnchanged |
+	isValid := self cache allSatisfy: [ :e | 
+		           e valueOrNil isValidated and: [ e valueOrNil isValid ] ].
+
+	isUnchanged := self cache allSatisfy: [ :e | 
+		               e valueOrNil isChanged not ].
+
+	^ GtMagritteAsyncOverallStatus new
+		  isValid: isValid;
+		  isChanged: isUnchanged not
 ]
 
 { #category : #private }
@@ -81,7 +106,17 @@ GtMagritteAsyncMemento >> initialize [
 	super initialize.
 
 	cache := Dictionary new.
-	validators := Dictionary new
+	validators := Dictionary new.
+	internalStatus := AsyncObservableValue new.
+	overallStatus := (internalStatus observe map: [ :aValidationResult | 
+		                  self computeOverallStatus ]) asAsyncObservable
+]
+
+{ #category : #accessing }
+GtMagritteAsyncMemento >> overallStatus [
+
+	<return: #AsyncObservableValue of: #GtMagritteAsyncOverallStatus>
+	^ overallStatus
 ]
 
 { #category : #private }
@@ -109,6 +144,20 @@ GtMagritteAsyncMemento >> pullRaw [
 			at: eachDescription
 			put: (self createValueUsing: eachDescription) ].
 	^ aResult
+]
+
+{ #category : #private }
+GtMagritteAsyncMemento >> push: aDictionary [
+
+	"Utility method to push a dictionary mapping descriptions to values into the model."
+
+	aDictionary keysAndValuesDo: [ :aDescription :anObservable | 
+		(aDescription isVisible and: [ 
+			 aDescription isReadOnly not and: [ 
+				 anObservable valueOrNil isChanged ] ]) ifTrue: [ 
+			self model
+				write: anObservable valueOrNil currentValue
+				using: aDescription ] ]
 ]
 
 { #category : #actions }
@@ -150,8 +199,11 @@ GtMagritteAsyncMemento >> setCache: aDictionary [
 			at: aKey
 			ifPresent: [ :theObservable | "ignore" ]
 			ifAbsentPut: [ 
-				(anObservable observe map: [ :aValue | self validateValue: aValue ])
-					asAsyncObservable ] ].
+				| aValidator |
+				aValidator := (anObservable observe map: [ :aValue | 
+					               self validateValue: aValue ]) asAsyncObservable.
+				aValidator observe: internalStatus.
+				aValidator ] ].
 
 	validators copy keysAndValuesDo: [ :aKey :anObservable | 
 		(aDictionary includesKey: aKey) ifFalse: [ 
@@ -182,6 +234,12 @@ GtMagritteAsyncMemento >> validatorUsing: aDescription [
 
 	<return: #AsyncObservableValue of: #GtMagritteValue>
 	^ validators at: aDescription
+]
+
+{ #category : #private }
+GtMagritteAsyncMemento >> validators [
+
+	^ validators
 ]
 
 { #category : #actions }

@@ -140,6 +140,26 @@ GtMagritteAsyncBuilderUtility class >> newOneLineEditorWithMemento: aMemento usi
 	^ anEditor
 ]
 
+{ #category : #'private - building' }
+GtMagritteAsyncBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
+
+	| aToolbar |
+	aToolbar := BrToolbar new
+		            aptitude: BrGlamorousToolbarAptitude new;
+		            fitContent;
+		            constraintsDo: [ :c | 
+			            c grid horizontal alignLeft.
+			            c grid horizontal span: 2.
+			            c linear horizontal alignLeft ].
+
+	aCollection do: [ :eachAction | 
+		| aButton |
+		aButton := eachAction asBlockButtonWithMemento: aMemento.
+		aToolbar addItem: aButton ].
+
+	^ aToolbar
+]
+
 { #category : #'api - ui' }
 GtMagritteAsyncBuilderUtility class >> newValidationContainerWith: aFieldElement memento: aMemento using: aDescription [
 
