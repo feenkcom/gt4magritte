@@ -2,7 +2,8 @@ Class {
 	#name : #GtMagritteAsyncViewModel,
 	#superclass : #Object,
 	#instVars : [
-		'mementoFuture'
+		'cache',
+		'mementoBlock'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -10,17 +11,14 @@ Class {
 { #category : #'api - instance creation' }
 GtMagritteAsyncViewModel class >> forObject: anObject [
 
-	^ self new mementoFuture:
-		  [ GtMagritteAsyncMemento model: anObject ] asAsyncFuture
+	^ self new mementoBlock: [ GtMagritteAsyncMemento model: anObject ]
 ]
 
 { #category : #'api - instance creation' }
 GtMagritteAsyncViewModel class >> forObject: anObject description: aDescription [
 
-	^ self new mementoFuture:
-		  [ 
+	^ self new mementoBlock: [ 
 		  GtMagritteAsyncMemento model: anObject description: aDescription ]
-			  asAsyncFuture
 ]
 
 { #category : #'api - converting' }
@@ -68,18 +66,30 @@ GtMagritteAsyncViewModel >> asGtMagritteAsyncViewModel [
 	^ self
 ]
 
-{ #category : #'private - accessing' }
-GtMagritteAsyncViewModel >> mementoFuture [
+{ #category : #initialization }
+GtMagritteAsyncViewModel >> initialize [
 
-	^ mementoFuture
+	super initialize.
+
+	cache := AsyncFutureCache new
 ]
 
-{ #category : #'api - initialization' }
-GtMagritteAsyncViewModel >> mementoFuture: anAsyncFuture [
+{ #category : #accessing }
+GtMagritteAsyncViewModel >> mementoBlock [
 
-	self
-		assert: [ mementoFuture isNil ]
-		description: [ 'Memento future can be initialized only once' ].
+	^ mementoBlock
+]
 
-	mementoFuture := anAsyncFuture
+{ #category : #accessing }
+GtMagritteAsyncViewModel >> mementoBlock: anObject [
+
+	mementoBlock := anObject
+]
+
+{ #category : #accessing }
+GtMagritteAsyncViewModel >> mementoFuture [
+
+	^ AsyncCachedFuture
+		  forFuture: self mementoBlock asAsyncFuture
+		  cache: cache
 ]

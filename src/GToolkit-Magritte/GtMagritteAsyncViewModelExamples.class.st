@@ -85,7 +85,7 @@ GtMagritteAsyncViewModelExamples >> elementWithPersonObjectWithTwoAddresses_Twic
 	self assert: anElementOne ~= anElementTwo.
 
 	^ BrVerticalPane new
-		  fitContent;
+		  matchParent;
 		  addChild: anElementOne;
 		  addChild: anElementTwo
 ]
