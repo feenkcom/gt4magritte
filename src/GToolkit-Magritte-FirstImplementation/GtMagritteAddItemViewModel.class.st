@@ -85,7 +85,17 @@ GtMagritteAddItemViewModel >> onClick: anEvent [
 	"Update memento"
 	anExistingItems := self memento readUsing: self description.
 	aNewItems := anExistingItems copyWith: aNewItem.
-	self memento write: aNewItems using: self description
+	self memento write: aNewItems using: self description.
+
+	self callback ifNil: [ ^ self ].
+
+	"Update widget"
+	aNewViewModel := aNewItem asGtMagritteViewModel.
+	aNewViewModels := self items copyWith: aNewViewModel.
+
+	self items: aNewViewModels.
+
+	self callback cull: (aNewViewModels copyWith: self)
 ]
 
 { #category : #accessing }
