@@ -30,6 +30,22 @@ GtMagritteAsyncViewModelExamples >> asyncViewModelWithPrimaryAddress [
 	^ aViewModel
 ]
 
+{ #category : #'examples - simple baseline' }
+GtMagritteAsyncViewModelExamples >> asyncViewModelWithSimpleBaseline [
+
+	<gtExample>
+	| aViewModel anObject aResult aDescription |
+	anObject := self simpleBaselineObject.
+	aDescription := self simpleBaselineDescription.
+	aViewModel := GtMagritteAsyncViewModel
+		              forObject: anObject
+		              description: aDescription.
+
+	self assert: aViewModel mementoFuture isAsyncFuture.
+
+	^ aViewModel
+]
+
 { #category : #'examples - view model' }
 GtMagritteAsyncViewModelExamples >> basicAsyncViewModel [
 
@@ -87,6 +103,19 @@ GtMagritteAsyncViewModelExamples >> elementWithPrimaryAddress [
 	^ anElement
 ]
 
+{ #category : #'examples - simple baseline' }
+GtMagritteAsyncViewModelExamples >> elementWithSimpleBaseline [
+
+	<gtExample>
+	| aViewModel anElement |
+	aViewModel := self asyncViewModelWithSimpleBaseline.
+	anElement := aViewModel asElement.
+	
+	self assert: anElement isNotNil.
+
+	^ anElement
+]
+
 { #category : #'examples - model' }
 GtMagritteAsyncViewModelExamples >> personObjectWithTwoAddresses [
 
@@ -99,4 +128,18 @@ GtMagritteAsyncViewModelExamples >> primaryAddressObject [
 
 	<gtExample>
 	^ GtMagritteModelExamples new primaryAddressObject
+]
+
+{ #category : #'examples - model' }
+GtMagritteAsyncViewModelExamples >> simpleBaselineDescription [
+
+	<gtExample>
+	^ GtMagritteModelExamples new simpleBaselineDescription
+]
+
+{ #category : #'examples - model' }
+GtMagritteAsyncViewModelExamples >> simpleBaselineObject [
+
+	<gtExample>
+	^ GtMagritteModelExamples new simpleBaselineObject
 ]

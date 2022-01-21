@@ -46,7 +46,6 @@ GtMagritteAsyncBuilderUtility class >> newEditableLabelWithMemento: aMemento usi
 
 	| anEditor |
 	anEditor := BrEditableLabel new.
-
 	anEditor
 		aptitude:
 			BrGlamorousEditableLabelAptitude new glamorousRegularFontAndSize;
@@ -55,8 +54,8 @@ GtMagritteAsyncBuilderUtility class >> newEditableLabelWithMemento: aMemento usi
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
 				sink: AsyncPeakSink new;
-				whenUpdate: [ :aLabel :aSink | 
-					aLabel text: aSink value currentValue ].
+				whenUpdate: [ :theEditor :aSink | 
+					theEditor text: aSink value currentValue ].
 			(aMemento readObservableValueUsing: aDescription) observe:
 				anElementSink ];
 		when: BrEditorAcceptWish do: [ :aWish | 
@@ -110,6 +109,35 @@ GtMagritteAsyncBuilderUtility class >> newFlowListMemento: aMemento using: aDesc
 				anElementSink ].
 
 	^ aFlowElement
+]
+
+{ #category : #'api - ui' }
+GtMagritteAsyncBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
+
+	| anEditor |
+	anEditor := BrEditor new.
+	anEditor
+		aptitude:
+			BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize;
+		vFitContent;
+		hFitContentLimited;
+		margin: (BlInsets bottom: self defaultSpaceNumber);
+		constraintsDo: [ :c | 
+			c grid vertical alignCenter.
+			c minWidth: 20 ];
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeakSink new;
+				whenUpdate: [ :theEditor :aSink | 
+					theEditor text: aSink value currentValue ].
+			(aMemento readObservableValueUsing: aDescription) observe:
+				anElementSink ].
+
+	anEditor editor when: BrTextEditorModifiedEvent do: [ :anEvent | 
+		| aPromise |
+		aMemento write: anEvent text asString using: aDescription ].
+
+	^ anEditor
 ]
 
 { #category : #'api - ui' }

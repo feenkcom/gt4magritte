@@ -68,9 +68,15 @@ GtMagritteAsyncElementBuilder >> addStringFieldUsing: aDescription [
 	| aMemento anInputElement aLabel aValidationElement |
 	aMemento := self memento.
 
-	anInputElement := GtMagritteAsyncBuilderUtility
-		                  newEditableLabelWithMemento: aMemento
-		                  using: aDescription.
+	aDescription isAlwaysEditable
+		ifFalse: [ 
+			anInputElement := GtMagritteAsyncBuilderUtility
+				                  newEditableLabelWithMemento: aMemento
+				                  using: aDescription ]
+		ifTrue: [ 
+			anInputElement := GtMagritteAsyncBuilderUtility
+				                  newOneLineEditorWithMemento: aMemento
+				                  using: aDescription ].
 
 	aDescription blocCompletion ifNotNil: [ :aStencil | 
 		(GtCompletionController on: anInputElement strategy: aStencil create)
