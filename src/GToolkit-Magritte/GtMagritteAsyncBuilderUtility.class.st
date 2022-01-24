@@ -241,36 +241,59 @@ GtMagritteAsyncBuilderUtility class >> newValidationContainerWith: aFieldElement
 ]
 
 { #category : #'private - support' }
-GtMagritteAsyncBuilderUtility class >> onFlowList: theFlowElement sinkUpdate: aSink memento: aMemento description: aDescription [
+GtMagritteAsyncBuilderUtility class >> onFlowList: aFlowElement sinkUpdate: aSink memento: aMemento description: aDescription [
 
-	| aViewModels |
-	aViewModels := aSink value currentValue collect: [ :aModel | 
-		               | aViewModel |
-		               aViewModel := aModel asGtMagritteAsyncViewModel.
-		               aDescription definitive ifFalse: [ 
-			               aViewModel addButton:
-				               (GtMagritteButtonWithIconAction new
-					                icon: BrGlamorousVectorIcons remove;
-					                tooltip: 'Remove';
-					                action: [ :anItemMemento :aButton | 
-						                [ 
-						                self
-							                removeItem: aModel
-							                memento: aMemento
-							                description: aDescription ] asAsyncFuture await ]) ].
+	| aModels anExistingViewModels isEditable aViewModels |
+	aModels := aSink value currentValue.
+	anExistingViewModels := aFlowElement items.
+	isEditable := aDescription definitive not and: [ 
+		              aDescription newItemStencil isNotNil ].
 
-		               aViewModel ].
+	aViewModels := Array
+		               new: aModels size + isEditable asBit
+		               streamContents: [ :aStream | 
+			               self
+				               recycleViewModels: anExistingViewModels
+				               forModels: aModels
+				               into: aStream
+				               memento: aMemento
+				               description: aDescription.
 
-	(aDescription definitive or: [ aDescription newItemStencil isNil ]) 
-		ifFalse: [ 
-			| anAddViewModel |
-			anAddViewModel := GtMagritteAsyncAddItemViewModel new
-				                  memento: aMemento;
-				                  description: aDescription;
-				                  stencil: aDescription newItemStencil.
-			aViewModels := aViewModels copyWith: anAddViewModel ].
+			               isEditable ifTrue: [ 
+				               | anAddViewModel |
+				               anAddViewModel := GtMagritteAsyncAddItemViewModel
+					                                 new
+					                                 memento: aMemento;
+					                                 description: aDescription;
+					                                 stencil:
+						                                 aDescription newItemStencil.
+				               aStream nextPut: anAddViewModel ] ].
 
-	^ theFlowElement items: aViewModels
+	^ aFlowElement items: aViewModels
+]
+
+{ #category : #'private - support' }
+GtMagritteAsyncBuilderUtility class >> recycleViewModels: anExistingViewModels forModels: aModels into: aStream memento: aMemento description: aDescription [
+
+	aModels do: [ :aModel | 
+		anExistingViewModels
+			detect: [ :eachViewModel | eachViewModel isForObject: aModel ]
+			ifFound: [ :aViewModel | aStream nextPut: aViewModel ]
+			ifNone: [ 
+				| aViewModel |
+				aViewModel := aModel asGtMagritteAsyncViewModel.
+				aDescription definitive ifFalse: [ 
+					aViewModel addButton: (GtMagritteButtonWithIconAction new
+							 icon: BrGlamorousVectorIcons remove;
+							 tooltip: 'Remove';
+							 action: [ :anItemMemento :aButton | 
+								 [ 
+								 self
+									 removeItem: aModel
+									 memento: aMemento
+									 description: aDescription ] asAsyncFuture await ]) ].
+
+				aStream nextPut: aViewModel ] ]
 ]
 
 { #category : #'private - support' }

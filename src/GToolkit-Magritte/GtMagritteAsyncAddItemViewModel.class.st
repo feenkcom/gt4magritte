@@ -33,6 +33,12 @@ GtMagritteAsyncAddItemViewModel >> description: anObject [
 	description := anObject
 ]
 
+{ #category : #'api - testing' }
+GtMagritteAsyncAddItemViewModel >> isForObject: anObject [
+
+	^ false
+]
+
 { #category : #accessing }
 GtMagritteAsyncAddItemViewModel >> memento [
 

@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'cache',
 		'mementoBlock',
-		'actions'
+		'actions',
+		'object'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -12,14 +13,18 @@ Class {
 { #category : #'api - instance creation' }
 GtMagritteAsyncViewModel class >> forObject: anObject [
 
-	^ self new mementoBlock: [ GtMagritteAsyncMemento model: anObject ]
+	^ self new
+		  mementoBlock: [ GtMagritteAsyncMemento model: anObject ]
+		  object: anObject
 ]
 
 { #category : #'api - instance creation' }
 GtMagritteAsyncViewModel class >> forObject: anObject description: aDescription [
 
-	^ self new mementoBlock: [ 
-		  GtMagritteAsyncMemento model: anObject description: aDescription ]
+	^ self new
+		  mementoBlock: [ 
+		  	GtMagritteAsyncMemento model: anObject description: aDescription ]
+		  object: anObject
 ]
 
 { #category : #accessing }
@@ -38,6 +43,12 @@ GtMagritteAsyncViewModel >> actions: anObject [
 GtMagritteAsyncViewModel >> addButton: aButtonDefinition [
 
 	self actions: (self actions copyWith: aButtonDefinition)
+]
+
+{ #category : #'api - initialization' }
+GtMagritteAsyncViewModel >> addButtons: aCollection [
+
+	self actions: (self actions copyWithAll: aCollection)
 ]
 
 { #category : #'api - converting' }
@@ -86,18 +97,6 @@ GtMagritteAsyncViewModel >> asGtMagritteAsyncViewModel [
 	^ self
 ]
 
-{ #category : #accessing }
-GtMagritteAsyncViewModel >> cache [
-
-	^ cache
-]
-
-{ #category : #accessing }
-GtMagritteAsyncViewModel >> cache: anObject [
-
-	cache := anObject
-]
-
 { #category : #initialization }
 GtMagritteAsyncViewModel >> initialize [
 
@@ -107,22 +106,27 @@ GtMagritteAsyncViewModel >> initialize [
 	actions := #(  )
 ]
 
-{ #category : #accessing }
-GtMagritteAsyncViewModel >> mementoBlock [
+{ #category : #'api - testing' }
+GtMagritteAsyncViewModel >> isForObject: anObject [
 
-	^ mementoBlock
+	^ object == anObject
 ]
 
-{ #category : #accessing }
-GtMagritteAsyncViewModel >> mementoBlock: anObject [
+{ #category : #'api - initialization' }
+GtMagritteAsyncViewModel >> mementoBlock: aBlock object: anObject [
 
-	mementoBlock := anObject
+	self
+		assert: [ mementoBlock isNil ]
+		description: [ 'Memento block can be initialized only once' ].
+
+	mementoBlock := aBlock.
+	object := anObject
 ]
 
 { #category : #accessing }
 GtMagritteAsyncViewModel >> mementoFuture [
 
 	^ AsyncCachedFuture
-		  forFuture: self mementoBlock asAsyncFuture
+		  forFuture: mementoBlock asAsyncFuture
 		  cache: cache
 ]
