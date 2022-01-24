@@ -22,5 +22,5 @@ BaselineOfGToolkit4Magritte >> baseline: spec [
 
 		spec
 			package: 'GToolkit-Magritte'
-			with: [ spec requires: #( Magritte ) ] ]
+			with: [ spec requires: #( 'MagritteForGToolkit' ) ] ]
 ]
