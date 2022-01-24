@@ -42,39 +42,8 @@ GtMagritteAsyncElementBuilder >> addBooleanField: aDescription [
 GtMagritteAsyncElementBuilder >> addButtons [
 
 	self addButtons: { 
-			(GtMagritteButtonWithIconAction new
-				 icon: BrGlamorousVectorIcons accept;
-				 tooltip: 'Save';
-				 installOn: [ :aMemento :aButton | 
-					 aButton withAsyncSinkDo: [ :anElementSink | 
-							 anElementSink
-								 sink: AsyncPeakSink new;
-								 whenUpdate: [ :theButton :aSink | 
-									 | aStatus |
-									 aStatus := aSink value.
-									 aStatus isChanged
-										 ifTrue: [ 
-											 theButton visibility: BlVisibility visible.
-											 theButton enabled: aStatus isValid ]
-										 ifFalse: [ theButton visibility: BlVisibility hidden ] ].
-							 aMemento overallStatus observe: anElementSink ] ];
-				 action: [ :aMemento :aButton | 
-				 	[ aMemento commit ] asAsyncFuture await ]).
-
-			(GtMagritteButtonWithIconAction new
-				 icon: BrGlamorousVectorIcons cancel;
-				 tooltip: 'Cancel';
-				 installOn: [ :aMemento :aButton | 
-					 aButton withAsyncSinkDo: [ :anElementSink | 
-							 anElementSink
-								 sink: AsyncPeakSink new;
-								 whenUpdate: [ :theButton :aSink | 
-									 aSink value isChanged
-										 ifTrue: [ theButton visibility: BlVisibility visible ]
-										 ifFalse: [ theButton visibility: BlVisibility hidden ] ].
-							 aMemento overallStatus observe: anElementSink ] ];
-				 action: [ :aMemento :aButton | 
-				 	[ aMemento reset ] asAsyncFuture await ]) }
+			self newSaveButton.
+			self newCancelButton }
 ]
 
 { #category : #'api - building' }
@@ -191,6 +160,16 @@ GtMagritteAsyncElementBuilder >> buildActions [
 		            newToolbarWithActions: self actions
 		            memento: self memento.
 
+	self form
+		when: BlMouseEnterEvent
+		do: [ :anEvent | aToolbar visibility: BlVisibility visible ].
+
+	self form
+		when: BlMouseLeaveEvent
+		do: [ :anEvent | aToolbar visibility: BlVisibility hidden ].
+
+	aToolbar visibility: BlVisibility hidden.
+
 	self form addChild: aToolbar as: #toolbar
 ]
 
@@ -236,6 +215,46 @@ GtMagritteAsyncElementBuilder >> memento [
 GtMagritteAsyncElementBuilder >> memento: anObject [
 
 	memento := anObject
+]
+
+{ #category : #'api - building' }
+GtMagritteAsyncElementBuilder >> newCancelButton [
+
+	^ GtMagritteButtonWithIconAction new
+		  icon: BrGlamorousVectorIcons cancel;
+		  tooltip: 'Cancel';
+		  installOn: [ :aMemento :aButton | 
+			  aButton withAsyncSinkDo: [ :anElementSink | 
+					  anElementSink
+						  sink: AsyncPeakSink new;
+						  whenUpdate: [ :theButton :aSink | 
+							  aSink value isChanged
+								  ifTrue: [ theButton enabled: true ]
+								  ifFalse: [ theButton enabled: false ] ].
+					  aMemento overallStatus observe: anElementSink ] ];
+		  action: [ :aMemento :aButton | 
+		  [ aMemento reset ] asAsyncFuture await ]
+]
+
+{ #category : #'api - building' }
+GtMagritteAsyncElementBuilder >> newSaveButton [
+
+	^ GtMagritteButtonWithIconAction new
+		  icon: BrGlamorousVectorIcons accept;
+		  tooltip: 'Save';
+		  installOn: [ :aMemento :aButton | 
+			  aButton withAsyncSinkDo: [ :anElementSink | 
+					  anElementSink
+						  sink: AsyncPeakSink new;
+						  whenUpdate: [ :theButton :aSink | 
+							  | aStatus |
+							  aStatus := aSink value.
+							  aStatus isChanged
+								  ifTrue: [ theButton enabled: aStatus isValid ]
+								  ifFalse: [ theButton enabled: false ] ].
+					  aMemento overallStatus observe: anElementSink ] ];
+		  action: [ :aMemento :aButton | 
+		  [ aMemento commit ] asAsyncFuture await ]
 ]
 
 { #category : #'private - accessing' }
