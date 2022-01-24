@@ -143,9 +143,7 @@ GtMagritteDummyPostalAddress >> unsubscribe: aReceiver [
 { #category : #subscriptions }
 GtMagritteDummyPostalAddress >> weak [
 
-	announcer ifNil: [ announcer := Announcer new ].
-
-	^ announcer weak
+	^ self
 ]
 
 { #category : #subscriptions }
