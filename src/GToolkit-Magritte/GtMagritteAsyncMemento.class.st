@@ -5,7 +5,8 @@ Class {
 		'cache',
 		'validators',
 		'overallStatus',
-		'internalStatus'
+		'internalStatus',
+		'subscriptions'
 	],
 	#category : #'GToolkit-Magritte-Models'
 }
@@ -48,13 +49,9 @@ GtMagritteAsyncMemento >> computeOverallStatus [
 { #category : #private }
 GtMagritteAsyncMemento >> createValueUsing: aDescription [
 
-	| aValue |
-	aValue := self model readUsing: aDescription.
-
-	^ GtMagritteValue new
-		  description: aDescription;
-		  currentValue: aValue;
-		  originalValue: aValue
+	^ GtMagritteAsyncBuilderUtility
+		  createValueFrom: self model
+		  using: aDescription
 ]
 
 { #category : #'gt - extensions' }
@@ -131,6 +128,20 @@ GtMagritteAsyncMemento >> gtCacheFor: aView [
 
 			  aLabel ]
 		  weight: 2;
+		  column: 'Subscribed' text: [ :anAssoc | 
+			  | isSubscribed |
+			  isSubscribed := false.
+			  subscriptions ifNotNil: [ :aDictionary | 
+				  (aDictionary includesKey: anAssoc key) ifTrue: [ 
+					  isSubscribed := true ] ].
+			  isSubscribed
+				  ifTrue: [ 
+					  'yes' asRopedText foreground:
+						  BrGlamorousColors successBackgroundColor ]
+				  ifFalse: [ 
+					  'no' asRopedText foreground:
+						  BrGlamorousColors disabledButtonTextColor ] ]
+		  width: 70;
 		  send: [ :anAssoc | anAssoc value valueOrNil ];
 		  actionUpdateButtonTooltip: 'Update the list'
 ]
@@ -142,6 +153,7 @@ GtMagritteAsyncMemento >> initialize [
 
 	cache := Dictionary new.
 	validators := Dictionary new.
+	subscriptions := Dictionary new.
 	internalStatus := AsyncObservableValue new.
 	overallStatus := (internalStatus observe map: [ :aValidationResult | 
 		                  self computeOverallStatus ]) asAsyncObservable
@@ -219,19 +231,28 @@ GtMagritteAsyncMemento >> reset [
 { #category : #private }
 GtMagritteAsyncMemento >> setCache: aDictionary [
 
-	aDictionary keysAndValuesDo: [ :aKey :aValue | 
+	"Add new descriptions"
+
+	aDictionary keysAndValuesDo: [ :aDescription :aValue | 
 		cache
-			at: aKey
+			at: aDescription
 			ifPresent: [ :anObservable | anObservable value: aValue ]
-			ifAbsentPut: [ AsyncObservableValue new value: aValue ] ].
+			ifAbsentPut: [ 
+				| anObservable |
+				anObservable := AsyncObservableValue new value: aValue.
+				self subscribeToModelUsing: aDescription observable: anObservable.
+				anObservable ] ].
 
-	cache copy keysAndValuesDo: [ :aKey :anObservable | 
-		(aDictionary includesKey: aKey) ifFalse: [ 
-			cache removeKey: aKey ifAbsent: [ "ignore" ] ] ].
+	"Remove old descriptions"
+	cache copy keysAndValuesDo: [ :aDescription :anObservable | 
+		(aDictionary includesKey: aDescription) ifFalse: [ 
+			cache removeKey: aDescription ifAbsent: [ "ignore" ].
+			self unsubscribeFromModelUsing: aDescription ] ].
 
-	cache keysAndValuesDo: [ :aKey :anObservable | 
+	"Add new validators"
+	cache keysAndValuesDo: [ :aDescription :anObservable | 
 		validators
-			at: aKey
+			at: aDescription
 			ifPresent: [ :theObservable | "ignore" ]
 			ifAbsentPut: [ 
 				| aValidator |
@@ -240,9 +261,41 @@ GtMagritteAsyncMemento >> setCache: aDictionary [
 				aValidator observe: internalStatus.
 				aValidator ] ].
 
-	validators copy keysAndValuesDo: [ :aKey :anObservable | 
-		(aDictionary includesKey: aKey) ifFalse: [ 
-			validators removeKey: aKey ifAbsent: [ "ignore" ] ] ]
+	"Remove old validators"
+	validators copy keysAndValuesDo: [ :aDescription :anObservable | 
+		(aDictionary includesKey: aDescription) ifFalse: [ 
+			validators removeKey: aDescription ifAbsent: [ "ignore" ] ] ]
+]
+
+{ #category : #private }
+GtMagritteAsyncMemento >> subscribeToModelUsing: aDescription observable: anObservable [
+
+	| aHandler |
+	aDescription announcerSubscriptionsDo: [ :eachAssoc | 
+		eachAssoc value value ifNotNil: [ :anAnnouncer | 
+			anAnnouncer weak
+				when: eachAssoc key
+				send: #onAnnouncement:
+				to: (aHandler := GtMagritteAsyncMementoAnnouncementHandler new
+						             model: self model;
+						             memento: self;
+						             description: aDescription;
+						             observable: anObservable).
+
+			subscriptions
+				at: aDescription
+				ifPresent: [ :aCollection | aCollection add: aHandler ]
+				ifAbsentPut: [ OrderedCollection with: aHandler ] ] ]
+]
+
+{ #category : #private }
+GtMagritteAsyncMemento >> unsubscribeFromModelUsing: aDescription [
+
+	subscriptions removeKey: aDescription ifAbsent: [ "ignore" ].
+
+	aDescription announcerSubscriptionsDo: [ :eachAssoc | 
+		eachAssoc value value ifNotNil: [ :anAnnouncer | 
+			anAnnouncer unsubscribe: self ] ]
 ]
 
 { #category : #private }

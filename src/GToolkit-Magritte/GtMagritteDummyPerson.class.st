@@ -15,9 +15,15 @@ GtMagritteDummyPerson >> addresses [
 ]
 
 { #category : #accessing }
-GtMagritteDummyPerson >> addresses: anObject [
+GtMagritteDummyPerson >> addresses: aCollection [
 
-	addresses := anObject
+	addresses := aCollection.
+
+	aCollection do: [ :eachAddress | 
+		eachAddress
+			when: GtMagritteDummyBePrimaryPostalAddressRequest
+			send: #onPrimaryAddressRequest:
+			to: self ]
 ]
 
 { #category : #'magritte-accessing' }
@@ -78,4 +84,12 @@ GtMagritteDummyPerson >> name [
 GtMagritteDummyPerson >> name: anObject [
 
 	name := anObject
+]
+
+{ #category : #'private - announcement handling' }
+GtMagritteDummyPerson >> onPrimaryAddressRequest: anAnnouncement [
+
+	self addresses do: [ :anAddress | 
+		anAddress == anAnnouncement address ifFalse: [ 
+			anAddress isPrimary: false ] ]
 ]

@@ -18,6 +18,24 @@ GtMagritteValue >> copyWithCurrentValue: anObject [
 		  validation: nil
 ]
 
+{ #category : #copying }
+GtMagritteValue >> copyWithOriginalValue: anObject [
+
+	| aCopy |
+	aCopy := self copy.
+
+	aCopy isChanged
+		ifTrue: [ 
+			aCopy originalValue: anObject ]
+		ifFalse: [ 
+			aCopy
+				currentValue: anObject;
+				originalValue: anObject;
+				validation: nil ].
+
+	^ aCopy
+]
+
 { #category : #accessing }
 GtMagritteValue >> currentValue [
 

@@ -4,10 +4,19 @@ Class {
 	#instVars : [
 		'street',
 		'city',
-		'isPrimary'
+		'isPrimary',
+		'announcer'
 	],
 	#category : #'GToolkit-Magritte-Examples - Support'
 }
+
+{ #category : #subscriptions }
+GtMagritteDummyPostalAddress >> announce: anAnnouncement [
+
+	announcer ifNil: [ ^ self ].
+
+	announcer announce: anAnnouncement
+]
 
 { #category : #accessing }
 GtMagritteDummyPostalAddress >> city [
@@ -47,6 +56,7 @@ GtMagritteDummyPostalAddress >> descriptionIsPrimary [
 		  priority: 10;
 		  trueString: 'primary';
 		  falseString: '...';
+		  updateOn: GtMagritteDummyPostalAddressIsPrimaryChanged from: [ self ];
 		  blocActionString: 'set as primary';
 		  blocUseDropdown: true
 ]
@@ -74,9 +84,40 @@ GtMagritteDummyPostalAddress >> isPrimary [
 ]
 
 { #category : #accessing }
-GtMagritteDummyPostalAddress >> isPrimary: anObject [
+GtMagritteDummyPostalAddress >> isPrimary: aBoolean [
 
-	isPrimary := anObject
+	isPrimary = aBoolean ifTrue: [ ^ self ].
+	
+	aBoolean ifTrue: [ 
+		self requestToBePrimaryAddress ifFalse: [ ^ self ] ].
+
+	isPrimary := aBoolean.
+	
+	self notifyPrimaryChanged.
+]
+
+{ #category : #'private - notifying' }
+GtMagritteDummyPostalAddress >> notifyPrimaryChanged [
+
+	announcer ifNil: [ ^ self ].
+
+	self announce: (GtMagritteDummyPostalAddressIsPrimaryChanged new
+			 address: self;
+			 isPrimary: self isPrimary)
+]
+
+{ #category : #'private - notifying' }
+GtMagritteDummyPostalAddress >> requestToBePrimaryAddress [
+
+	| aRequest |
+	announcer ifNil: [ ^ true ].
+
+	self announce:
+		(aRequest := GtMagritteDummyBePrimaryPostalAddressRequest new
+			             address: self;
+			             response: true).
+
+	^ aRequest response ifNil: [ true ]
 ]
 
 { #category : #accessing }
@@ -89,4 +130,28 @@ GtMagritteDummyPostalAddress >> street [
 GtMagritteDummyPostalAddress >> street: anObject [
 
 	street := anObject
+]
+
+{ #category : #subscriptions }
+GtMagritteDummyPostalAddress >> unsubscribe: aReceiver [
+
+	announcer ifNil: [ ^ self ].
+
+	^ announcer unsubscribe: aReceiver
+]
+
+{ #category : #subscriptions }
+GtMagritteDummyPostalAddress >> weak [
+
+	announcer ifNil: [ announcer := Announcer new ].
+
+	^ announcer weak
+]
+
+{ #category : #subscriptions }
+GtMagritteDummyPostalAddress >> when: anAnnnouncement send: aSelector to: aReceiver [
+
+	announcer ifNil: [ announcer := Announcer new ].
+
+	^ announcer weak when: anAnnnouncement send: aSelector to: aReceiver
 ]

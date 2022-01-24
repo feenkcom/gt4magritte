@@ -17,6 +17,18 @@ GtMagritteAsyncBuilderUtility class >> addCommentTooltip: anElement using: aDesc
 		(BrGlamorousWithLabelTooltipAptitude new text: aText)
 ]
 
+{ #category : #'api - memento' }
+GtMagritteAsyncBuilderUtility class >> createValueFrom: aModel using: aDescription [
+
+	| aValue |
+	aValue := aModel readUsing: aDescription.
+
+	^ GtMagritteValue new
+		  description: aDescription;
+		  currentValue: aValue;
+		  originalValue: aValue
+]
+
 { #category : #'api - ui' }
 GtMagritteAsyncBuilderUtility class >> defaultSpaceNumber [
 
