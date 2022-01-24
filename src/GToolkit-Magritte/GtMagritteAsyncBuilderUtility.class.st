@@ -114,34 +114,11 @@ GtMagritteAsyncBuilderUtility class >> newFlowListMemento: aMemento using: aDesc
 			anElementSink
 				sink: AsyncPeakSink new;
 				whenUpdate: [ :theFlowElement :aSink | 
-					| aViewModels |
-					aViewModels := aSink value currentValue collect: [ :aModel | 
-							               | aViewModel |
-							               aViewModel := aModel asGtMagritteAsyncViewModel.
-							               aDescription definitive ifFalse: [ 
-									               aViewModel addButton:
-											               (GtMagritteButtonWithIconAction new
-												                icon: BrGlamorousVectorIcons remove;
-												                tooltip: 'Remove';
-												                action: [ :anItemMemento :aButton | 
-													                [ 
-													                self
-														                removeItemMemento: aMemento
-														                description: aDescription
-														                item: aModel ] asAsyncFuture await ]) ].
-
-							               aViewModel ].
-
-					(aDescription definitive or: [ aDescription newItemStencil isNil ]) 
-						ifFalse: [ 
-							| anAddViewModel |
-							anAddViewModel := GtMagritteAsyncAddItemViewModel new
-								                  memento: aMemento;
-								                  description: aDescription;
-								                  stencil: aDescription newItemStencil.
-							aViewModels := aViewModels copyWith: anAddViewModel ].
-
-					theFlowElement items: aViewModels ].
+					self
+						onFlowList: theFlowElement
+						sinkUpdate: aSink
+						memento: aMemento
+						description: aDescription ].
 			(aMemento readObservableValueUsing: aDescription) observe:
 				anElementSink ].
 
@@ -264,7 +241,40 @@ GtMagritteAsyncBuilderUtility class >> newValidationContainerWith: aFieldElement
 ]
 
 { #category : #'private - support' }
-GtMagritteAsyncBuilderUtility class >> removeItemMemento: aMemento description: aDescription item: anItem [
+GtMagritteAsyncBuilderUtility class >> onFlowList: theFlowElement sinkUpdate: aSink memento: aMemento description: aDescription [
+
+	| aViewModels |
+	aViewModels := aSink value currentValue collect: [ :aModel | 
+		               | aViewModel |
+		               aViewModel := aModel asGtMagritteAsyncViewModel.
+		               aDescription definitive ifFalse: [ 
+			               aViewModel addButton:
+				               (GtMagritteButtonWithIconAction new
+					                icon: BrGlamorousVectorIcons remove;
+					                tooltip: 'Remove';
+					                action: [ :anItemMemento :aButton | 
+						                [ 
+						                self
+							                removeItem: aModel
+							                memento: aMemento
+							                description: aDescription ] asAsyncFuture await ]) ].
+
+		               aViewModel ].
+
+	(aDescription definitive or: [ aDescription newItemStencil isNil ]) 
+		ifFalse: [ 
+			| anAddViewModel |
+			anAddViewModel := GtMagritteAsyncAddItemViewModel new
+				                  memento: aMemento;
+				                  description: aDescription;
+				                  stencil: aDescription newItemStencil.
+			aViewModels := aViewModels copyWith: anAddViewModel ].
+
+	^ theFlowElement items: aViewModels
+]
+
+{ #category : #'private - support' }
+GtMagritteAsyncBuilderUtility class >> removeItem: anItem memento: aMemento description: aDescription [
 
 	| aNewCollection anObservable aValue |
 	anObservable := aMemento readObservableValueUsing: aDescription.
