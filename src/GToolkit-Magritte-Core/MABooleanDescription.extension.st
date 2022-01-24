@@ -1,18 +1,18 @@
 Extension { #name : #MABooleanDescription }
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MABooleanDescription >> blocActionString [
 
 	^ self propertyAt: #blocActionString ifAbsent: [ '' ]
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MABooleanDescription >> blocActionString: aString [
 
 	self propertyAt: #blocActionString put: aString
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MABooleanDescription >> blocUseDropdown [
 
 	^ self
@@ -22,7 +22,7 @@ MABooleanDescription >> blocUseDropdown [
 		  ifAbsent: [ false ]
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MABooleanDescription >> blocUseDropdown: aBoolean [
 
 	self propertyAt: #blocUseDropdown put: aBoolean

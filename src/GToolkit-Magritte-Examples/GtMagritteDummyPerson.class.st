@@ -5,7 +5,7 @@ Class {
 		'name',
 		'addresses'
 	],
-	#category : #'GToolkit-Magritte-Examples - Support'
+	#category : #'GToolkit-Magritte-Examples-Support'
 }
 
 { #category : #accessing }

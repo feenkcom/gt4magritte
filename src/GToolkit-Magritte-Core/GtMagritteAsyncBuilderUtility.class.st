@@ -1,7 +1,7 @@
 Class {
 	#name : #GtMagritteAsyncBuilderUtility,
 	#superclass : #Object,
-	#category : #'GToolkit-Magritte-Support'
+	#category : #'GToolkit-Magritte-Core-Support'
 }
 
 { #category : #'api - ui' }

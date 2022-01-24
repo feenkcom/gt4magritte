@@ -1,6 +1,6 @@
 Extension { #name : #MAContainer }
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MAContainer >> gtChildrenFor: aView [
 
 	<gtView>

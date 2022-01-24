@@ -8,7 +8,7 @@ Class {
 		'internalStatus',
 		'subscriptions'
 	],
-	#category : #'GToolkit-Magritte-Models'
+	#category : #'GToolkit-Magritte-Core-Models'
 }
 
 { #category : #testing }

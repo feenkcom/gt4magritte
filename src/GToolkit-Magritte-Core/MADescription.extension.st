@@ -1,6 +1,6 @@
 Extension { #name : #MADescription }
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MADescription >> announcerSubscriptionsDo: aBlock [
 
 	"Iterates over all subscriptions: anAnnouncementClass -> anAnnouncerBlock"
@@ -11,13 +11,13 @@ MADescription >> announcerSubscriptionsDo: aBlock [
 		ifAbsent: [ "ignore" ]
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MADescription >> beAlwaysEditable [
 
 	self propertyAt: #alwaysEditable put: true
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MADescription >> gtConditionsFor: aView [
 
 	<gtView>
@@ -32,13 +32,13 @@ MADescription >> gtConditionsFor: aView [
 		  send: #key
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MADescription >> isAlwaysEditable [
 
 	^ self propertyAt: #alwaysEditable ifAbsent: [ false ]
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MADescription >> updateOn: anAnnouncementClass from: anAnnouncerBlock [
 
 	self

@@ -1,6 +1,6 @@
 Extension { #name : #MAToManyRelationDescription }
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MAToManyRelationDescription >> blocItemStencil [
 
 	^ self propertyAt: #blocItemStencil ifAbsentPut: [ 
@@ -8,19 +8,19 @@ MAToManyRelationDescription >> blocItemStencil [
 			  BrListRowStencilBuilder ]
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MAToManyRelationDescription >> blocItemStencil: aStencil [
 
 	self propertyAt: #blocItemStencil put: aStencil
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MAToManyRelationDescription >> newItemStencil [
 
 	^ self propertyAt: #newItemStencil ifAbsent: [ nil ]
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MAToManyRelationDescription >> newItemStencil: aStencil [
 
 	self propertyAt: #newItemStencil put: aStencil

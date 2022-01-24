@@ -7,7 +7,7 @@ Class {
 		'isPrimary',
 		'announcer'
 	],
-	#category : #'GToolkit-Magritte-Examples - Support'
+	#category : #'GToolkit-Magritte-Examples-Support'
 }
 
 { #category : #subscriptions }

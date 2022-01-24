@@ -1,7 +1,7 @@
 Class {
 	#name : #GtMagritteAsyncViewModelExamples,
 	#superclass : #Object,
-	#category : #'GToolkit-Magritte-Examples'
+	#category : #'GToolkit-Magritte-Examples-Core'
 }
 
 { #category : #'examples - person with two addresses' }

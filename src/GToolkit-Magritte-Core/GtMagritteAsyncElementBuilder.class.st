@@ -6,7 +6,7 @@ Class {
 		'form',
 		'actions'
 	],
-	#category : #'GToolkit-Magritte-Builders'
+	#category : #'GToolkit-Magritte-Core-Builders'
 }
 
 { #category : #accessing }

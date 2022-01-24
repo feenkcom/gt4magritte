@@ -1,12 +1,12 @@
 Extension { #name : #MAValidationError }
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MAValidationError >> gtMagritteErrorsDo: aBlock [
 
 	aBlock cull: self
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MAValidationError >> gtMagritteErrorsDo: aMainBlock separatedBy: aSeparationBlock [
 
 	aMainBlock cull: self

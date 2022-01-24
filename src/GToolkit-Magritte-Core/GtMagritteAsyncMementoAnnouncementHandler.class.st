@@ -7,7 +7,7 @@ Class {
 		'observable',
 		'model'
 	],
-	#category : #'GToolkit-Magritte-Support'
+	#category : #'GToolkit-Magritte-Core-Support'
 }
 
 { #category : #accessing }

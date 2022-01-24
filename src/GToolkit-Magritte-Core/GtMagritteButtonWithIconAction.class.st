@@ -7,7 +7,7 @@ Class {
 		'tooltip',
 		'icon'
 	],
-	#category : #'GToolkit-Magritte-Support'
+	#category : #'GToolkit-Magritte-Core-Support'
 }
 
 { #category : #accessing }

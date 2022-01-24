@@ -6,7 +6,7 @@ Class {
 		'description',
 		'stencil'
 	],
-	#category : #'GToolkit-Magritte-Support'
+	#category : #'GToolkit-Magritte-Core-Support'
 }
 
 { #category : #converting }

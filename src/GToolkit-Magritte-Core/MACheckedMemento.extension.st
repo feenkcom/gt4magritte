@@ -1,6 +1,6 @@
 Extension { #name : #MACheckedMemento }
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MACheckedMemento >> gtCachedAndOriginalValuesFor: aView [
 
 	<gtView>
@@ -25,7 +25,7 @@ MACheckedMemento >> gtCachedAndOriginalValuesFor: aView [
 		  actionUpdateButtonTooltip: 'Update the list'
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 MACheckedMemento >> readOriginalUsing: aDescription [
 
 	^ self original at: aDescription

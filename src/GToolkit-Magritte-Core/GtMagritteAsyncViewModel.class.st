@@ -7,7 +7,7 @@ Class {
 		'actions',
 		'object'
 	],
-	#category : #'GToolkit-Magritte-Models'
+	#category : #'GToolkit-Magritte-Core-Models'
 }
 
 { #category : #'api - instance creation' }

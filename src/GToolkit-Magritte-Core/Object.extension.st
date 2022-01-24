@@ -1,18 +1,18 @@
 Extension { #name : #Object }
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 Object >> asGtMagritteAsyncViewModel [
 
 	^ GtMagritteAsyncViewModel forObject: self
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 Object >> asGtMagritteAsyncViewModelWithDescription: aDescription [
 
 	^ GtMagritteAsyncViewModel forObject: self description: aDescription
 ]
 
-{ #category : #'*GToolkit-Magritte' }
+{ #category : #'*GToolkit-Magritte-Core' }
 Object >> gtMagritteFor: aView [
 
 	<gtView>

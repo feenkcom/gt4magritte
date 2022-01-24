@@ -4,13 +4,6 @@ Class {
 	#category : #BaselineOfGToolkit4Magritte
 }
 
-{ #category : #accessing }
-BaselineOfGToolkit4Magritte class >> gtDependencyAnalysisPreloadedBaselines [
-
-	^ super gtDependencyAnalysisPreloadedBaselines copyWith:
-		  BaselineOfGToolkit
-]
-
 { #category : #baselines }
 BaselineOfGToolkit4Magritte >> baseline: spec [
 
@@ -18,9 +11,29 @@ BaselineOfGToolkit4Magritte >> baseline: spec [
 	spec for: #common do: [ 
 		spec
 			baseline: 'MagritteForGToolkit'
-			with: [ spec repository: 'github://feenkcom/magritte:feenk01/source' ]. 
+			with: [ 
+			spec repository: 'github://feenkcom/magritte:feenk01/source' ].
 
 		spec
-			package: 'GToolkit-Magritte'
-			with: [ spec requires: #( 'MagritteForGToolkit' ) ] ]
+			baseline: 'Brick'
+			with: [ spec repository: 'github://feenkcom/Brick:main/src' ].
+
+		spec
+			baseline: 'GToolkitCompleter'
+			with: [ 
+				spec repository: 'github://feenkcom/gtoolkit-completer:main/src' ].
+
+		spec 
+			baseline: 'GToolkitCoder' 
+			with: [
+				spec repository: 'github://feenkcom/gtoolkit-coder:main/src' ].
+
+		spec
+			package: 'GToolkit-Magritte-Core'
+			with: [ 
+				spec requires: #( 'MagritteForGToolkit' 'Brick' 'GToolkitCompleter' ) ].
+				
+		spec
+			package: 'GToolkit-Magritte-Examples'
+			with: [ spec requires: #( 'GToolkit-Magritte-Core' 'GToolkitCoder' ) ] ]
 ]
