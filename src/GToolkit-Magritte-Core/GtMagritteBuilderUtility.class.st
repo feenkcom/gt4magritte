@@ -145,6 +145,19 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 	anEditor
 		aptitude:
 			BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize;
+		addAptitude: (BrStyleCommonAptitude new
+				 default: [ :aStyle | aStyle border: BlBorder empty ];
+				 hovered: [ :aStyle | 
+					 aStyle border:
+							 (BlBorder
+								  paint: BrGlamorousColors disabledButtonBorderColor
+								  width: 1) ];
+				 focused: [ :aStyle | 
+					 aStyle border:
+							 (BlBorder
+								  paint: BrGlamorousColors focusedEditorBorderColor
+								  width: 1) ]);
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 		vFitContent;
 		hFitContentLimited;
 		margin: (BlInsets bottom: self defaultSpaceNumber);
