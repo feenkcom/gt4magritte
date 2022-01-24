@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteAsyncElementBuilder,
+	#name : #GtMagritteElementBuilder,
 	#superclass : #MAVisitor,
 	#instVars : [
 		'memento',
@@ -10,27 +10,27 @@ Class {
 }
 
 { #category : #accessing }
-GtMagritteAsyncElementBuilder >> actions [
+GtMagritteElementBuilder >> actions [
 
 	^ actions
 ]
 
 { #category : #accessing }
-GtMagritteAsyncElementBuilder >> actions: anObject [
+GtMagritteElementBuilder >> actions: anObject [
 
 	actions := anObject
 ]
 
 { #category : #'private - building' }
-GtMagritteAsyncElementBuilder >> addBooleanField: aDescription [
+GtMagritteElementBuilder >> addBooleanField: aDescription [
 
 	| anElement aValidationElement aMemento |
 	aMemento := self memento.
-	anElement := GtMagritteAsyncBuilderUtility
+	anElement := GtMagritteBuilderUtility
 		             newCheckboxMemento: aMemento
 		             using: aDescription.
 
-	aValidationElement := GtMagritteAsyncBuilderUtility
+	aValidationElement := GtMagritteBuilderUtility
 		                      newValidationContainerWith: anElement
 		                      memento: aMemento
 		                      using: aDescription.
@@ -39,7 +39,7 @@ GtMagritteAsyncElementBuilder >> addBooleanField: aDescription [
 ]
 
 { #category : #'api - building' }
-GtMagritteAsyncElementBuilder >> addButtons [
+GtMagritteElementBuilder >> addButtons [
 
 	self addButtons: { 
 			self newSaveButton.
@@ -47,7 +47,7 @@ GtMagritteAsyncElementBuilder >> addButtons [
 ]
 
 { #category : #'api - building' }
-GtMagritteAsyncElementBuilder >> addButtons: aCollection [
+GtMagritteElementBuilder >> addButtons: aCollection [
 
 	"#addButtons: is part of the existing Morphic/Seaside API.
 	We store the selectors instead of constructing the buttons to defer all element creation to first element access
@@ -57,18 +57,18 @@ GtMagritteAsyncElementBuilder >> addButtons: aCollection [
 ]
 
 { #category : #'private - building' }
-GtMagritteAsyncElementBuilder >> addFieldElement: aFieldElement using: aDescription [
+GtMagritteElementBuilder >> addFieldElement: aFieldElement using: aDescription [
 
 	| aLabel |
-	aLabel := GtMagritteAsyncBuilderUtility
+	aLabel := GtMagritteBuilderUtility
 		          newFieldLabelWithSpace: self defaultSpacing
 		          using: aDescription.
 
 	aDescription hasComment ifTrue: [ 
-		GtMagritteAsyncBuilderUtility
+		GtMagritteBuilderUtility
 			addCommentTooltip: aLabel
 			using: aDescription.
-		GtMagritteAsyncBuilderUtility
+		GtMagritteBuilderUtility
 			addCommentTooltip: aFieldElement
 			using: aDescription ].
 
@@ -79,16 +79,16 @@ GtMagritteAsyncElementBuilder >> addFieldElement: aFieldElement using: aDescript
 ]
 
 { #category : #'private - building' }
-GtMagritteAsyncElementBuilder >> addFlowListUsing: aDescription [
+GtMagritteElementBuilder >> addFlowListUsing: aDescription [
 
 	| aMemento aFlowElement aValidationElement |
 	aMemento := self memento.
 
-	aFlowElement := GtMagritteAsyncBuilderUtility
+	aFlowElement := GtMagritteBuilderUtility
 		                newFlowListMemento: aMemento
 		                using: aDescription.
 
-	aValidationElement := GtMagritteAsyncBuilderUtility
+	aValidationElement := GtMagritteBuilderUtility
 		                      newValidationContainerWith: aFlowElement
 		                      memento: aMemento
 		                      using: aDescription.
@@ -100,18 +100,18 @@ GtMagritteAsyncElementBuilder >> addFlowListUsing: aDescription [
 ]
 
 { #category : #'private - building' }
-GtMagritteAsyncElementBuilder >> addStringFieldUsing: aDescription [
+GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 
 	| aMemento anInputElement aLabel aValidationElement |
 	aMemento := self memento.
 
 	aDescription isAlwaysEditable
 		ifFalse: [ 
-			anInputElement := GtMagritteAsyncBuilderUtility
+			anInputElement := GtMagritteBuilderUtility
 				                  newEditableLabelWithMemento: aMemento
 				                  using: aDescription ]
 		ifTrue: [ 
-			anInputElement := GtMagritteAsyncBuilderUtility
+			anInputElement := GtMagritteBuilderUtility
 				                  newOneLineEditorWithMemento: aMemento
 				                  using: aDescription ].
 
@@ -119,7 +119,7 @@ GtMagritteAsyncElementBuilder >> addStringFieldUsing: aDescription [
 		(GtCompletionController on: anInputElement strategy: aStencil create)
 			install ].
 
-	aValidationElement := GtMagritteAsyncBuilderUtility
+	aValidationElement := GtMagritteBuilderUtility
 		                      newValidationContainerWith: anInputElement
 		                      memento: aMemento
 		                      using: aDescription.
@@ -132,7 +132,7 @@ GtMagritteAsyncElementBuilder >> addStringFieldUsing: aDescription [
 ]
 
 { #category : #'api - building' }
-GtMagritteAsyncElementBuilder >> build [
+GtMagritteElementBuilder >> build [
 
 	self
 		assert: [ self memento isNotNil ]
@@ -151,12 +151,12 @@ GtMagritteAsyncElementBuilder >> build [
 ]
 
 { #category : #'private - building' }
-GtMagritteAsyncElementBuilder >> buildActions [
+GtMagritteElementBuilder >> buildActions [
 
 	| aToolbar |
 	self hasActions ifFalse: [ ^ self ].
 
-	aToolbar := GtMagritteAsyncBuilderUtility
+	aToolbar := GtMagritteBuilderUtility
 		            newToolbarWithActions: self actions
 		            memento: self memento.
 
@@ -174,31 +174,31 @@ GtMagritteAsyncElementBuilder >> buildActions [
 ]
 
 { #category : #'private - building' }
-GtMagritteAsyncElementBuilder >> defaultSpacing [
+GtMagritteElementBuilder >> defaultSpacing [
 
-	^ GtMagritteAsyncBuilderUtility defaultSpaceNumber
+	^ GtMagritteBuilderUtility defaultSpaceNumber
 ]
 
 { #category : #accessing }
-GtMagritteAsyncElementBuilder >> form [
+GtMagritteElementBuilder >> form [
 
 	^ form
 ]
 
 { #category : #accessing }
-GtMagritteAsyncElementBuilder >> form: anObject [
+GtMagritteElementBuilder >> form: anObject [
 
 	form := anObject
 ]
 
 { #category : #'private - building' }
-GtMagritteAsyncElementBuilder >> hasActions [
+GtMagritteElementBuilder >> hasActions [
 
 	^ self actions isNotEmpty
 ]
 
 { #category : #initialization }
-GtMagritteAsyncElementBuilder >> initialize [
+GtMagritteElementBuilder >> initialize [
 
 	super initialize.
 
@@ -206,19 +206,19 @@ GtMagritteAsyncElementBuilder >> initialize [
 ]
 
 { #category : #accessing }
-GtMagritteAsyncElementBuilder >> memento [
+GtMagritteElementBuilder >> memento [
 
 	^ memento
 ]
 
 { #category : #accessing }
-GtMagritteAsyncElementBuilder >> memento: anObject [
+GtMagritteElementBuilder >> memento: anObject [
 
 	memento := anObject
 ]
 
 { #category : #'api - building' }
-GtMagritteAsyncElementBuilder >> newCancelButton [
+GtMagritteElementBuilder >> newCancelButton [
 
 	^ GtMagritteButtonWithIconAction new
 		  icon: BrGlamorousVectorIcons cancel;
@@ -237,7 +237,7 @@ GtMagritteAsyncElementBuilder >> newCancelButton [
 ]
 
 { #category : #'api - building' }
-GtMagritteAsyncElementBuilder >> newSaveButton [
+GtMagritteElementBuilder >> newSaveButton [
 
 	^ GtMagritteButtonWithIconAction new
 		  icon: BrGlamorousVectorIcons accept;
@@ -258,31 +258,31 @@ GtMagritteAsyncElementBuilder >> newSaveButton [
 ]
 
 { #category : #'private - accessing' }
-GtMagritteAsyncElementBuilder >> objectDescription [
+GtMagritteElementBuilder >> objectDescription [
 
 	^ self memento magritteDescription
 ]
 
 { #category : #visiting }
-GtMagritteAsyncElementBuilder >> visitBooleanDescription: aDescription [
+GtMagritteElementBuilder >> visitBooleanDescription: aDescription [
 
 	self addBooleanField: aDescription
 ]
 
 { #category : #visiting }
-GtMagritteAsyncElementBuilder >> visitContainer: aDescription [
+GtMagritteElementBuilder >> visitContainer: aDescription [
 
 	aDescription do: [ :each | self visit: each ]
 ]
 
 { #category : #visiting }
-GtMagritteAsyncElementBuilder >> visitStringDescription: aDescription [
+GtMagritteElementBuilder >> visitStringDescription: aDescription [
 
 	self addStringFieldUsing: aDescription
 ]
 
 { #category : #visiting }
-GtMagritteAsyncElementBuilder >> visitToManyRelationDescription: aDescription [
+GtMagritteElementBuilder >> visitToManyRelationDescription: aDescription [
 
 	self addFlowListUsing: aDescription
 ]

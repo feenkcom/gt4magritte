@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteAsyncAddItemViewModel,
+	#name : #GtMagritteAddItemViewModel,
 	#superclass : #Object,
 	#instVars : [
 		'memento',
@@ -10,7 +10,7 @@ Class {
 }
 
 { #category : #converting }
-GtMagritteAsyncAddItemViewModel >> asElement [
+GtMagritteAddItemViewModel >> asElement [
 
 	^ BrButton new
 		  aptitude: BrGlamorousButtonWithIconCircularAptitude;
@@ -22,37 +22,37 @@ GtMagritteAsyncAddItemViewModel >> asElement [
 ]
 
 { #category : #accessing }
-GtMagritteAsyncAddItemViewModel >> description [
+GtMagritteAddItemViewModel >> description [
 
 	^ description
 ]
 
 { #category : #accessing }
-GtMagritteAsyncAddItemViewModel >> description: anObject [
+GtMagritteAddItemViewModel >> description: anObject [
 
 	description := anObject
 ]
 
 { #category : #'api - testing' }
-GtMagritteAsyncAddItemViewModel >> isForObject: anObject [
+GtMagritteAddItemViewModel >> isForObject: anObject [
 
 	^ false
 ]
 
 { #category : #accessing }
-GtMagritteAsyncAddItemViewModel >> memento [
+GtMagritteAddItemViewModel >> memento [
 
 	^ memento
 ]
 
 { #category : #accessing }
-GtMagritteAsyncAddItemViewModel >> memento: anObject [
+GtMagritteAddItemViewModel >> memento: anObject [
 
 	memento := anObject
 ]
 
 { #category : #'private - event handling' }
-GtMagritteAsyncAddItemViewModel >> onClick: anEvent [
+GtMagritteAddItemViewModel >> onClick: anEvent [
 
 	| aNewItem aNewViewModel anExistingItems aNewItems aNewViewModels |
 	self memento ifNil: [ ^ self ].
@@ -68,13 +68,13 @@ GtMagritteAsyncAddItemViewModel >> onClick: anEvent [
 ]
 
 { #category : #accessing }
-GtMagritteAsyncAddItemViewModel >> stencil [
+GtMagritteAddItemViewModel >> stencil [
 
 	^ stencil
 ]
 
 { #category : #accessing }
-GtMagritteAsyncAddItemViewModel >> stencil: aStencil [
+GtMagritteAddItemViewModel >> stencil: aStencil [
 
 	stencil := aStencil asStencil
 ]

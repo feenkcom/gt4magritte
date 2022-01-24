@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteAsyncValidationFailure,
+	#name : #GtMagritteValidationFailure,
 	#superclass : #Object,
 	#instVars : [
 		'value',
@@ -9,19 +9,19 @@ Class {
 }
 
 { #category : #accessing }
-GtMagritteAsyncValidationFailure >> exception [
+GtMagritteValidationFailure >> exception [
 
 	^ exception
 ]
 
 { #category : #accessing }
-GtMagritteAsyncValidationFailure >> exception: anObject [
+GtMagritteValidationFailure >> exception: anObject [
 
 	exception := anObject
 ]
 
 { #category : #accessing }
-GtMagritteAsyncValidationFailure >> gtIssuesDescriptionFor: aView [
+GtMagritteValidationFailure >> gtIssuesDescriptionFor: aView [
 
 	<gtView>
 	self exception ifNil: [ ^ aView empty ].
@@ -34,13 +34,13 @@ GtMagritteAsyncValidationFailure >> gtIssuesDescriptionFor: aView [
 ]
 
 { #category : #accessing }
-GtMagritteAsyncValidationFailure >> isSuccess [
+GtMagritteValidationFailure >> isSuccess [
 
 	^ false
 ]
 
 { #category : #accessing }
-GtMagritteAsyncValidationFailure >> issuesDescription [
+GtMagritteValidationFailure >> issuesDescription [
 
 	^ String streamContents: [ :aStream | 
 		  self exception
@@ -50,14 +50,14 @@ GtMagritteAsyncValidationFailure >> issuesDescription [
 ]
 
 { #category : #accessing }
-GtMagritteAsyncValidationFailure >> value [
+GtMagritteValidationFailure >> value [
 
 	<return: #GtMagritteValue>
 	^ value
 ]
 
 { #category : #accessing }
-GtMagritteAsyncValidationFailure >> value: anObject [
+GtMagritteValidationFailure >> value: anObject [
 
 	value := anObject
 ]

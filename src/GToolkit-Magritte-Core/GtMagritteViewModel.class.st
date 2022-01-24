@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteAsyncViewModel,
+	#name : #GtMagritteViewModel,
 	#superclass : #Object,
 	#instVars : [
 		'cache',
@@ -11,48 +11,48 @@ Class {
 }
 
 { #category : #'api - instance creation' }
-GtMagritteAsyncViewModel class >> forObject: anObject [
+GtMagritteViewModel class >> forObject: anObject [
 
 	^ self new
-		  mementoBlock: [ GtMagritteAsyncMemento model: anObject ]
+		  mementoBlock: [ GtMagritteMemento model: anObject ]
 		  object: anObject
 ]
 
 { #category : #'api - instance creation' }
-GtMagritteAsyncViewModel class >> forObject: anObject description: aDescription [
+GtMagritteViewModel class >> forObject: anObject description: aDescription [
 
 	^ self new
 		  mementoBlock: [ 
-		  	GtMagritteAsyncMemento model: anObject description: aDescription ]
+		  	GtMagritteMemento model: anObject description: aDescription ]
 		  object: anObject
 ]
 
 { #category : #accessing }
-GtMagritteAsyncViewModel >> actions [
+GtMagritteViewModel >> actions [
 
 	^ actions
 ]
 
 { #category : #accessing }
-GtMagritteAsyncViewModel >> actions: anObject [
+GtMagritteViewModel >> actions: anObject [
 
 	actions := anObject
 ]
 
 { #category : #'api - initialization' }
-GtMagritteAsyncViewModel >> addButton: aButtonDefinition [
+GtMagritteViewModel >> addButton: aButtonDefinition [
 
 	self actions: (self actions copyWith: aButtonDefinition)
 ]
 
 { #category : #'api - initialization' }
-GtMagritteAsyncViewModel >> addButtons: aCollection [
+GtMagritteViewModel >> addButtons: aCollection [
 
 	self actions: (self actions copyWithAll: aCollection)
 ]
 
 { #category : #'api - converting' }
-GtMagritteAsyncViewModel >> asElement [
+GtMagritteViewModel >> asElement [
 
 	| aContainer |
 	aContainer := BrHorizontalGrid new.
@@ -79,7 +79,7 @@ GtMagritteAsyncViewModel >> asElement [
 					theContainer userData at: #gtmemento put: aMemento.
 
 					theContainer removeChildren.
-					GtMagritteAsyncElementBuilder new
+					GtMagritteElementBuilder new
 						form: theContainer;
 						memento: aMemento;
 						addButtons;
@@ -92,13 +92,13 @@ GtMagritteAsyncViewModel >> asElement [
 ]
 
 { #category : #'api - converting' }
-GtMagritteAsyncViewModel >> asGtMagritteAsyncViewModel [
+GtMagritteViewModel >> asGtMagritteAsyncViewModel [
 
 	^ self
 ]
 
 { #category : #initialization }
-GtMagritteAsyncViewModel >> initialize [
+GtMagritteViewModel >> initialize [
 
 	super initialize.
 
@@ -107,13 +107,13 @@ GtMagritteAsyncViewModel >> initialize [
 ]
 
 { #category : #'api - testing' }
-GtMagritteAsyncViewModel >> isForObject: anObject [
+GtMagritteViewModel >> isForObject: anObject [
 
 	^ object == anObject
 ]
 
 { #category : #'api - initialization' }
-GtMagritteAsyncViewModel >> mementoBlock: aBlock object: anObject [
+GtMagritteViewModel >> mementoBlock: aBlock object: anObject [
 
 	self
 		assert: [ mementoBlock isNil ]
@@ -124,7 +124,7 @@ GtMagritteAsyncViewModel >> mementoBlock: aBlock object: anObject [
 ]
 
 { #category : #accessing }
-GtMagritteAsyncViewModel >> mementoFuture [
+GtMagritteViewModel >> mementoFuture [
 
 	^ AsyncCachedFuture
 		  forFuture: mementoBlock asAsyncFuture

@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteAsyncMemento,
+	#name : #GtMagritteMemento,
 	#superclass : #MAMemento,
 	#instVars : [
 		'cache',
@@ -12,19 +12,19 @@ Class {
 }
 
 { #category : #testing }
-GtMagritteAsyncMemento class >> isAbstract [
+GtMagritteMemento class >> isAbstract [
 
 	^ false
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> cache [
+GtMagritteMemento >> cache [
 
 	^ cache
 ]
 
 { #category : #actions }
-GtMagritteAsyncMemento >> commit [
+GtMagritteMemento >> commit [
 
 	super commit.
 	self push: self cache.
@@ -32,7 +32,7 @@ GtMagritteAsyncMemento >> commit [
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> computeOverallStatus [
+GtMagritteMemento >> computeOverallStatus [
 
 	| isValid isUnchanged |
 	isValid := self cache allSatisfy: [ :e | 
@@ -41,21 +41,21 @@ GtMagritteAsyncMemento >> computeOverallStatus [
 	isUnchanged := self cache allSatisfy: [ :e | 
 		               e valueOrNil isChanged not ].
 
-	^ GtMagritteAsyncOverallStatus new
+	^ GtMagritteOverallStatus new
 		  isValid: isValid;
 		  isChanged: isUnchanged not
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> createValueUsing: aDescription [
+GtMagritteMemento >> createValueUsing: aDescription [
 
-	^ GtMagritteAsyncBuilderUtility
+	^ GtMagritteBuilderUtility
 		  createValueFrom: self model
 		  using: aDescription
 ]
 
 { #category : #'gt - extensions' }
-GtMagritteAsyncMemento >> gtCacheFor: aView [
+GtMagritteMemento >> gtCacheFor: aView [
 
 	<gtView>
 	self cache ifNil: [ ^ aView empty ].
@@ -147,7 +147,7 @@ GtMagritteAsyncMemento >> gtCacheFor: aView [
 ]
 
 { #category : #initialization }
-GtMagritteAsyncMemento >> initialize [
+GtMagritteMemento >> initialize [
 
 	super initialize.
 
@@ -160,14 +160,14 @@ GtMagritteAsyncMemento >> initialize [
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMemento >> overallStatus [
+GtMagritteMemento >> overallStatus [
 
-	<return: #AsyncObservableValue of: #GtMagritteAsyncOverallStatus>
+	<return: #AsyncObservableValue of: #GtMagritteOverallStatus>
 	^ overallStatus
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> pull [
+GtMagritteMemento >> pull [
 
 	"Utility method to pull the model into a dictionary mapping descriptions to values. nil values are replaced with the default ones of the model."
 
@@ -181,7 +181,7 @@ GtMagritteAsyncMemento >> pull [
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> pullRaw [
+GtMagritteMemento >> pullRaw [
 
 	<return: #Dictionary of: #GtMagritteValue>
 	| aResult |
@@ -194,7 +194,7 @@ GtMagritteAsyncMemento >> pullRaw [
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> push: aDictionary [
+GtMagritteMemento >> push: aDictionary [
 
 	"Utility method to push a dictionary mapping descriptions to values into the model."
 
@@ -208,14 +208,14 @@ GtMagritteAsyncMemento >> push: aDictionary [
 ]
 
 { #category : #actions }
-GtMagritteAsyncMemento >> readObservableValueUsing: aDescription [
+GtMagritteMemento >> readObservableValueUsing: aDescription [
 
 	<return: #AsyncObservableValue of: #GtMagritteValue>
 	^ self cache at: aDescription
 ]
 
 { #category : #actions }
-GtMagritteAsyncMemento >> readUsing: aDescription [
+GtMagritteMemento >> readUsing: aDescription [
 
 	| anObservable |
 	anObservable := self readObservableValueUsing: aDescription.
@@ -223,13 +223,13 @@ GtMagritteAsyncMemento >> readUsing: aDescription [
 ]
 
 { #category : #actions }
-GtMagritteAsyncMemento >> reset [
+GtMagritteMemento >> reset [
 	super reset.
 	self setCache: self pull.
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> setCache: aDictionary [
+GtMagritteMemento >> setCache: aDictionary [
 
 	"Add new descriptions"
 
@@ -268,7 +268,7 @@ GtMagritteAsyncMemento >> setCache: aDictionary [
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> subscribeToModelUsing: aDescription observable: anObservable [
+GtMagritteMemento >> subscribeToModelUsing: aDescription observable: anObservable [
 
 	| aHandler |
 	aDescription announcerSubscriptionsDo: [ :eachAssoc | 
@@ -276,7 +276,7 @@ GtMagritteAsyncMemento >> subscribeToModelUsing: aDescription observable: anObse
 			anAnnouncer weak
 				when: eachAssoc key
 				send: #onAnnouncement:
-				to: (aHandler := GtMagritteAsyncMementoAnnouncementHandler new
+				to: (aHandler := GtMagritteMementoAnnouncementHandler new
 						             model: self model;
 						             memento: self;
 						             description: aDescription;
@@ -289,7 +289,7 @@ GtMagritteAsyncMemento >> subscribeToModelUsing: aDescription observable: anObse
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> unsubscribeFromModelUsing: aDescription [
+GtMagritteMemento >> unsubscribeFromModelUsing: aDescription [
 
 	subscriptions removeKey: aDescription ifAbsent: [ "ignore" ].
 
@@ -299,16 +299,16 @@ GtMagritteAsyncMemento >> unsubscribeFromModelUsing: aDescription [
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> validateValue: aValue [
+GtMagritteMemento >> validateValue: aValue [
 
 	| aResult |
 	[ 
 	aValue description validate: aValue currentValue.
 
-	aResult := GtMagritteAsyncValidationSuccess new value: aValue ]
+	aResult := GtMagritteValidationSuccess new value: aValue ]
 		on: MAValidationError
 		do: [ :anError | 
-			aResult := GtMagritteAsyncValidationFailure new
+			aResult := GtMagritteValidationFailure new
 				           value: aValue;
 				           exception: anError ].
 
@@ -318,20 +318,20 @@ GtMagritteAsyncMemento >> validateValue: aValue [
 ]
 
 { #category : #actions }
-GtMagritteAsyncMemento >> validatorUsing: aDescription [
+GtMagritteMemento >> validatorUsing: aDescription [
 
 	<return: #AsyncObservableValue of: #GtMagritteValue>
 	^ validators at: aDescription
 ]
 
 { #category : #private }
-GtMagritteAsyncMemento >> validators [
+GtMagritteMemento >> validators [
 
 	^ validators
 ]
 
 { #category : #actions }
-GtMagritteAsyncMemento >> write: anObject using: aDescription [
+GtMagritteMemento >> write: anObject using: aDescription [
 
 	| anObservable aNewValue |
 	anObservable := self readObservableValueUsing: aDescription.

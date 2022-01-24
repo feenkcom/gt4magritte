@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteAsyncMementoAnnouncementHandler,
+	#name : #GtMagritteMementoAnnouncementHandler,
 	#superclass : #Object,
 	#instVars : [
 		'memento',
@@ -11,58 +11,58 @@ Class {
 }
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> description [
+GtMagritteMementoAnnouncementHandler >> description [
 
 	^ description
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> description: anObject [
+GtMagritteMementoAnnouncementHandler >> description: anObject [
 
 	description := anObject
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> memento [
+GtMagritteMementoAnnouncementHandler >> memento [
 
 	^ memento
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> memento: anObject [
+GtMagritteMementoAnnouncementHandler >> memento: anObject [
 
 	memento := anObject
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> model [
+GtMagritteMementoAnnouncementHandler >> model [
 
 	^ model
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> model: anObject [
+GtMagritteMementoAnnouncementHandler >> model: anObject [
 
 	model := anObject
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> observable [
+GtMagritteMementoAnnouncementHandler >> observable [
 
 	^ observable
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> observable: anObject [
+GtMagritteMementoAnnouncementHandler >> observable: anObject [
 
 	observable := anObject
 ]
 
 { #category : #accessing }
-GtMagritteAsyncMementoAnnouncementHandler >> onAnnouncement: anAnnouncement [
+GtMagritteMementoAnnouncementHandler >> onAnnouncement: anAnnouncement [
 
 	| aNewValue aCurrentValue aMergedValue |
-	aNewValue := GtMagritteAsyncBuilderUtility
+	aNewValue := GtMagritteBuilderUtility
 		             createValueFrom: self model
 		             using: self description.
 

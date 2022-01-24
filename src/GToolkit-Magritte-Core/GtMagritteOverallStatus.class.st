@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteAsyncOverallStatus,
+	#name : #GtMagritteOverallStatus,
 	#superclass : #Object,
 	#instVars : [
 		'isChanged',
@@ -9,37 +9,37 @@ Class {
 }
 
 { #category : #accessing }
-GtMagritteAsyncOverallStatus >> isChanged [
+GtMagritteOverallStatus >> isChanged [
 
 	^ isChanged
 ]
 
 { #category : #accessing }
-GtMagritteAsyncOverallStatus >> isChanged: anObject [
+GtMagritteOverallStatus >> isChanged: anObject [
 
 	isChanged := anObject
 ]
 
 { #category : #accessing }
-GtMagritteAsyncOverallStatus >> isChangedAndValid [
+GtMagritteOverallStatus >> isChangedAndValid [
 
 	^ self isChanged and: [ self isValid ]
 ]
 
 { #category : #accessing }
-GtMagritteAsyncOverallStatus >> isValid [
+GtMagritteOverallStatus >> isValid [
 
 	^ isValid
 ]
 
 { #category : #accessing }
-GtMagritteAsyncOverallStatus >> isValid: anObject [
+GtMagritteOverallStatus >> isValid: anObject [
 
 	isValid := anObject
 ]
 
 { #category : #printing }
-GtMagritteAsyncOverallStatus >> printOn: aStream [
+GtMagritteOverallStatus >> printOn: aStream [
 
 	super printOn: aStream.
 

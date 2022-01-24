@@ -3,13 +3,13 @@ Extension { #name : #Object }
 { #category : #'*GToolkit-Magritte-Core' }
 Object >> asGtMagritteAsyncViewModel [
 
-	^ GtMagritteAsyncViewModel forObject: self
+	^ GtMagritteViewModel forObject: self
 ]
 
 { #category : #'*GToolkit-Magritte-Core' }
 Object >> asGtMagritteAsyncViewModelWithDescription: aDescription [
 
-	^ GtMagritteAsyncViewModel forObject: self description: aDescription
+	^ GtMagritteViewModel forObject: self description: aDescription
 ]
 
 { #category : #'*GToolkit-Magritte-Core' }

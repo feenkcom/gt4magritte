@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteAsyncValidationSuccess,
+	#name : #GtMagritteValidationSuccess,
 	#superclass : #Object,
 	#instVars : [
 		'value'
@@ -8,20 +8,20 @@ Class {
 }
 
 { #category : #accessing }
-GtMagritteAsyncValidationSuccess >> isSuccess [
+GtMagritteValidationSuccess >> isSuccess [
 
 	^ true
 ]
 
 { #category : #accessing }
-GtMagritteAsyncValidationSuccess >> value [
+GtMagritteValidationSuccess >> value [
 
 	<return: #GtMagritteValue>
 	^ value
 ]
 
 { #category : #accessing }
-GtMagritteAsyncValidationSuccess >> value: anObject [
+GtMagritteValidationSuccess >> value: anObject [
 
 	value := anObject
 ]

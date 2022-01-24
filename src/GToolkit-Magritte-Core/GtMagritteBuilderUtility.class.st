@@ -1,11 +1,11 @@
 Class {
-	#name : #GtMagritteAsyncBuilderUtility,
+	#name : #GtMagritteBuilderUtility,
 	#superclass : #Object,
 	#category : #'GToolkit-Magritte-Core-Support'
 }
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> addCommentTooltip: anElement using: aDescription [
+GtMagritteBuilderUtility class >> addCommentTooltip: anElement using: aDescription [
 
 	| aText |
 	aText := aDescription comment asRopedText.
@@ -18,7 +18,7 @@ GtMagritteAsyncBuilderUtility class >> addCommentTooltip: anElement using: aDesc
 ]
 
 { #category : #'api - memento' }
-GtMagritteAsyncBuilderUtility class >> createValueFrom: aModel using: aDescription [
+GtMagritteBuilderUtility class >> createValueFrom: aModel using: aDescription [
 
 	| aValue |
 	aValue := aModel readUsing: aDescription.
@@ -30,19 +30,19 @@ GtMagritteAsyncBuilderUtility class >> createValueFrom: aModel using: aDescripti
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> defaultSpaceNumber [
+GtMagritteBuilderUtility class >> defaultSpaceNumber [
 
 	^ 4
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> defaultThickness [
+GtMagritteBuilderUtility class >> defaultThickness [
 
 	^ 3
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> newCheckboxMemento: aMemento using: aDescription [
+GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescription [
 
 	| aCheckbox |
 	aCheckbox := BrCheckbox new.
@@ -67,7 +67,7 @@ GtMagritteAsyncBuilderUtility class >> newCheckboxMemento: aMemento using: aDesc
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
+GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
 
 	| anEditor |
 	anEditor := BrEditableLabel new.
@@ -93,7 +93,7 @@ GtMagritteAsyncBuilderUtility class >> newEditableLabelWithMemento: aMemento usi
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aDescription [
+GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aDescription [
 
 	<return: #BrLabel>
 	| aText |
@@ -115,7 +115,7 @@ GtMagritteAsyncBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber usin
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> newFlowListMemento: aMemento using: aDescription [
+GtMagritteBuilderUtility class >> newFlowListMemento: aMemento using: aDescription [
 
 	| aFlowElement |
 	aFlowElement := BrFlowList new.
@@ -138,7 +138,7 @@ GtMagritteAsyncBuilderUtility class >> newFlowListMemento: aMemento using: aDesc
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
+GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
 
 	| anEditor |
 	anEditor := BrEditor new.
@@ -167,7 +167,7 @@ GtMagritteAsyncBuilderUtility class >> newOneLineEditorWithMemento: aMemento usi
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
+GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
 
 	| aToolbar |
 	aToolbar := BrToolbar new
@@ -187,7 +187,7 @@ GtMagritteAsyncBuilderUtility class >> newToolbarWithActions: aCollection mement
 ]
 
 { #category : #'api - ui' }
-GtMagritteAsyncBuilderUtility class >> newValidationContainerWith: aFieldElement memento: aMemento using: aDescription [
+GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement memento: aMemento using: aDescription [
 
 	| aContainer anIssuesElement aChangeElement |
 	aContainer := BrHorizontalGrid new.
@@ -253,7 +253,7 @@ GtMagritteAsyncBuilderUtility class >> newValidationContainerWith: aFieldElement
 ]
 
 { #category : #'private - support' }
-GtMagritteAsyncBuilderUtility class >> onFlowList: aFlowElement sinkUpdate: aSink memento: aMemento description: aDescription [
+GtMagritteBuilderUtility class >> onFlowList: aFlowElement sinkUpdate: aSink memento: aMemento description: aDescription [
 
 	| aModels anExistingViewModels isEditable aViewModels |
 	aModels := aSink value currentValue.
@@ -273,7 +273,7 @@ GtMagritteAsyncBuilderUtility class >> onFlowList: aFlowElement sinkUpdate: aSin
 
 			               isEditable ifTrue: [ 
 				               | anAddViewModel |
-				               anAddViewModel := GtMagritteAsyncAddItemViewModel
+				               anAddViewModel := GtMagritteAddItemViewModel
 					                                 new
 					                                 memento: aMemento;
 					                                 description: aDescription;
@@ -285,7 +285,7 @@ GtMagritteAsyncBuilderUtility class >> onFlowList: aFlowElement sinkUpdate: aSin
 ]
 
 { #category : #'private - support' }
-GtMagritteAsyncBuilderUtility class >> recycleViewModels: anExistingViewModels forModels: aModels into: aStream memento: aMemento description: aDescription [
+GtMagritteBuilderUtility class >> recycleViewModels: anExistingViewModels forModels: aModels into: aStream memento: aMemento description: aDescription [
 
 	aModels do: [ :aModel | 
 		anExistingViewModels
@@ -309,7 +309,7 @@ GtMagritteAsyncBuilderUtility class >> recycleViewModels: anExistingViewModels f
 ]
 
 { #category : #'private - support' }
-GtMagritteAsyncBuilderUtility class >> removeItem: anItem memento: aMemento description: aDescription [
+GtMagritteBuilderUtility class >> removeItem: anItem memento: aMemento description: aDescription [
 
 	| aNewCollection anObservable aValue |
 	anObservable := aMemento readObservableValueUsing: aDescription.
