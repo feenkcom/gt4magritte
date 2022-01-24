@@ -7,6 +7,12 @@ Object >> asGtMagritteAsyncViewModel [
 ]
 
 { #category : #'*GToolkit-Magritte' }
+Object >> asGtMagritteAsyncViewModelWithDescription: aDescription [
+
+	^ GtMagritteAsyncViewModel forObject: self description: aDescription
+]
+
+{ #category : #'*GToolkit-Magritte' }
 Object >> gtMagritteFor: aView [
 
 	<gtView>
@@ -20,5 +26,7 @@ Object >> gtMagritteFor: aView [
 	^ aView explicit
 		  title: 'GT Magritte';
 		  priority: 49;
-		  stencil: [ self asGtMagritteAsyncViewModel asElement ]
+		  stencil: [ 
+			  (self asGtMagritteAsyncViewModelWithDescription: aDescription)
+				  asElement ]
 ]
