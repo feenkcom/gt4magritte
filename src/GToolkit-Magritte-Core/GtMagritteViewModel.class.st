@@ -112,6 +112,12 @@ GtMagritteViewModel >> isForObject: anObject [
 	^ object == anObject
 ]
 
+{ #category : #'private - accessing' }
+GtMagritteViewModel >> mementoBlock [
+
+	^ mementoBlock
+]
+
 { #category : #'api - initialization' }
 GtMagritteViewModel >> mementoBlock: aBlock object: anObject [
 

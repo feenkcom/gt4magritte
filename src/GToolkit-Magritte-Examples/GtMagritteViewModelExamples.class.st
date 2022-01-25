@@ -53,7 +53,8 @@ GtMagritteViewModelExamples >> basicAsyncViewModel [
 	| aViewModel |
 	aViewModel := GtMagritteViewModel new.
 
-	self assert: aViewModel mementoFuture isNil.
+	self assert: aViewModel mementoBlock isNil.
+	self assert: aViewModel mementoFuture isNotNil.
 
 	^ aViewModel
 ]
