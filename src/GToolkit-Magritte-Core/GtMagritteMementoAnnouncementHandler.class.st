@@ -5,10 +5,23 @@ Class {
 		'memento',
 		'description',
 		'observable',
-		'model'
+		'model',
+		'announcementClass'
 	],
 	#category : #'GToolkit-Magritte-Core-Support'
 }
+
+{ #category : #accessing }
+GtMagritteMementoAnnouncementHandler >> announcementClass [
+
+	^ announcementClass
+]
+
+{ #category : #accessing }
+GtMagritteMementoAnnouncementHandler >> announcementClass: anObject [
+
+	announcementClass := anObject
+]
 
 { #category : #accessing }
 GtMagritteMementoAnnouncementHandler >> description [

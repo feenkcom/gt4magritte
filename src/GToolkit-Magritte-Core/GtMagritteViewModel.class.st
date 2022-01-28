@@ -27,6 +27,12 @@ GtMagritteViewModel class >> forObject: anObject description: aDescription [
 		  object: anObject
 ]
 
+{ #category : #constants }
+GtMagritteViewModel class >> gtMementoSymbol [
+
+	^ #gtmemento
+]
+
 { #category : #accessing }
 GtMagritteViewModel >> actions [
 
@@ -69,14 +75,16 @@ GtMagritteViewModel >> asElement [
 											  BrGlamorousColors disabledButtonTextColor);
 								 text: 'Preparing...') ];
 				whenError: [ :theContainer :anError | 
-					theContainer userData at: #gtmemento put: anError.
+					theContainer userData at: self class gtMementoSymbol put: anError.
 
 					theContainer
 						removeChildren;
 						addChild: anError asDebuggableElement hFitContentLimited;
 						vFitContent ];
 				whenSuccess: [ :theContainer :aMemento | 
-					theContainer userData at: #gtmemento put: aMemento.
+					theContainer userData
+						at: self class gtMementoSymbol
+						put: aMemento.
 
 					theContainer removeChildren.
 					GtMagritteElementBuilder new

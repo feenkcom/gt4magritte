@@ -20,6 +20,18 @@ MADescription >> beAlwaysEditable [
 ]
 
 { #category : #'*GToolkit-Magritte-Core' }
+MADescription >> definingMethod [
+
+	^ self propertyAt: #definingMethod ifAbsent: [ nil ]
+]
+
+{ #category : #'*GToolkit-Magritte-Core' }
+MADescription >> definingMethod: aDefiningMethod [
+
+	self propertyAt: #definingMethod put: aDefiningMethod
+]
+
+{ #category : #'*GToolkit-Magritte-Core' }
 MADescription >> gtConditionsFor: aView [
 
 	<gtView>
@@ -35,9 +47,29 @@ MADescription >> gtConditionsFor: aView [
 ]
 
 { #category : #'*GToolkit-Magritte-Core' }
+MADescription >> hasDefiningMethod [
+
+	^ self hasProperty: #definingMethod
+]
+
+{ #category : #'*GToolkit-Magritte-Core' }
 MADescription >> isAlwaysEditable [
 
 	^ self propertyAt: #alwaysEditable ifAbsent: [ false ]
+]
+
+{ #category : #'*GToolkit-Magritte-Core' }
+MADescription class >> new [
+
+	| anInstance aDefiningMethod |
+	anInstance := super new.
+
+	aDefiningMethod := GtMagritteDefiningMethod fromStack:
+		                   thisContext stack.
+	aDefiningMethod ifNotNil: [ 
+		anInstance definingMethod: aDefiningMethod ].
+
+	^ anInstance
 ]
 
 { #category : #'*GToolkit-Magritte-Core' }

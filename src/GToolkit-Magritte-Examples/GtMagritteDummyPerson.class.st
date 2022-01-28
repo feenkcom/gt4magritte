@@ -27,20 +27,7 @@ GtMagritteDummyPerson >> addresses: aCollection [
 ]
 
 { #category : #'magritte-accessing' }
-GtMagritteDummyPerson >> descriptionName [
-
-	<magritteDescription>
-	^ MAStringDescription new
-		  accessor: #name;
-		  default: '';
-		  priority: 1;
-		  beRequired;
-		  addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
-		  labelled: 'Name must be non empty'
-]
-
-{ #category : #'magritte-accessing' }
-GtMagritteDummyPerson >> desriptionAddresses [
+GtMagritteDummyPerson >> descriptionAddresses [
 
 	<magritteDescription>
 	^ MAToManyRelationDescription new
@@ -64,6 +51,19 @@ GtMagritteDummyPerson >> desriptionAddresses [
 				  padding: (BlInsets all: 5);
 				  background: Color white ];
 		  newItemStencil: [ GtMagritteDummyPostalAddress new ]
+]
+
+{ #category : #'magritte-accessing' }
+GtMagritteDummyPerson >> descriptionName [
+
+	<magritteDescription>
+	^ MAStringDescription new
+		  accessor: #name;
+		  default: '';
+		  priority: 1;
+		  beRequired;
+		  addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
+		  labelled: 'Name must be non empty'
 ]
 
 { #category : #initialization }
