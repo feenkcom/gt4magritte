@@ -7,7 +7,9 @@ MADescription >> announcerSubscriptionsDo: aBlock [
 
 	self
 		propertyAt: #announcerSubscriptions
-		ifPresent: [ :aCollection | aCollection do: aBlock ]
+		ifPresent: [ :aCollection | 
+			aCollection do: [ :anAssoc | 
+				aBlock value: anAssoc key value: anAssoc value ] ]
 		ifAbsent: [ "ignore" ]
 ]
 

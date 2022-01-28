@@ -271,10 +271,15 @@ GtMagritteMemento >> setCache: aDictionary [
 GtMagritteMemento >> subscribeToModelUsing: aDescription observable: anObservable [
 
 	| aHandler |
-	aDescription announcerSubscriptionsDo: [ :eachAssoc | 
-		eachAssoc value value ifNotNil: [ :anAnnouncer | 
-			anAnnouncer weak
-				when: eachAssoc key
+	aDescription announcerSubscriptionsDo: [ :anAnnouncementClass :anAnnouncerValuable | 
+		anAnnouncerValuable value ifNotNil: [ :anAnnouncer | 
+			| aSubscriptionBuilder |
+			aSubscriptionBuilder := (anAnnouncer respondsTo: #weak)
+				                        ifTrue: [ anAnnouncer weak ]
+				                        ifFalse: [ anAnnouncer ].
+
+			aSubscriptionBuilder
+				when: anAnnouncementClass
 				send: #onAnnouncement:
 				to: (aHandler := GtMagritteMementoAnnouncementHandler new
 						             model: self model;
