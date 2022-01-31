@@ -42,6 +42,18 @@ GtMagritteModelExamples >> basicAddressObject [
 	^ anAddress
 ]
 
+{ #category : #'examples - broken object' }
+GtMagritteModelExamples >> basicBrokenObject [
+
+	<gtExample>
+	| anObject |
+	anObject := GtMagritteDummyModelWithBrokenDescription new.
+
+	self assert: anObject value isNil.
+
+	^ anObject
+]
+
 { #category : #'examples - person' }
 GtMagritteModelExamples >> basicPersonObject [
 
@@ -53,6 +65,21 @@ GtMagritteModelExamples >> basicPersonObject [
 	self assert: aPerson addresses isEmpty.
 
 	^ aPerson
+]
+
+{ #category : #'examples - broken object' }
+GtMagritteModelExamples >> brokenObject [
+
+	<gtExample>
+	| anObject |
+	anObject := self basicBrokenObject.
+	anObject value: 'I have a value'.
+	anObject comment: 'I have a comment'.
+
+	self assert: anObject value equals:'I have a value' .
+	self assert: anObject comment equals: 'I have a comment'.
+
+	^ anObject
 ]
 
 { #category : #'examples - person' }

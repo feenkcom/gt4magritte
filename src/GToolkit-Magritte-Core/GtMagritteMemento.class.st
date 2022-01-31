@@ -146,6 +146,35 @@ GtMagritteMemento >> gtCacheFor: aView [
 		  actionUpdateButtonTooltip: 'Update the list'
 ]
 
+{ #category : #'gt - extensions' }
+GtMagritteMemento >> gtSubscriptionsFor: aView [
+
+	<gtView>
+	subscriptions ifNil: [ ^ aView empty ].
+	subscriptions ifEmpty: [ ^ aView empty ].
+
+	^ aView tree
+		  title: 'Subscriptions';
+		  priority: 11;
+		  items: [ subscriptions keys ];
+		  children: [ :anItem | 
+			  (anItem isKindOf: MADescription)
+				  ifTrue: [ subscriptions at: anItem ifAbsent: [ #(  ) ] ]
+				  ifFalse: [ #(  ) ] ];
+		  itemText: [ :anItem | 
+			  (anItem isKindOf: MADescription)
+				  ifTrue: [ 
+					  'Change ' asRopedText
+						  foreground: BrGlamorousColors disabledButtonTextColor;
+						  append: anItem label asRopedText;
+						  append:
+							  (' original values on the following announcements:'
+								   asRopedText foreground:
+									   BrGlamorousColors disabledButtonTextColor) ]
+				  ifFalse: [ anItem announcementClass ] ];
+		  expandAll
+]
+
 { #category : #initialization }
 GtMagritteMemento >> initialize [
 
@@ -271,16 +300,24 @@ GtMagritteMemento >> setCache: aDictionary [
 GtMagritteMemento >> subscribeToModelUsing: aDescription observable: anObservable [
 
 	| aHandler |
-	aDescription announcerSubscriptionsDo: [ :eachAssoc | 
-		eachAssoc value value ifNotNil: [ :anAnnouncer | 
-			anAnnouncer weak
-				when: eachAssoc key
+	aDescription announcerSubscriptionsDo: [ 
+		:anAnnouncementClass 
+		:anAnnouncerValuable | 
+		anAnnouncerValuable value ifNotNil: [ :anAnnouncer | 
+			| aSubscriptionBuilder |
+			aSubscriptionBuilder := (anAnnouncer respondsTo: #weak)
+				                        ifTrue: [ anAnnouncer weak ]
+				                        ifFalse: [ anAnnouncer ].
+
+			aSubscriptionBuilder
+				when: anAnnouncementClass
 				send: #onAnnouncement:
 				to: (aHandler := GtMagritteMementoAnnouncementHandler new
 						             model: self model;
 						             memento: self;
 						             description: aDescription;
-						             observable: anObservable).
+						             observable: anObservable;
+						             announcementClass: anAnnouncementClass).
 
 			subscriptions
 				at: aDescription
