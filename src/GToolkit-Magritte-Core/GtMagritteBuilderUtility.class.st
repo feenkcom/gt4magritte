@@ -42,6 +42,37 @@ GtMagritteBuilderUtility class >> defaultThickness [
 ]
 
 { #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aDescription using: aMemento [
+
+	| anEditor |
+	anEditor := BrEditor new.
+	anEditor
+		beReadOnlyWithSelection;
+		aptitude:
+			BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize;
+		addAptitude: (BrStyleCommonAptitude new
+				 default: [ :aStyle | aStyle border: BlBorder empty ];
+				 hovered: [ :aStyle | 
+					 aStyle border:
+							 (BlBorder
+								  paint: BrGlamorousColors disabledButtonBorderColor
+								  width: 1) ];
+				 focused: [ :aStyle | 
+					 aStyle border:
+							 (BlBorder
+								  paint: BrGlamorousColors focusedEditorBorderColor
+								  width: 1) ]);
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+		vFitContent;
+		hFitContentLimited;
+		margin: (BlInsets bottom: self defaultSpaceNumber);
+		constraintsDo: [ :c | 
+			c grid vertical alignCenter.
+			c minWidth: 20 ].
+	^ anEditor
+]
+
+{ #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescription [
 
 	| aCheckbox |
@@ -183,37 +214,17 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: aDescription [
 
 	| anEditor |
-	anEditor := BrEditor new.
-	anEditor
-		beReadOnlyWithSelection;
-		aptitude:
-			BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize;
-		addAptitude: (BrStyleCommonAptitude new
-				 default: [ :aStyle | aStyle border: BlBorder empty ];
-				 hovered: [ :aStyle | 
-					 aStyle border:
-							 (BlBorder
-								  paint: BrGlamorousColors disabledButtonBorderColor
-								  width: 1) ];
-				 focused: [ :aStyle | 
-					 aStyle border:
-							 (BlBorder
-								  paint: BrGlamorousColors focusedEditorBorderColor
-								  width: 1) ]);
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		vFitContent;
-		hFitContentLimited;
-		margin: (BlInsets bottom: self defaultSpaceNumber);
-		constraintsDo: [ :c | 
-			c grid vertical alignCenter.
-			c minWidth: 20 ];
-		withAsyncSinkDo: [ :anElementSink | 
-			anElementSink
-				sink: AsyncPeakSink new;
-				whenUpdate: [ :theEditor :aSink | 
-					theEditor text: aSink value currentValue ].
-			(aMemento readObservableValueUsing: aDescription) observe:
-				anElementSink ].
+	anEditor := self
+		            newBasicReadOnlyEditorWithMemento: aDescription
+		            using: aMemento.
+
+	anEditor withAsyncSinkDo: [ :anElementSink | 
+		anElementSink
+			sink: AsyncPeakSink new;
+			whenUpdate: [ :theEditor :aSink | 
+				theEditor text: aSink value currentValue ].
+		(aMemento readObservableValueUsing: aDescription) observe:
+			anElementSink ].
 
 	^ anEditor
 ]
@@ -345,7 +356,7 @@ GtMagritteBuilderUtility class >> recycleViewModels: anExistingViewModels forMod
 			ifFound: [ :aViewModel | aStream nextPut: aViewModel ]
 			ifNone: [ 
 				| aViewModel |
-				aViewModel := aModel asGtMagritteAsyncViewModel.
+				aViewModel := aModel asGtMagritteViewModel.
 				aDescription definitive ifFalse: [ 
 					aViewModel addButton: (GtMagritteButtonWithIconAction new
 							 icon: BrGlamorousVectorIcons remove;

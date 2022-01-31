@@ -19,11 +19,13 @@ GtMagritteViewModel class >> forObject: anObject [
 ]
 
 { #category : #'api - instance creation' }
-GtMagritteViewModel class >> forObject: anObject description: aDescription [
+GtMagritteViewModel class >> forObject: anObject description: aDescriptionOrBlock [
 
 	^ self new
 		  mementoBlock: [ 
-		  	GtMagritteMemento model: anObject description: aDescription ]
+			  GtMagritteMemento
+				  model: anObject
+				  description: aDescriptionOrBlock value asContainer ]
 		  object: anObject
 ]
 
@@ -100,9 +102,32 @@ GtMagritteViewModel >> asElement [
 ]
 
 { #category : #'api - converting' }
-GtMagritteViewModel >> asGtMagritteAsyncViewModel [
+GtMagritteViewModel >> asGtMagritteViewModel [
 
 	^ self
+]
+
+{ #category : #'gt - extensions' }
+GtMagritteViewModel >> gtLiveFor: aView [
+
+	<gtView>
+	self mementoBlock ifNil: [ ^ aView empty ].
+
+	^ aView explicit
+		  title: 'Live';
+		  priority: 1;
+		  stencil: [ self ];
+		  actionButtonIcon: BrGlamorousVectorIcons inspect
+		  label: 'Memento'
+		  tooltip: 'Inspect Memento'
+		  action: [ :aButton :aTab | 
+			  aTab viewContentElement
+				  allChildrenBreadthFirstDetect: [ :anElement | 
+					  anElement userData includesKey:
+							  GtMagritteViewModel gtMementoSymbol ]
+				  ifFound: [ :anElement | 
+					  aButton phlow spawnObject:
+							  (anElement userData at: GtMagritteViewModel gtMementoSymbol) ] ]
 ]
 
 { #category : #initialization }

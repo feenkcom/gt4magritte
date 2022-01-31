@@ -27,3 +27,10 @@ MABooleanDescription >> blocUseDropdown: aBoolean [
 
 	self propertyAt: #blocUseDropdown put: aBoolean
 ]
+
+{ #category : #'*GToolkit-Magritte-Core' }
+MABooleanDescription >> hasCustomLabels [
+
+	^ (self hasProperty: #trueString) or: [ 
+		  self hasProperty: #falseString ]
+]

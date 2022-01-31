@@ -24,18 +24,47 @@ GtMagritteElementBuilder >> actions: anObject [
 { #category : #'private - building' }
 GtMagritteElementBuilder >> addBooleanField: aDescription [
 
-	| anElement aValidationElement aMemento |
+	| aCheckBoxElement aValidationElement aMemento aLabelElement aContainer aLabel |
 	aMemento := self memento.
-	anElement := GtMagritteBuilderUtility
-		             newCheckboxMemento: aMemento
-		             using: aDescription.
+	aCheckBoxElement := GtMagritteBuilderUtility
+		                    newCheckboxMemento: aMemento
+		                    using: aDescription.
+
+	aDescription hasCustomLabels
+		ifFalse: [ aContainer := aCheckBoxElement ]
+		ifTrue: [ 
+			aLabelElement := GtMagritteBuilderUtility
+				                 newBasicReadOnlyEditorWithMemento: aMemento
+				                 using: aDescription.
+
+			aLabelElement withAsyncSinkDo: [ :anElementSink | 
+				anElementSink
+					sink: AsyncPeakSink new;
+					whenUpdate: [ :theEditor :aSink | 
+						theEditor text:
+								(aDescription labelForOption: aSink value currentValue) ].
+				(aMemento readObservableValueUsing: aDescription) observe:
+					anElementSink ].
+
+			aContainer := BrHorizontalPane new
+				              hFitContentLimited;
+				              vFitContent;
+				              alignCenterLeft.
+			aContainer
+				addChild: aCheckBoxElement;
+				addChild: aLabelElement ].
 
 	aValidationElement := GtMagritteBuilderUtility
-		                      newValidationContainerWith: anElement
+		                      newValidationContainerWith: aContainer
 		                      memento: aMemento
 		                      using: aDescription.
 
-	self addFieldElement: aValidationElement using: aDescription
+	aLabel := self
+		          addFieldElement: aValidationElement
+		          using: aDescription.
+
+	aDescription hasCustomLabels ifTrue: [ 
+		aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing) ]
 ]
 
 { #category : #'api - building' }
