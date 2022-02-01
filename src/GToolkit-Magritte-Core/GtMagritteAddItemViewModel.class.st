@@ -16,7 +16,7 @@ GtMagritteAddItemViewModel >> asElement [
 		  aptitude: BrGlamorousButtonWithIconCircularAptitude;
 		  icon: BrGlamorousVectorIcons add;
 		  label: 'Add item';
-		  beLargeSize;
+		  "beLargeSize;"
 		  action: [ :anEvent | self onClick: anEvent ];
 		  constraintsDo: [ :c | c flow vertical alignCenter ]
 ]
@@ -31,6 +31,12 @@ GtMagritteAddItemViewModel >> description [
 GtMagritteAddItemViewModel >> description: anObject [
 
 	description := anObject
+]
+
+{ #category : #'api - testing' }
+GtMagritteAddItemViewModel >> isForObject [
+
+	^ false
 ]
 
 { #category : #'api - testing' }

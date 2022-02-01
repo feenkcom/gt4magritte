@@ -160,6 +160,12 @@ GtMagritteViewModel >> initialize [
 ]
 
 { #category : #'api - testing' }
+GtMagritteViewModel >> isForObject [
+
+	^ true
+]
+
+{ #category : #'api - testing' }
 GtMagritteViewModel >> isForObject: anObject [
 
 	^ object == anObject
@@ -188,4 +194,10 @@ GtMagritteViewModel >> mementoFuture [
 	^ AsyncCachedFuture
 		  forFuture: mementoBlock asAsyncFuture
 		  cache: cache
+]
+
+{ #category : #accessing }
+GtMagritteViewModel >> object [
+
+	^ object
 ]

@@ -104,7 +104,7 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 	anEditor := BrEditableLabel new.
 	anEditor
 		aptitude:
-			BrGlamorousEditableLabelAptitude new glamorousRegularFontAndSize;
+			GtMagritteEditableLabelAptitude new glamorousRegularFontAndSize;
 		vFitContent;
 		hFitContentLimited;
 		withAsyncSinkDo: [ :anElementSink | 
