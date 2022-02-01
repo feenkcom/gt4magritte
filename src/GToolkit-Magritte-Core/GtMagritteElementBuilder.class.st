@@ -101,8 +101,8 @@ GtMagritteElementBuilder >> addFieldElement: aFieldElement using: aDescription [
 			addCommentTooltip: aFieldElement
 			using: aDescription ].
 
-	self form addChild: aLabel.
-	self form addChild: aFieldElement.
+	self labelContainerDo: [ :aContainer | aContainer addChild: aLabel ].
+	self fieldContainerDo: [ :aContainer | aContainer addChild: aFieldElement ].
 
 	^ aLabel
 ]
@@ -183,7 +183,6 @@ GtMagritteElementBuilder >> build [
 
 	self visit: self objectDescription.
 	self buildActions
-	
 ]
 
 { #category : #'private - building' }
@@ -215,6 +214,12 @@ GtMagritteElementBuilder >> defaultSpacing [
 	^ GtMagritteBuilderUtility defaultSpaceNumber
 ]
 
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> fieldContainerDo: aBlock [
+
+	self form magritte fieldContainerDo: aBlock
+]
+
 { #category : #accessing }
 GtMagritteElementBuilder >> form [
 
@@ -239,6 +244,12 @@ GtMagritteElementBuilder >> initialize [
 	super initialize.
 
 	actions := #(  )
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> labelContainerDo: aBlock [
+
+	self form magritte labelContainerDo: aBlock
 ]
 
 { #category : #accessing }

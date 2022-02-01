@@ -65,6 +65,10 @@ GtMagritteViewModel >> asElement [
 	| aContainer |
 	aContainer := BrHorizontalGrid new.
 
+	aContainer magritte
+		beLabelContainer;
+		beFieldContainer.
+
 	aContainer
 		cellSpacing: 0;
 		columnCount: 2;
@@ -81,8 +85,9 @@ GtMagritteViewModel >> asElement [
 
 					theContainer
 						removeChildren;
-						addChild: anError asDebuggableElement hFitContentLimited;
-						vFitContent ];
+						addChild: (anError asDebuggableElement
+								 hFitContentLimited;
+								 vFitContent) ];
 				whenSuccess: [ :theContainer :aMemento | 
 					theContainer userData
 						at: self class gtMementoSymbol
