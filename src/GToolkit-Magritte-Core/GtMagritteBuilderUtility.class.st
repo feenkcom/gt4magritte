@@ -169,6 +169,25 @@ GtMagritteBuilderUtility class >> newFlowListMemento: aMemento using: aDescripti
 ]
 
 { #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newHorizontalGridContainer [
+
+	| aContainer |
+	aContainer := BrHorizontalGrid new.
+
+	aContainer magritte
+		beLabelContainer;
+		beFieldContainer;
+		beToolbarContainer.
+
+	aContainer
+		cellSpacing: 0;
+		columnCount: 2;
+		fitContent.
+
+	^ aContainer
+]
+
+{ #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
 
 	| anEditor |

@@ -191,21 +191,23 @@ GtMagritteElementBuilder >> buildActions [
 	| aToolbar |
 	self hasActions ifFalse: [ ^ self ].
 
-	aToolbar := GtMagritteBuilderUtility
-		            newToolbarWithActions: self actions
-		            memento: self memento.
+	self toolbarContainerDo: [ :aContainer |
+	 
+		aToolbar := GtMagritteBuilderUtility
+			            newToolbarWithActions: self actions
+			            memento: self memento.
 
-	self form
-		when: BlMouseEnterEvent
-		do: [ :anEvent | aToolbar visibility: BlVisibility visible ].
+		self form
+			when: BlMouseEnterEvent
+			do: [ :anEvent | aToolbar visibility: BlVisibility visible ].
 
-	self form
-		when: BlMouseLeaveEvent
-		do: [ :anEvent | aToolbar visibility: BlVisibility hidden ].
+		self form
+			when: BlMouseLeaveEvent
+			do: [ :anEvent | aToolbar visibility: BlVisibility hidden ].
 
-	aToolbar visibility: BlVisibility hidden.
+		aToolbar visibility: BlVisibility hidden.
 
-	self form addChild: aToolbar as: #toolbar
+		aContainer addChild: aToolbar as: #toolbar ]
 ]
 
 { #category : #'private - building' }
@@ -308,6 +310,12 @@ GtMagritteElementBuilder >> newSaveButton [
 GtMagritteElementBuilder >> objectDescription [
 
 	^ self memento magritteDescription
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> toolbarContainerDo: aBlock [
+
+	self form magritte toolbarContainerDo: aBlock
 ]
 
 { #category : #visiting }

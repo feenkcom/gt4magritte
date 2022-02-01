@@ -62,24 +62,23 @@ GtMagritteViewModel >> addButtons: aCollection [
 { #category : #'api - converting' }
 GtMagritteViewModel >> asElement [
 
-	| aContainer |
-	aContainer := BrHorizontalGrid new.
+	| aFrame |
+	aFrame := BrFrame new.
 
-	aContainer magritte
-		beLabelContainer;
-		beFieldContainer.
-
-	aContainer
-		cellSpacing: 0;
-		columnCount: 2;
+	aFrame
 		fitContent;
 		withAsyncFutureDo: [ :anElementFuture | 
 			anElementFuture
 				whenPending: [ :theContainer | 
-					theContainer addChild: (BrLabel new
+					theContainer
+						addChild: (BrLabel new
+								 fitContent;
 								 aptitude: (BrGlamorousLabelAptitude new foreground:
 											  BrGlamorousColors disabledButtonTextColor);
-								 text: 'Preparing...') ];
+								 text: 'Preparing...');
+						constraintsDo: [ :c | 
+							c frame horizontal alignCenter.
+							c frame vertical alignCenter ] ];
 				whenError: [ :theContainer :anError | 
 					theContainer userData at: self class gtMementoSymbol put: anError.
 
@@ -87,23 +86,39 @@ GtMagritteViewModel >> asElement [
 						removeChildren;
 						addChild: (anError asDebuggableElement
 								 hFitContentLimited;
-								 vFitContent) ];
-				whenSuccess: [ :theContainer :aMemento | 
-					theContainer userData
-						at: self class gtMementoSymbol
-						put: aMemento.
+								 vFitContent);
+						constraintsDo: [ :c | 
+							c frame horizontal alignCenter.
+							c frame vertical alignCenter ] ];
+				whenSuccess: [ :theFrame :aMemento | 
+					| aStencil aContainer |
+					theFrame userData at: self class gtMementoSymbol put: aMemento.
 
-					theContainer removeChildren.
+					theFrame removeChildren.
+
+					aStencil := aMemento magritteDescription
+						            blocElementContainerStencil asStencilBuilder:
+						            	GtMagritteFormStencilBuilder.
+
+					aContainer := aStencil
+						              memento: aMemento;
+						              asElement.
+
+					theFrame addAptitude:
+						(BrLayoutResizerAptitude inherit inherit: aContainer).
+
+					theFrame addChild: aContainer.
+
 					GtMagritteElementBuilder new
-						form: theContainer;
+						form: theFrame;
 						memento: aMemento;
 						addButtons;
 						addButtons: self actions;
 						build ] ].
 
-	aContainer asyncFuture future: self mementoFuture.
+	aFrame asyncFuture future: self mementoFuture.
 
-	^ aContainer
+	^ aFrame
 ]
 
 { #category : #'api - converting' }

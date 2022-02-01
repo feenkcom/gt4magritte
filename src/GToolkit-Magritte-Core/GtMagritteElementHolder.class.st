@@ -22,19 +22,26 @@ GtMagritteElementHolder class >> null [
 { #category : #accessing }
 GtMagritteElementHolder >> element: anElement [
 
-	weak at: 1 put: anElement
+	weak := anElement asWeakReference
 ]
 
 { #category : #accessing }
 GtMagritteElementHolder >> elementDo: aBlock [
 
-	(weak at: 1) ifNotNil: aBlock
+	weak ifNotNil: [ :aWeak | (aWeak at: 1) ifNotNil: aBlock ]
 ]
 
-{ #category : #initialization }
-GtMagritteElementHolder >> initialize [
+{ #category : #printing }
+GtMagritteElementHolder >> gtDisplayOn: aStream [
 
-	super initialize.
+	| anElement |
+	weak ifNil: [ 
+		super gtDisplayOn: aStream.
+		^ self ].
 
-	weak := WeakArray new: 1
+	self elementDo: [ :theElement | anElement := theElement ].
+
+	anElement
+		ifNil: [ aStream nextPutAll: 'a garbage collected element' ]
+		ifNotNil: [ anElement gtDisplayOn: aStream ]
 ]

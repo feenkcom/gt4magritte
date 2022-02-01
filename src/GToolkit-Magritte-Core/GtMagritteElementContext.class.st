@@ -27,6 +27,12 @@ GtMagritteElementContext class >> on: anElement [
 	^ self new element: anElement
 ]
 
+{ #category : #'api - constants' }
+GtMagritteElementContext class >> toolbarName [
+
+	^ #toolbar
+]
+
 { #category : #'api - initialization' }
 GtMagritteElementContext >> beFieldContainer [
 
@@ -37,6 +43,12 @@ GtMagritteElementContext >> beFieldContainer [
 GtMagritteElementContext >> beLabelContainer [
 
 	containerTypes at: self class labelName put: true
+]
+
+{ #category : #'api - initialization' }
+GtMagritteElementContext >> beToolbarContainer [
+
+	containerTypes at: self class toolbarName put: true
 ]
 
 { #category : #'api - accessing' }
@@ -94,10 +106,11 @@ GtMagritteElementContext >> gtContainerElementsFor: aView [
 		  items: [ 
 			  containerElements ifNotNil: #associations ifNil: [ #(  ) ] ];
 		  column: 'Container Type' text: #key;
-		  column: 'Element'
-		  	text: [ :anAssoc | (anAssoc value at: 1) ifNil: [ '<unknown>' ] ]
-		  	weight: 3;
-		  send: [ :anAssoc | anAssoc value at: 1 ];
+		  column: 'Element' text: #value weight: 3;
+		  send: [ :anAssoc | 
+			  | anElement |
+			  anAssoc value elementDo: [ :theElement | anElement := theElement ].
+			  anElement ];
 		  actionUpdateButtonTooltip: 'Update items'
 ]
 
@@ -147,4 +160,10 @@ GtMagritteElementContext >> isLabelContainer [
 GtMagritteElementContext >> labelContainerDo: aBlock [
 
 	self containerNamed: self class labelName do: aBlock
+]
+
+{ #category : #'api - accessing' }
+GtMagritteElementContext >> toolbarContainerDo: aBlock [
+
+	self containerNamed: self class toolbarName do: aBlock
 ]

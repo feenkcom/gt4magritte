@@ -17,6 +17,28 @@ GtMagritteViewModelExamples >> asyncViewModelWithPersonObjectWithTwoAddresses [
 	^ aViewModel
 ]
 
+{ #category : #'examples - person with two addresses' }
+GtMagritteViewModelExamples >> asyncViewModelWithPersonObjectWithTwoAddresses_WithAddressesDescriptionOnly [
+
+	<gtExample>
+	| aViewModel anObject aResult |
+	anObject := self personObjectWithTwoAddresses.
+	aViewModel := anObject asGtMagritteViewModelWithDescription: [ 
+		              anObject descriptionPostalAddresses asContainer 
+			              blocElementContainerStencil: [ :aMemento | 
+				              BrVerticalPane new
+					              in: [ :aPane | 
+					              	"ignore field labels"
+						              aPane magritte
+							              beFieldContainer;
+							              beToolbarContainer ];
+					              fitContent ] ].
+
+	self assert: aViewModel mementoFuture isAsyncFuture.
+
+	^ aViewModel
+]
+
 { #category : #'examples - primary address' }
 GtMagritteViewModelExamples >> asyncViewModelWithPrimaryAddress [
 

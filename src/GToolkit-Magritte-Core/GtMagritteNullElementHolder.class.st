@@ -13,3 +13,9 @@ GtMagritteNullElementHolder >> elementDo: aBlock [
 
 	
 ]
+
+{ #category : #printing }
+GtMagritteNullElementHolder >> gtDisplayOn: aStream [
+
+	aStream nextPutAll: 'ignored container'
+]
