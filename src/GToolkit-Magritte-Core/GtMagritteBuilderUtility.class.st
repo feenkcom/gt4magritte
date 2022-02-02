@@ -187,6 +187,35 @@ GtMagritteBuilderUtility class >> newHorizontalGridContainer [
 	^ aContainer
 ]
 
+{ #category : #visiting }
+GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescription [
+
+	| aFrame |
+	aFrame := BrFrame new.
+
+	aFrame
+		fitContent;
+		constraintsDo: [ :c | 
+			c grid vertical alignCenter.
+			c grid horizontal alignLeft ];
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeakSink new;
+				whenUpdate: [ :aContainer :aSink | 
+					| aValue anIcon |
+					aValue := aSink value currentValue.
+					anIcon := aDescription blocStencil
+						          model: aValue;
+						          description: aDescription;
+						          asElement.
+					aContainer addChild: anIcon ].
+
+			(aMemento readObservableValueUsing: aDescription) observe:
+				anElementSink ].
+
+	^ aFrame
+]
+
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
 

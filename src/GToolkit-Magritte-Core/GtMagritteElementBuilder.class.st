@@ -128,6 +128,19 @@ GtMagritteElementBuilder >> addFlowListUsing: aDescription [
 	self addFieldElement: aValidationElement using: aDescription
 ]
 
+{ #category : #visiting }
+GtMagritteElementBuilder >> addIconUsing: aDescription [
+
+	| aMemento anIcon aStencilBuilder |
+	aMemento := self memento.
+
+	anIcon := GtMagritteBuilderUtility
+		          newIconWithMemento: aMemento
+		          using: aDescription.
+
+	self addFieldElement: anIcon using: aDescription
+]
+
 { #category : #'private - building' }
 GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 
@@ -328,6 +341,12 @@ GtMagritteElementBuilder >> visitBooleanDescription: aDescription [
 GtMagritteElementBuilder >> visitContainer: aDescription [
 
 	aDescription do: [ :each | self visit: each ]
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> visitIconDescription: aDescription [
+
+	self addIconUsing: aDescription
 ]
 
 { #category : #visiting }

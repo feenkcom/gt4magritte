@@ -134,8 +134,8 @@ GtMagritteElementContext >> initialize [
 
 	super initialize.
 
-	containerTypes := SmallDictionary new: 2.
-	containerElements := SmallDictionary new: 2
+	containerTypes := SmallDictionary new: 3.
+	containerElements := SmallDictionary new: 3.
 ]
 
 { #category : #'api - testing' }
