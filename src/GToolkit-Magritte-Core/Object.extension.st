@@ -1,13 +1,13 @@
 Extension { #name : #Object }
 
 { #category : #'*GToolkit-Magritte-Core' }
-Object >> asGtMagritteAsyncViewModel [
+Object >> asGtMagritteViewModel [
 
 	^ GtMagritteViewModel forObject: self
 ]
 
 { #category : #'*GToolkit-Magritte-Core' }
-Object >> asGtMagritteAsyncViewModelWithDescription: aDescription [
+Object >> asGtMagritteViewModelWithDescription: aDescription [
 
 	^ GtMagritteViewModel forObject: self description: aDescription
 ]
@@ -23,7 +23,7 @@ Object >> gtMagritteFor: aView [
 	^ aView explicit
 		  title: 'GT Magritte';
 		  priority: 49;
-		  stencil: [ self asGtMagritteAsyncViewModel ];
+		  stencil: [ self asGtMagritteViewModel ];
 		  actionButtonIcon: BrGlamorousVectorIcons inspect
 		  label: 'Memento'
 		  tooltip: 'Inspect Memento'

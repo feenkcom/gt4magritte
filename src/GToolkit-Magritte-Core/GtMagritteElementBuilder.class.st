@@ -24,18 +24,47 @@ GtMagritteElementBuilder >> actions: anObject [
 { #category : #'private - building' }
 GtMagritteElementBuilder >> addBooleanField: aDescription [
 
-	| anElement aValidationElement aMemento |
+	| aCheckBoxElement aValidationElement aMemento aLabelElement aContainer aLabel |
 	aMemento := self memento.
-	anElement := GtMagritteBuilderUtility
-		             newCheckboxMemento: aMemento
-		             using: aDescription.
+	aCheckBoxElement := GtMagritteBuilderUtility
+		                    newCheckboxMemento: aMemento
+		                    using: aDescription.
+
+	aDescription hasCustomLabels
+		ifFalse: [ aContainer := aCheckBoxElement ]
+		ifTrue: [ 
+			aLabelElement := GtMagritteBuilderUtility
+				                 newBasicReadOnlyEditorWithMemento: aMemento
+				                 using: aDescription.
+
+			aLabelElement withAsyncSinkDo: [ :anElementSink | 
+				anElementSink
+					sink: AsyncPeakSink new;
+					whenUpdate: [ :theEditor :aSink | 
+						theEditor text:
+								(aDescription labelForOption: aSink value currentValue) ].
+				(aMemento readObservableValueUsing: aDescription) observe:
+					anElementSink ].
+
+			aContainer := BrHorizontalPane new
+				              hFitContentLimited;
+				              vFitContent;
+				              alignCenterLeft.
+			aContainer
+				addChild: aCheckBoxElement;
+				addChild: aLabelElement ].
 
 	aValidationElement := GtMagritteBuilderUtility
-		                      newValidationContainerWith: anElement
+		                      newValidationContainerWith: aContainer
 		                      memento: aMemento
 		                      using: aDescription.
 
-	self addFieldElement: aValidationElement using: aDescription
+	aLabel := self
+		          addFieldElement: aValidationElement
+		          using: aDescription.
+
+	aDescription hasCustomLabels ifTrue: [ 
+		aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing) ]
 ]
 
 { #category : #'api - building' }
@@ -72,8 +101,8 @@ GtMagritteElementBuilder >> addFieldElement: aFieldElement using: aDescription [
 			addCommentTooltip: aFieldElement
 			using: aDescription ].
 
-	self form addChild: aLabel.
-	self form addChild: aFieldElement.
+	self labelContainerDo: [ :aContainer | aContainer addChild: aLabel ].
+	self fieldContainerDo: [ :aContainer | aContainer addChild: aFieldElement ].
 
 	^ aLabel
 ]
@@ -154,7 +183,6 @@ GtMagritteElementBuilder >> build [
 
 	self visit: self objectDescription.
 	self buildActions
-	
 ]
 
 { #category : #'private - building' }
@@ -163,27 +191,35 @@ GtMagritteElementBuilder >> buildActions [
 	| aToolbar |
 	self hasActions ifFalse: [ ^ self ].
 
-	aToolbar := GtMagritteBuilderUtility
-		            newToolbarWithActions: self actions
-		            memento: self memento.
+	self toolbarContainerDo: [ :aContainer |
+	 
+		aToolbar := GtMagritteBuilderUtility
+			            newToolbarWithActions: self actions
+			            memento: self memento.
 
-	self form
-		when: BlMouseEnterEvent
-		do: [ :anEvent | aToolbar visibility: BlVisibility visible ].
+		self form
+			when: BlMouseEnterEvent
+			do: [ :anEvent | aToolbar visibility: BlVisibility visible ].
 
-	self form
-		when: BlMouseLeaveEvent
-		do: [ :anEvent | aToolbar visibility: BlVisibility hidden ].
+		self form
+			when: BlMouseLeaveEvent
+			do: [ :anEvent | aToolbar visibility: BlVisibility hidden ].
 
-	aToolbar visibility: BlVisibility hidden.
+		aToolbar visibility: BlVisibility hidden.
 
-	self form addChild: aToolbar as: #toolbar
+		aContainer addChild: aToolbar as: #toolbar ]
 ]
 
 { #category : #'private - building' }
 GtMagritteElementBuilder >> defaultSpacing [
 
 	^ GtMagritteBuilderUtility defaultSpaceNumber
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> fieldContainerDo: aBlock [
+
+	self form magritte fieldContainerDo: aBlock
 ]
 
 { #category : #accessing }
@@ -210,6 +246,12 @@ GtMagritteElementBuilder >> initialize [
 	super initialize.
 
 	actions := #(  )
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> labelContainerDo: aBlock [
+
+	self form magritte labelContainerDo: aBlock
 ]
 
 { #category : #accessing }
@@ -268,6 +310,12 @@ GtMagritteElementBuilder >> newSaveButton [
 GtMagritteElementBuilder >> objectDescription [
 
 	^ self memento magritteDescription
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> toolbarContainerDo: aBlock [
+
+	self form magritte toolbarContainerDo: aBlock
 ]
 
 { #category : #visiting }

@@ -54,8 +54,8 @@ GtMagritteDummyPostalAddress >> descriptionIsPrimary [
 		  accessor: #isPrimary;
 		  default: false;
 		  priority: 10;
-		  trueString: 'primary';
-		  falseString: '...';
+		  trueString: 'is primary';
+		  falseString: '';
 		  updateOn: GtMagritteDummyPostalAddressIsPrimaryChanged from: [ self ];
 		  blocActionString: 'set as primary';
 		  blocUseDropdown: true

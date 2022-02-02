@@ -19,11 +19,13 @@ GtMagritteViewModel class >> forObject: anObject [
 ]
 
 { #category : #'api - instance creation' }
-GtMagritteViewModel class >> forObject: anObject description: aDescription [
+GtMagritteViewModel class >> forObject: anObject description: aDescriptionOrBlock [
 
 	^ self new
 		  mementoBlock: [ 
-		  	GtMagritteMemento model: anObject description: aDescription ]
+			  GtMagritteMemento
+				  model: anObject
+				  description: aDescriptionOrBlock value asContainer ]
 		  object: anObject
 ]
 
@@ -60,49 +62,92 @@ GtMagritteViewModel >> addButtons: aCollection [
 { #category : #'api - converting' }
 GtMagritteViewModel >> asElement [
 
-	| aContainer |
-	aContainer := BrHorizontalGrid new.
+	| aFrame |
+	aFrame := BrFrame new.
 
-	aContainer
-		cellSpacing: 0;
-		columnCount: 2;
+	aFrame
 		fitContent;
 		withAsyncFutureDo: [ :anElementFuture | 
 			anElementFuture
 				whenPending: [ :theContainer | 
-					theContainer addChild: (BrLabel new
+					theContainer
+						addChild: (BrLabel new
+								 fitContent;
 								 aptitude: (BrGlamorousLabelAptitude new foreground:
 											  BrGlamorousColors disabledButtonTextColor);
-								 text: 'Preparing...') ];
+								 text: 'Preparing...');
+						constraintsDo: [ :c | 
+							c frame horizontal alignCenter.
+							c frame vertical alignCenter ] ];
 				whenError: [ :theContainer :anError | 
 					theContainer userData at: self class gtMementoSymbol put: anError.
 
 					theContainer
 						removeChildren;
-						addChild: anError asDebuggableElement hFitContentLimited;
-						vFitContent ];
-				whenSuccess: [ :theContainer :aMemento | 
-					theContainer userData
-						at: self class gtMementoSymbol
-						put: aMemento.
+						addChild: (anError asDebuggableElement
+								 hFitContentLimited;
+								 vFitContent);
+						constraintsDo: [ :c | 
+							c frame horizontal alignCenter.
+							c frame vertical alignCenter ] ];
+				whenSuccess: [ :theFrame :aMemento | 
+					| aStencil aContainer |
+					theFrame userData at: self class gtMementoSymbol put: aMemento.
 
-					theContainer removeChildren.
+					theFrame removeChildren.
+
+					aStencil := aMemento magritteDescription
+						            blocElementContainerStencil asStencilBuilder:
+						            	GtMagritteFormStencilBuilder.
+
+					aContainer := aStencil
+						              memento: aMemento;
+						              asElement.
+
+					theFrame addAptitude:
+						(BrLayoutResizerAptitude inherit inherit: aContainer).
+
+					theFrame addChild: aContainer.
+
 					GtMagritteElementBuilder new
-						form: theContainer;
+						form: theFrame;
 						memento: aMemento;
 						addButtons;
 						addButtons: self actions;
 						build ] ].
 
-	aContainer asyncFuture future: self mementoFuture.
+	aFrame asyncFuture future: self mementoFuture.
 
-	^ aContainer
+	^ aFrame
 ]
 
 { #category : #'api - converting' }
-GtMagritteViewModel >> asGtMagritteAsyncViewModel [
+GtMagritteViewModel >> asGtMagritteViewModel [
 
 	^ self
+]
+
+{ #category : #'gt - extensions' }
+GtMagritteViewModel >> gtLiveFor: aView [
+
+	<gtView>
+	self mementoBlock ifNil: [ ^ aView empty ].
+
+	^ aView explicit
+		  title: 'Live';
+		  priority: 1;
+		  stencil: [ self ];
+		  actionButtonIcon: BrGlamorousVectorIcons inspect
+		  label: 'Memento'
+		  tooltip: 'Inspect Memento'
+		  action: [ :aButton :aTab | 
+			  aTab viewContentElement
+				  allChildrenBreadthFirstDetect: [ :anElement | 
+					  anElement userData includesKey:
+							  GtMagritteViewModel gtMementoSymbol ]
+				  ifFound: [ :anElement | 
+					  aButton phlow spawnObject:
+							  (anElement userData at: GtMagritteViewModel gtMementoSymbol) ] ]
 ]
 
 { #category : #initialization }
@@ -112,6 +157,12 @@ GtMagritteViewModel >> initialize [
 
 	cache := AsyncFutureCache new.
 	actions := #(  )
+]
+
+{ #category : #'api - testing' }
+GtMagritteViewModel >> isForObject [
+
+	^ true
 ]
 
 { #category : #'api - testing' }
@@ -143,4 +194,10 @@ GtMagritteViewModel >> mementoFuture [
 	^ AsyncCachedFuture
 		  forFuture: mementoBlock asAsyncFuture
 		  cache: cache
+]
+
+{ #category : #accessing }
+GtMagritteViewModel >> object [
+
+	^ object
 ]
