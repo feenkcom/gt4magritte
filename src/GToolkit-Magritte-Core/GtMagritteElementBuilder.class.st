@@ -110,22 +110,16 @@ GtMagritteElementBuilder >> addFieldElement: aFieldElement using: aDescription [
 { #category : #'private - building' }
 GtMagritteElementBuilder >> addFlowListUsing: aDescription [
 
-	| aMemento aFlowElement aValidationElement |
+	| aMemento aFlowElement |
 	aMemento := self memento.
+	
+	aFlowElement := aDescription blocListStencil
+		                memento: aMemento;
+		                description: aDescription;
+		                form: self form;
+		                asElement.
 
-	aFlowElement := GtMagritteBuilderUtility
-		                newFlowListMemento: aMemento
-		                using: aDescription.
-
-	aValidationElement := GtMagritteBuilderUtility
-		                      newValidationContainerWith: aFlowElement
-		                      memento: aMemento
-		                      using: aDescription.
-
-	aValidationElement matchParent.
-	self form matchParent.
-
-	self addFieldElement: aValidationElement using: aDescription
+	self addFieldElement: aFlowElement using: aDescription
 ]
 
 { #category : #visiting }

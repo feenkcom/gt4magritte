@@ -7,3 +7,9 @@ BlElement >> magritte [
 		  at: #gtMagritteElementContext
 		  ifAbsentPut: [ GtMagritteElementContext on: self ]
 ]
+
+{ #category : #'*GToolkit-Magritte-Core' }
+BlElement >> magritteDo: aBlock [
+
+	aBlock value: self magritte
+]

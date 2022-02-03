@@ -3,10 +3,9 @@ Extension { #name : #MAContainer }
 { #category : #'*GToolkit-Magritte-Core' }
 MAContainer >> blocElementContainerStencil [
 
-	^ self
-		  propertyAt: #blocElementContainerStencil
-		  ifAbsent: [ 
-		  	[ :aMemento | GtMagritteBuilderUtility newHorizontalGridContainer ] ]
+	^ self propertyAt: #blocElementContainerStencil ifAbsent: [ 
+		  [ :aMemento | GtMagritteBuilderUtility newHorizontalGridContainer ] 
+			  asStencilBuilder: GtMagritteFormStencilBuilder ]
 ]
 
 { #category : #'*GToolkit-Magritte-Core' }

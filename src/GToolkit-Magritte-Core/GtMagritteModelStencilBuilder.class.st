@@ -11,8 +11,8 @@ Class {
 { #category : #'api - instantiation' }
 GtMagritteModelStencilBuilder >> buildDefault [
 
-	<return: #BrStencil or: #BlElement>
-	^ self model asGtMagritteViewModel asElement
+	<return: #GtMagritteViewModel>
+	^ self model asGtMagritteViewModel
 ]
 
 { #category : #accessing }

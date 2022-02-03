@@ -404,7 +404,10 @@ GtMagritteBuilderUtility class >> recycleViewModels: anExistingViewModels forMod
 			ifFound: [ :aViewModel | aStream nextPut: aViewModel ]
 			ifNone: [ 
 				| aViewModel |
-				aViewModel := aModel asGtMagritteViewModel.
+				aViewModel := aDescription blocItemViewModelStencil
+					              model: aModel;
+					              description: aDescription;
+					              build.
 				aDescription definitive ifFalse: [ 
 					aViewModel addButton: (GtMagritteButtonWithIconAction new
 							 icon: BrGlamorousVectorIcons remove;
