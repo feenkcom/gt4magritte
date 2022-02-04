@@ -187,6 +187,35 @@ GtMagritteBuilderUtility class >> newHorizontalGridContainer [
 	^ aContainer
 ]
 
+{ #category : #visiting }
+GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescription [
+
+	| aFrame |
+	aFrame := BrFrame new.
+
+	aFrame
+		fitContent;
+		constraintsDo: [ :c | 
+			c grid vertical alignCenter.
+			c grid horizontal alignLeft ];
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeakSink new;
+				whenUpdate: [ :aContainer :aSink | 
+					| aValue anIcon |
+					aValue := aSink value currentValue.
+					anIcon := aDescription blocStencil
+						          model: aValue;
+						          description: aDescription;
+						          asElement.
+					aContainer addChild: anIcon ].
+
+			(aMemento readObservableValueUsing: aDescription) observe:
+				anElementSink ].
+
+	^ aFrame
+]
+
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
 
@@ -375,7 +404,10 @@ GtMagritteBuilderUtility class >> recycleViewModels: anExistingViewModels forMod
 			ifFound: [ :aViewModel | aStream nextPut: aViewModel ]
 			ifNone: [ 
 				| aViewModel |
-				aViewModel := aModel asGtMagritteViewModel.
+				aViewModel := aDescription blocItemViewModelStencil
+					              model: aModel;
+					              description: aDescription;
+					              build.
 				aDescription definitive ifFalse: [ 
 					aViewModel addButton: (GtMagritteButtonWithIconAction new
 							 icon: BrGlamorousVectorIcons remove;

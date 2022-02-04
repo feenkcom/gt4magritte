@@ -110,22 +110,29 @@ GtMagritteElementBuilder >> addFieldElement: aFieldElement using: aDescription [
 { #category : #'private - building' }
 GtMagritteElementBuilder >> addFlowListUsing: aDescription [
 
-	| aMemento aFlowElement aValidationElement |
+	| aMemento aFlowElement |
+	aMemento := self memento.
+	
+	aFlowElement := aDescription blocListStencil
+		                memento: aMemento;
+		                description: aDescription;
+		                form: self form;
+		                asElement.
+
+	self addFieldElement: aFlowElement using: aDescription
+]
+
+{ #category : #visiting }
+GtMagritteElementBuilder >> addIconUsing: aDescription [
+
+	| aMemento anIcon aStencilBuilder |
 	aMemento := self memento.
 
-	aFlowElement := GtMagritteBuilderUtility
-		                newFlowListMemento: aMemento
-		                using: aDescription.
+	anIcon := GtMagritteBuilderUtility
+		          newIconWithMemento: aMemento
+		          using: aDescription.
 
-	aValidationElement := GtMagritteBuilderUtility
-		                      newValidationContainerWith: aFlowElement
-		                      memento: aMemento
-		                      using: aDescription.
-
-	aValidationElement matchParent.
-	self form matchParent.
-
-	self addFieldElement: aValidationElement using: aDescription
+	self addFieldElement: anIcon using: aDescription
 ]
 
 { #category : #'private - building' }
@@ -328,6 +335,12 @@ GtMagritteElementBuilder >> visitBooleanDescription: aDescription [
 GtMagritteElementBuilder >> visitContainer: aDescription [
 
 	aDescription do: [ :each | self visit: each ]
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> visitIconDescription: aDescription [
+
+	self addIconUsing: aDescription
 ]
 
 { #category : #visiting }
