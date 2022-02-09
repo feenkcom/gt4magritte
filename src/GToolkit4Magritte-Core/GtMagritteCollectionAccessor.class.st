@@ -2,7 +2,7 @@
 I know how to add and remove items into/from a collection.
 "
 Class {
-	#name : #GTMagritteCollectionAccessor,
+	#name : #GtMagritteCollectionAccessor,
 	#superclass : #MAAccessor,
 	#instVars : [
 		'removeOne',
@@ -14,13 +14,13 @@ Class {
 }
 
 { #category : #testing }
-GTMagritteCollectionAccessor class >> isAbstract [
+GtMagritteCollectionAccessor class >> isAbstract [
 
 	^ false
 ]
 
 { #category : #comparing }
-GTMagritteCollectionAccessor >> = anObject [
+GtMagritteCollectionAccessor >> = anObject [
 	^ super = anObject
 		and: [ self model = anObject model
 		and: [ self collection = anObject collection
@@ -29,13 +29,13 @@ GTMagritteCollectionAccessor >> = anObject [
 ]
 
 { #category : #accessing }
-GTMagritteCollectionAccessor >> addOne [
+GtMagritteCollectionAccessor >> addOne [
 
 	^ addOne
 ]
 
 { #category : #accessing }
-GTMagritteCollectionAccessor >> addOne: aBlock [
+GtMagritteCollectionAccessor >> addOne: aBlock [
 
 	"Set a block that knows how to add one item into a collection.
 	The block receives two arguments: [ :aModel :anItem | ], where 
@@ -46,27 +46,27 @@ GTMagritteCollectionAccessor >> addOne: aBlock [
 ]
 
 { #category : #testing }
-GTMagritteCollectionAccessor >> canRead: aModel [
+GtMagritteCollectionAccessor >> canRead: aModel [
 
 	^ (self model canRead: aModel) and: [ 
 		  self collection canRead: (self model read: aModel) ]
 ]
 
 { #category : #testing }
-GTMagritteCollectionAccessor >> canWrite: aModel [
+GtMagritteCollectionAccessor >> canWrite: aModel [
 
 	^ (self canRead: aModel) and: [ 
 		  self addOne notNil and: [ self removeOne notNil ] ]
 ]
 
 { #category : #accessing }
-GTMagritteCollectionAccessor >> collection [
+GtMagritteCollectionAccessor >> collection [
 
 	^ collection
 ]
 
 { #category : #accessing }
-GTMagritteCollectionAccessor >> collection: anAccessor [
+GtMagritteCollectionAccessor >> collection: anAccessor [
 
 	"Set accessor to a collection that holds items."
 
@@ -74,7 +74,7 @@ GTMagritteCollectionAccessor >> collection: anAccessor [
 ]
 
 { #category : #comparing }
-GTMagritteCollectionAccessor >> hash [
+GtMagritteCollectionAccessor >> hash [
 	^ (((super hash 
 		bitXor: self model hash)
 		bitXor: self collection hash)
@@ -83,7 +83,7 @@ GTMagritteCollectionAccessor >> hash [
 ]
 
 { #category : #initialization }
-GTMagritteCollectionAccessor >> initialize [
+GtMagritteCollectionAccessor >> initialize [
 
 	super initialize.
 
@@ -92,13 +92,13 @@ GTMagritteCollectionAccessor >> initialize [
 ]
 
 { #category : #accessing }
-GTMagritteCollectionAccessor >> model [
+GtMagritteCollectionAccessor >> model [
 
 	^ model
 ]
 
 { #category : #accessing }
-GTMagritteCollectionAccessor >> model: anAccessor [
+GtMagritteCollectionAccessor >> model: anAccessor [
 
 	"Set accessor to a model that knows how to add and remove collection items"
 
@@ -106,19 +106,19 @@ GTMagritteCollectionAccessor >> model: anAccessor [
 ]
 
 { #category : #'meta-object-protocol' }
-GTMagritteCollectionAccessor >> read: aModel [
+GtMagritteCollectionAccessor >> read: aModel [
 
 	^ self collection read: (self model read: aModel)
 ]
 
 { #category : #accessing }
-GTMagritteCollectionAccessor >> removeOne [
+GtMagritteCollectionAccessor >> removeOne [
 
 	^ removeOne
 ]
 
 { #category : #accessing }
-GTMagritteCollectionAccessor >> removeOne: aBlock [
+GtMagritteCollectionAccessor >> removeOne: aBlock [
 
 	"Set a block that knows how to remove one item from a collection.
 	The block receives two arguments: [ :aModel :anItem | ], where 
@@ -129,7 +129,7 @@ GTMagritteCollectionAccessor >> removeOne: aBlock [
 ]
 
 { #category : #writing }
-GTMagritteCollectionAccessor >> write: aNewCollection to: aModel [
+GtMagritteCollectionAccessor >> write: aNewCollection to: aModel [
 
 	| aHolder aCurrentCollection toAdd toRemove |
 	aHolder := self model read: aModel.
