@@ -115,10 +115,12 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 			(aMemento readObservableValueUsing: aDescription) observe:
 				anElementSink ];
 		when: BrEditorAcceptWish do: [ :aWish | 
-			aWish consumed: true.
-			aMemento write: aWish text asString using: aDescription ];
+		aWish consumed: true.
+		aMemento write: aWish text asString using: aDescription ];
 		margin: (BlInsets bottom: self defaultSpaceNumber);
-		constraintsDo: [ :c | c grid vertical alignCenter ].
+		constraintsDo: [ :c | 
+			c grid vertical alignCenter.
+			c minWidth: 42 ].
 
 	^ anEditor
 ]
