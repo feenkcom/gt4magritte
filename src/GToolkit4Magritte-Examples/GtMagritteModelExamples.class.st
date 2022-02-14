@@ -172,6 +172,28 @@ GtMagritteModelExamples >> simpleBaselineObject [
 	^ { (#baseline -> 'BaselineOfMyProject') } asDictionary
 ]
 
+{ #category : #'examples - directory' }
+GtMagritteModelExamples >> simpleDirectoryDescription [
+
+	<gtExample>
+	^ MAPriorityContainer withAll: { (MADirectoryDescription new
+			   label: 'Directory';
+			   kind: MAFileModel;
+			   accessor: (MADictionaryAccessor key: #directory);
+			   beRequired;
+			   addCondition: [ :aFileModel | 
+				   aFileModel filename asFileReference exists ]
+			   labelled: 'Directory must exist';
+			   comment: 'Directory name') }
+]
+
+{ #category : #'examples - directory' }
+GtMagritteModelExamples >> simpleDirectoryObject [
+
+	<gtExample>
+	^ { (#directory -> (MAFileModel new filename: '.')) } asDictionary
+]
+
 { #category : #'examples - simple address' }
 GtMagritteModelExamples >> simpleInvalidAddressObject [
 
