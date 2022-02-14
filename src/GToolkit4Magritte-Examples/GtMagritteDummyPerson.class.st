@@ -49,8 +49,8 @@ GtMagritteDummyPerson >> descriptionPostalAddresses [
 		  classes: { GtMagritteDummyPostalAddress };
 		  priority: 2;
 		  beModifiable;
-		  blocItemStencil: [ :anItemObject :anItemIndex | 
-			  anItemObject asElement
+		  blocItemStencil: [ :anItemViewModel :anItemIndex | 
+			  anItemViewModel asElement
 				  fitContent;
 				  border:
 					  (BlBorder

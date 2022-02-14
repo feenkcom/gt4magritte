@@ -86,6 +86,25 @@ GtMagritteElementBuilder >> addButtons: aCollection [
 ]
 
 { #category : #'private - building' }
+GtMagritteElementBuilder >> addDirectoryDropdown: aDescription [
+
+	| aMemento aButton aValidationElement |
+	aMemento := self memento.
+
+
+	aButton := GtMagritteBuilderUtility
+		           newDirectoryDropdownMemento: aMemento
+		           using: aDescription.
+
+	aValidationElement := GtMagritteBuilderUtility
+		                      newValidationContainerWith: aButton
+		                      memento: aMemento
+		                      using: aDescription.
+
+	self addFieldElement: aValidationElement using: aDescription
+]
+
+{ #category : #'private - building' }
 GtMagritteElementBuilder >> addFieldElement: aFieldElement using: aDescription [
 
 	| aLabel |
@@ -335,6 +354,12 @@ GtMagritteElementBuilder >> visitBooleanDescription: aDescription [
 GtMagritteElementBuilder >> visitContainer: aDescription [
 
 	aDescription do: [ :each | self visit: each ]
+]
+
+{ #category : #visiting }
+GtMagritteElementBuilder >> visitDirectoryDescription: aDescription [
+
+	self addDirectoryDropdown: aDescription
 ]
 
 { #category : #'private - building' }

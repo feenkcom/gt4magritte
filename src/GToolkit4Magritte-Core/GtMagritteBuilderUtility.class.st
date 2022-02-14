@@ -97,6 +97,94 @@ GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescripti
 	^ aCheckbox
 ]
 
+{ #category : #'private - ui' }
+GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento: aMemento descrption: aDescription [
+
+	| aFileBrowser |
+	aFileBrowser := BrFileSelector new.
+	aFileBrowser
+		vExact: 250;
+		hExact: 400;
+		buttonLabel: 'Set';
+		margin: (BlInsets all: 10).
+
+	aFileBrowser okAction: [ :filePath | 
+		aDropdown ifNotNil: [ 
+			aDropdown enqueueTask: (BlTaskAction new action: [ 
+					 aDropdown dispatchEvent:
+						 (BrDropdownHideWish new anchor: aDropdown) ]) ] ].
+
+	aFileBrowser fileFilterBlock: [ :aFileReference | 
+		aFileReference isDirectory and: [ 
+			(FileSystemDirectoryEntry reference: aFileReference) isHidden not ] ].
+
+	aFileBrowser withAsyncSinkDo: [ :anElementSink | 
+		anElementSink
+			sink: AsyncPeakSink new;
+			whenUpdate: [ :theFileBrowser :aSink | 
+				| aFileModel aFileReference |
+				aFileModel := aSink value currentValue.
+				aFileReference := aDescription pharoFileReferenceFor: aFileModel.
+				theFileBrowser folder: aFileReference ].
+		(aMemento readObservableValueUsing: aDescription) observe:
+			anElementSink ].
+
+	^ aFileBrowser
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: aDescription [
+
+	| aLabel |
+	aLabel := BrLabel new.
+	aLabel aptitude: (BrGlamorousLabelAptitude new
+			 glamorousCodeFont;
+			 fontSize: 10).
+
+	aLabel
+		addAptitude: (BrGlamorousWithDropdownAptitude
+				 handle: [ 
+					 BrLabel new
+						 margin: (BlInsets bottom: self defaultSpaceNumber);
+						 geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+						 constraintsDo: [ :c | c grid horizontal alignCenter ];
+						 aptitude: (BrGlamorousLabelAptitude new
+								  glamorousCodeFont;
+								  fontSize: 10);
+						 withAsyncSinkDo: [ :anElementSink | 
+							 anElementSink
+								 sink: AsyncPeakSink new;
+								 whenUpdate: [ :theLabel :aSink | 
+									 | aFileModel aText |
+									 aFileModel := aSink value currentValue.
+									 aText := aDescription displayStringFor: aFileModel.
+									 theLabel text: aText ].
+							 (aMemento readObservableValueUsing: aDescription) observe:
+								 anElementSink ] ]
+				 content: [ 
+					 self
+						 newDirectoryDropdownContent: aLabel
+						 memento: aMemento
+						 descrption: aDescription ]);
+		margin: (BlInsets bottom: self defaultSpaceNumber);
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+		constraintsDo: [ :c | c grid horizontal alignCenter ];
+		background: BrGlamorousColors disabledButtonBackgroundColor.
+
+	aLabel withAsyncSinkDo: [ :anElementSink | 
+		anElementSink
+			sink: AsyncPeakSink new;
+			whenUpdate: [ :theLabel :aSink | 
+				| aFileModel aText |
+				aFileModel := aSink value currentValue.
+				aText := aDescription displayStringFor: aFileModel.
+				theLabel text: aText ].
+		(aMemento readObservableValueUsing: aDescription) observe:
+			anElementSink ].
+
+	^ aLabel
+]
+
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
 
@@ -189,7 +277,7 @@ GtMagritteBuilderUtility class >> newHorizontalGridContainer [
 	^ aContainer
 ]
 
-{ #category : #visiting }
+{ #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescription [
 
 	| aFrame |
