@@ -172,6 +172,40 @@ GtMagritteModelExamples >> simpleBaselineObject [
 	^ { (#baseline -> 'BaselineOfMyProject') } asDictionary
 ]
 
+{ #category : #'examples - simple baselines' }
+GtMagritteModelExamples >> simpleBaselinesDescription [
+
+	<gtExample>
+	^ MAPriorityContainer withAll: { (MAToManyRelationDescription new
+			   label: 'Baselines';
+			   classes: { String };
+			   accessor: (MADictionaryAccessor key: #baselines);
+			   blocListStencil: [ :aMemento :aDescription :aForm | 
+				   | aTagger |
+				   aTagger := BrTagger new.
+				   aTagger aptitude: BrGlamorousTaggerAptitude.
+				   aTagger withAsyncSinkDo: [ :anElementSink | 
+						   anElementSink
+							   sink: AsyncPeakSink new;
+							   whenUpdate: [ :theTagger :aSink | 
+								   | theValues theTexts |
+								   theValues := aSink value currentValue.
+								   theTexts := theValues collect: [ :each | 
+										               aDescription displayStringFor: each ].
+								   theTagger namedTags: theTexts ].
+						   (aMemento readObservableValueUsing: aDescription) observe:
+							   anElementSink ] ]) }
+]
+
+{ #category : #'examples - simple baselines' }
+GtMagritteModelExamples >> simpleBaselinesObject [
+
+	<gtExample>
+	^ { (#baselines
+	   -> { 'BaselineOfOne'. 'BaselineOfTwo'. 'BaselineOfThree' }) }
+		  asDictionary
+]
+
 { #category : #'examples - directory' }
 GtMagritteModelExamples >> simpleDirectoryDescription [
 
