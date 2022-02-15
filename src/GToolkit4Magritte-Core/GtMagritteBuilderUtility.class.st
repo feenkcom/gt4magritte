@@ -98,7 +98,7 @@ GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescripti
 ]
 
 { #category : #'private - ui' }
-GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento: aMemento descrption: aDescription [
+GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento: aMemento description: aDescription [
 
 	| aFileBrowser |
 	aFileBrowser := BrFileSelector new.
@@ -108,11 +108,12 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento
 		buttonLabel: 'Set';
 		margin: (BlInsets all: 10).
 
-	aFileBrowser okAction: [ :filePath | 
-		aDropdown ifNotNil: [ 
-			aDropdown enqueueTask: (BlTaskAction new action: [ 
-					 aDropdown dispatchEvent:
-						 (BrDropdownHideWish new anchor: aDropdown) ]) ] ].
+	aFileBrowser okAction: [ :aFileReference | 
+		aMemento write: aFileReference using: aDescription.
+	
+		aDropdown enqueueTask: (BlTaskAction new action: [ 
+				 aDropdown dispatchEvent:
+					 (BrDropdownHideWish new anchor: aDropdown) ]) ].
 
 	aFileBrowser fileFilterBlock: [ :aFileReference | 
 		aFileReference isDirectory and: [ 
@@ -145,9 +146,7 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: a
 		addAptitude: (BrGlamorousWithDropdownAptitude
 				 handle: [ 
 					 BrLabel new
-						 margin: (BlInsets bottom: self defaultSpaceNumber);
 						 geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-						 constraintsDo: [ :c | c grid horizontal alignCenter ];
 						 aptitude: (BrGlamorousLabelAptitude new
 								  glamorousCodeFont;
 								  fontSize: 10);
@@ -165,7 +164,7 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: a
 					 self
 						 newDirectoryDropdownContent: aLabel
 						 memento: aMemento
-						 descrption: aDescription ]);
+						 description: aDescription ]);
 		margin: (BlInsets bottom: self defaultSpaceNumber);
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 		constraintsDo: [ :c | c grid horizontal alignCenter ];
