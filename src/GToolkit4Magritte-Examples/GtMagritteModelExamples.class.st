@@ -178,11 +178,12 @@ GtMagritteModelExamples >> simpleDirectoryDescription [
 	<gtExample>
 	^ MAPriorityContainer withAll: { (MADirectoryDescription new
 			   label: 'Directory';
-			   kind: MAFileModel;
+			   kind: AbstractFileReference;
+			   display: #printString;
 			   accessor: (MADictionaryAccessor key: #directory);
 			   beRequired;
-			   addCondition: [ :aFileModel | 
-				   aFileModel filename asFileReference exists ]
+			   addCondition: [ :aFileReference | 
+				   aFileReference asFileReference exists ]
 			   labelled: 'Directory must exist';
 			   comment: 'Directory name') }
 ]
@@ -191,7 +192,7 @@ GtMagritteModelExamples >> simpleDirectoryDescription [
 GtMagritteModelExamples >> simpleDirectoryObject [
 
 	<gtExample>
-	^ { (#directory -> (MAFileModel new filename: '.')) } asDictionary
+	^ { (#directory -> (FileLocator imageDirectory / 'pharo-local' )) } asDictionary
 ]
 
 { #category : #'examples - simple address' }
