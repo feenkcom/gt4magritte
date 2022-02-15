@@ -187,6 +187,23 @@ GtMagritteViewModelExamples >> simpleBaselineObject [
 	^ GtMagritteModelExamples new simpleBaselineObject
 ]
 
+{ #category : #'examples - simple baselines' }
+GtMagritteViewModelExamples >> viewModelWithBaselines [
+
+	<gtExample>
+	| aViewModel anObject aResult aDescription |
+	anObject := GtMagritteModelExamples new simpleBaselinesObject.
+	aDescription := GtMagritteModelExamples new
+		                simpleBaselinesDescription.
+	aViewModel := GtMagritteViewModel
+		              forObject: anObject
+		              description: aDescription.
+
+	self assert: aViewModel mementoFuture isAsyncFuture.
+
+	^ aViewModel
+]
+
 { #category : #'examples - simple directory' }
 GtMagritteViewModelExamples >> viewModelWithDirectory [
 
