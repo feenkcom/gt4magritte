@@ -68,6 +68,23 @@ GtMagritteViewModelExamples >> asyncViewModelWithSimpleBaseline [
 	^ aViewModel
 ]
 
+{ #category : #accessing }
+GtMagritteViewModelExamples >> asyncViewModelWithSimpleBaselines [
+
+	<gtExample>
+	| aViewModel anObject aResult aDescription |
+	anObject := GtMagritteModelExamples new simpleBaselinesObject.
+	aDescription := GtMagritteModelExamples new
+		                simpleBaselinesDescription.
+	aViewModel := GtMagritteViewModel
+		              forObject: anObject
+		              description: aDescription.
+
+	self assert: aViewModel mementoFuture isAsyncFuture.
+
+	^ aViewModel
+]
+
 { #category : #'examples - view model' }
 GtMagritteViewModelExamples >> basicAsyncViewModel [
 
