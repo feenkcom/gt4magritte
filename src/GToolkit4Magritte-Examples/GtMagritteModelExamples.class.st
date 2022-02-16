@@ -183,18 +183,26 @@ GtMagritteModelExamples >> simpleBaselinesDescription [
 			   blocListStencil: [ :aMemento :aDescription :aForm | 
 				   | aTagger |
 				   aTagger := BrTagger new.
-				   aTagger aptitude: BrGlamorousTaggerAptitude.
+				   aTagger aptitude:
+						   (BrGlamorousTaggerEditableDropdownAptitude new content: [ 
+								    :aDropdown 
+								    :addBlock | 
+								    GtPharoCreateBaselineElement new
+									    behaviorBlock: [ :cls | 
+										    addBlock value: cls.
+										    aDropdown fireEvent: BrDropdownHideWish new ];
+									    forBaselineDefinition ]).
 				   aTagger withAsyncSinkDo: [ :anElementSink | 
-						   anElementSink
-							   sink: AsyncPeakSink new;
-							   whenUpdate: [ :theTagger :aSink | 
-								   | theValues theTexts |
-								   theValues := aSink value currentValue.
-								   theTexts := theValues collect: [ :each | 
-										               aDescription displayStringFor: each ].
-								   theTagger namedTags: theTexts ].
-						   (aMemento readObservableValueUsing: aDescription) observe:
-							   anElementSink ] ]) }
+					   anElementSink
+						   sink: AsyncPeakSink new;
+						   whenUpdate: [ :theTagger :aSink | 
+							   | theValues theTexts |
+							   theValues := aSink value currentValue.
+							   theTexts := theValues collect: [ :each | 
+									               aDescription displayStringFor: each ].
+							   theTagger namedTags: theTexts ].
+					   (aMemento readObservableValueUsing: aDescription) observe:
+						   anElementSink ] ]) }
 ]
 
 { #category : #'examples - simple baselines' }
