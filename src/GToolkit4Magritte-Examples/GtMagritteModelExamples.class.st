@@ -183,15 +183,19 @@ GtMagritteModelExamples >> simpleBaselinesDescription [
 			   blocListStencil: [ :aMemento :aDescription :aForm | 
 				   | aTagger |
 				   aTagger := BrTagger new.
-				   aTagger aptitude:
-						   (BrGlamorousTaggerEditableDropdownAptitude new content: [ 
-								    :aDropdown 
-								    :addBlock | 
-								    GtPharoCreateBaselineElement new
-									    behaviorBlock: [ :cls | 
-									    	aMemento write: ((aTagger tags collect: #name) add: cls; yourself) using: aDescription.
-										    aDropdown fireEvent: BrDropdownHideWish new ];
-									    forBaselineDefinition ]).
+				   aTagger aptitude: BrGlamorousTaggerEditableAptitude.
+				   aTagger when: BrTaggerAddTagRequest do: [ :aRequest | 
+						   aMemento
+							   write: ((aTagger tags collect: #name)
+									    add: aRequest tag name;
+									    yourself)
+							   using: aDescription ].
+				   aTagger when: BrTaggerRemoveTagRequest do: [ :aRequest | 
+						   aMemento
+							   write: ((aTagger tags collect: #name)
+									    remove: aRequest tag name;
+									    yourself)
+							   using: aDescription ].
 				   aTagger withAsyncSinkDo: [ :anElementSink | 
 					   anElementSink
 						   sink: AsyncPeakSink new;
