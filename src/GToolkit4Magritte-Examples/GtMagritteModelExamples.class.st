@@ -189,7 +189,7 @@ GtMagritteModelExamples >> simpleBaselinesDescription [
 								    :addBlock | 
 								    GtPharoCreateBaselineElement new
 									    behaviorBlock: [ :cls | 
-										    addBlock value: cls.
+									    	aMemento write: ((aTagger tags collect: #name) add: cls; yourself) using: aDescription.
 										    aDropdown fireEvent: BrDropdownHideWish new ];
 									    forBaselineDefinition ]).
 				   aTagger withAsyncSinkDo: [ :anElementSink | 
