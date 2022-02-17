@@ -183,19 +183,37 @@ GtMagritteModelExamples >> simpleBaselinesDescription [
 			   blocListStencil: [ :aMemento :aDescription :aForm | 
 				   | aTagger |
 				   aTagger := BrTagger new.
-				   aTagger aptitude: BrGlamorousTaggerEditableAptitude.
+				   aTagger
+					   hMatchParent;
+					   vFitContent.
+				   aForm hMatchParent.
+				   aTagger aptitude:
+					   (BrGlamorousTaggerEditableAptitude new tagLabel: [ :aTag | 
+						    | aLabel |
+						    aLabel := BrEditableLabel new
+							              text: aTag name;
+							              aptitude: (BrGlamorousEditableLabelAptitude new
+									               glamorousCodeFont;
+									               defaultForeground: Color black;
+									               fontSize: 10).
+
+						    (GtCompletionController
+							     on: aLabel
+							     strategy: GtClassesCompletionStrategy new) install.
+
+						    aLabel ]).
 				   aTagger when: BrTaggerAddTagRequest do: [ :aRequest | 
-						   aMemento
-							   write: ((aTagger tags collect: #name)
-									    add: aRequest tag name;
-									    yourself)
-							   using: aDescription ].
+					   aMemento
+						   write: ((aTagger tags collect: #name)
+								    add: aRequest tag name;
+								    yourself)
+						   using: aDescription ].
 				   aTagger when: BrTaggerRemoveTagRequest do: [ :aRequest | 
-						   aMemento
-							   write: ((aTagger tags collect: #name)
-									    remove: aRequest tag name;
-									    yourself)
-							   using: aDescription ].
+					   aMemento
+						   write: ((aTagger tags collect: #name)
+								    remove: aRequest tag name;
+								    yourself)
+						   using: aDescription ].
 				   aTagger withAsyncSinkDo: [ :anElementSink | 
 					   anElementSink
 						   sink: AsyncPeakSink new;
