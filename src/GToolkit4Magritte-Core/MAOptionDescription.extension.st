@@ -5,7 +5,7 @@ MAOptionDescription >> blocItemDataBinderStencil [
 
 	^ self propertyAt: #blocItemDataBinderStencil ifAbsentPut: [ 
 		  [ :anItemElement :anItemObject :anItemIndex | 
-		  anItemElement text: anItemObject asString ] ]
+		  anItemElement text: (self displayStringFor: anItemObject) ] ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
