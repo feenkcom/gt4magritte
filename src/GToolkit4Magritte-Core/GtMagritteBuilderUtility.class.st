@@ -366,6 +366,79 @@ GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: 
 	^ anEditor
 ]
 
+{ #category : #'private - building' }
+GtMagritteBuilderUtility class >> newSingleOptionDropdownContent: aLabel memento: aMemento description: aDescription [
+
+	^ BrSimpleList new
+		  itemStencil: aDescription blocItemStencil;
+		  itemDataBinder: aDescription blocItemDataBinderStencil;
+		  hFitContent;
+		  vFitContent;
+		  padding: (BlInsets all: self defaultSpaceNumber);
+		  items: aDescription options;
+		  when: BrSelectionChanged do: [ :anEvent | 
+			  | aWidgetElement |
+			  aWidgetElement := anEvent currentTarget.
+
+			  anEvent selectedDo: [ :anInterval | 
+					  | selectedObject |
+					  selectedObject := aWidgetElement viewModel itemAt:
+							                    anInterval first.
+					  aMemento write: selectedObject using: aDescription.
+					  aLabel fireEvent: BrDropdownHideWish new ] ]
+]
+
+{ #category : #'private - building' }
+GtMagritteBuilderUtility class >> newSingleOptionDropdownMemento: aMemento using: aDescription [ 
+
+	| aLabel |
+	aLabel := BrLabel new.
+	aLabel aptitude: (BrGlamorousLabelAptitude new
+			 glamorousCodeFont;
+			 fontSize: 10).
+
+	aLabel
+		addAptitude: (BrGlamorousWithDropdownAptitude
+				 handle: [ 
+					 BrLabel new
+						 geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+						 aptitude: (BrGlamorousLabelAptitude new
+								  glamorousCodeFont;
+								  fontSize: 10);
+						 withAsyncSinkDo: [ :anElementSink | 
+							 anElementSink
+								 sink: AsyncPeakSink new;
+								 whenUpdate: [ :theLabel :aSink | 
+									 | aFileModel aText |
+									 aFileModel := aSink value currentValue.
+									 aText := aDescription displayStringFor: aFileModel.
+									 theLabel text: aText ].
+							 (aMemento readObservableValueUsing: aDescription) observe:
+								 anElementSink ] ]
+				 content: [ 
+					 self
+						 newSingleOptionDropdownContent: aLabel
+						 memento: aMemento
+						 description: aDescription ]);
+		margin: (BlInsets bottom: self defaultSpaceNumber);
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+		constraintsDo: [ :c | c grid horizontal alignCenter ];
+		background: BrGlamorousColors disabledButtonBackgroundColor.
+
+	aLabel withAsyncSinkDo: [ :anElementSink | 
+		anElementSink
+			sink: AsyncPeakSink new;
+			whenUpdate: [ :theLabel :aSink | 
+				| aFileModel aText |
+				aFileModel := aSink value currentValue.
+				aText := aDescription displayStringFor: aFileModel.
+				theLabel text: aText ].
+		(aMemento readObservableValueUsing: aDescription) observe:
+			anElementSink ].
+
+	^ aLabel
+]
+
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
 

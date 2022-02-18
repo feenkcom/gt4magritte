@@ -155,6 +155,25 @@ GtMagritteElementBuilder >> addIconUsing: aDescription [
 ]
 
 { #category : #'private - building' }
+GtMagritteElementBuilder >> addSingleOptionDropdownUsing: aDescription [
+
+	| aMemento aButton aValidationElement |
+	aMemento := self memento.
+
+
+	aButton := GtMagritteBuilderUtility
+		           newSingleOptionDropdownMemento: aMemento
+		           using: aDescription.
+
+	aValidationElement := GtMagritteBuilderUtility
+		                      newValidationContainerWith: aButton
+		                      memento: aMemento
+		                      using: aDescription.
+
+	self addFieldElement: aValidationElement using: aDescription
+]
+
+{ #category : #'private - building' }
 GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 
 	| aMemento anInputElement aLabel aValidationElement |
@@ -366,6 +385,11 @@ GtMagritteElementBuilder >> visitDirectoryDescription: aDescription [
 GtMagritteElementBuilder >> visitIconDescription: aDescription [
 
 	self addIconUsing: aDescription
+]
+
+{ #category : #visiting }
+GtMagritteElementBuilder >> visitSingleOptionDescription: aDescription [
+	self addSingleOptionDropdownUsing: aDescription
 ]
 
 { #category : #visiting }
