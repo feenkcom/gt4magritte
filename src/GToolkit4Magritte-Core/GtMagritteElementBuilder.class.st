@@ -179,27 +179,30 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 	| aMemento anInputElement aLabel aValidationElement |
 	aMemento := self memento.
 
-	aDescription isReadOnly
-		ifTrue: [ 
-			anInputElement := GtMagritteBuilderUtility
-				                  newReadOnlyEditorWithMemento: aMemento
-				                  using: aDescription ]
-		ifFalse: [ 
-			aDescription isAlwaysEditable
-				ifFalse: [ 
-					anInputElement := GtMagritteBuilderUtility
-						                  newEditableLabelWithMemento: aMemento
-						                  using: aDescription ]
+	aDescription blocStencil
+		ifNotNil: [ :stencil | 
+			anInputElement := stencil value: aMemento value: aDescription ]
+		ifNil: [ 
+			aDescription isReadOnly
 				ifTrue: [ 
 					anInputElement := GtMagritteBuilderUtility
-						                  newOneLineEditorWithMemento: aMemento
-						                  using: aDescription ].
+						                  newReadOnlyEditorWithMemento: aMemento
+						                  using: aDescription ]
+				ifFalse: [ 
+					aDescription isAlwaysEditable
+						ifFalse: [ 
+							anInputElement := GtMagritteBuilderUtility
+								                  newEditableLabelWithMemento: aMemento
+								                  using: aDescription ]
+						ifTrue: [ 
+							anInputElement := GtMagritteBuilderUtility
+								                  newOneLineEditorWithMemento: aMemento
+								                  using: aDescription ] ] ].
 
-			aDescription blocCompletion ifNotNil: [ :aStencil | 
-				(GtCompletionController
-					 on: anInputElement
-					 strategy: aStencil create) install ] ].
 
+	aDescription blocCompletion ifNotNil: [ :aStencil | 
+		(GtCompletionController on: anInputElement strategy: aStencil create)
+			install ].
 	aValidationElement := GtMagritteBuilderUtility
 		                      newValidationContainerWith: anInputElement
 		                      memento: aMemento
