@@ -15,5 +15,7 @@ MAOptionDescription >> blocItemStencil [
 		  [ :anItemType :aListWidget | 
 		  BrLabel new
 			  fitContent;
-			  aptitude: BrGlamorousLabelAptitude ] ]
+			  aptitude: BrGlamorousLabelAptitude
+				  + (BrStyleCommonAptitude new hovered: [ :aStyle | 
+							   aStyle background: BrGlamorousColors hoveredListItemColor ]) ] ]
 ]

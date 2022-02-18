@@ -17,6 +17,55 @@ GtMagritteBuilderUtility class >> addCommentTooltip: anElement using: aDescripti
 		(BrGlamorousWithLabelTooltipAptitude new text: aText)
 ]
 
+{ #category : #accessing }
+GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescription withContent: aContentBlock [
+
+	| aLabel |
+	aLabel := BrLabel new.
+	aLabel aptitude: (BrGlamorousLabelAptitude new
+			 glamorousCodeFont;
+			 fontSize: 10).
+
+	aLabel
+		addAptitude: (BrGlamorousWithDropdownAptitude
+				 handle: [ 
+					 BrLabel new
+						 geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+						 aptitude: (BrGlamorousLabelAptitude new
+								  glamorousCodeFont;
+								  fontSize: 10);
+						 padding: (BlInsets all: self defaultSpaceNumber);
+						 withAsyncSinkDo: [ :anElementSink | 
+							 anElementSink
+								 sink: AsyncPeakSink new;
+								 whenUpdate: [ :theLabel :aSink | 
+									 | aFileModel aText |
+									 aFileModel := aSink value currentValue.
+									 aText := aDescription displayStringFor: aFileModel.
+									 theLabel text: aText ].
+							 (aMemento readObservableValueUsing: aDescription) observe:
+								 anElementSink ] ]
+				 content: (aContentBlock value: aLabel));
+		margin: (BlInsets all: self defaultSpaceNumber);
+		padding: (BlInsets all: self defaultSpaceNumber);
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+		constraintsDo: [ :c | c grid horizontal alignCenter ];
+		background: BrGlamorousColors disabledButtonBackgroundColor.
+
+	aLabel withAsyncSinkDo: [ :anElementSink | 
+		anElementSink
+			sink: AsyncPeakSink new;
+			whenUpdate: [ :theLabel :aSink | 
+				| aFileModel aText |
+				aFileModel := aSink value currentValue.
+				aText := aDescription displayStringFor: aFileModel.
+				theLabel text: aText ].
+		(aMemento readObservableValueUsing: aDescription) observe:
+			anElementSink ].
+
+	^ aLabel
+]
+
 { #category : #'api - memento' }
 GtMagritteBuilderUtility class >> createValueFrom: aModel using: aDescription [
 
@@ -106,7 +155,8 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento
 		vExact: 250;
 		hExact: 400;
 		buttonLabel: 'Set';
-		margin: (BlInsets all: 10).
+		padding: (BlInsets all: 10);
+		addAptitude: BrGlamorousWithVerticalResizerAptitude + BrGlamorousWithHorizontalResizerAptitude + BrGlamorousWithHorizontalResizerAptitude new beLeft.
 
 	aFileBrowser okAction: [ :aFileReference | 
 		aMemento write: aFileReference using: aDescription.
@@ -136,52 +186,15 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: aDescription [
 
-	| aLabel |
-	aLabel := BrLabel new.
-	aLabel aptitude: (BrGlamorousLabelAptitude new
-			 glamorousCodeFont;
-			 fontSize: 10).
-
-	aLabel
-		addAptitude: (BrGlamorousWithDropdownAptitude
-				 handle: [ 
-					 BrLabel new
-						 geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-						 aptitude: (BrGlamorousLabelAptitude new
-								  glamorousCodeFont;
-								  fontSize: 10);
-						 withAsyncSinkDo: [ :anElementSink | 
-							 anElementSink
-								 sink: AsyncPeakSink new;
-								 whenUpdate: [ :theLabel :aSink | 
-									 | aFileModel aText |
-									 aFileModel := aSink value currentValue.
-									 aText := aDescription displayStringFor: aFileModel.
-									 theLabel text: aText ].
-							 (aMemento readObservableValueUsing: aDescription) observe:
-								 anElementSink ] ]
-				 content: [ 
-					 self
-						 newDirectoryDropdownContent: aLabel
-						 memento: aMemento
-						 description: aDescription ]);
-		margin: (BlInsets bottom: self defaultSpaceNumber);
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		constraintsDo: [ :c | c grid horizontal alignCenter ];
-		background: BrGlamorousColors disabledButtonBackgroundColor.
-
-	aLabel withAsyncSinkDo: [ :anElementSink | 
-		anElementSink
-			sink: AsyncPeakSink new;
-			whenUpdate: [ :theLabel :aSink | 
-				| aFileModel aText |
-				aFileModel := aSink value currentValue.
-				aText := aDescription displayStringFor: aFileModel.
-				theLabel text: aText ].
-		(aMemento readObservableValueUsing: aDescription) observe:
-			anElementSink ].
-
-	^ aLabel
+	^ self
+		  addDropdownMemento: aMemento
+		  using: aDescription
+		  withContent: [ :aLabel | 
+			  [ 
+			  self
+				  newDirectoryDropdownContent: aLabel
+				  memento: aMemento
+				  description: aDescription ] ]
 ]
 
 { #category : #'api - ui' }
@@ -389,54 +402,17 @@ GtMagritteBuilderUtility class >> newSingleOptionDropdownContent: aLabel memento
 ]
 
 { #category : #'private - building' }
-GtMagritteBuilderUtility class >> newSingleOptionDropdownMemento: aMemento using: aDescription [ 
+GtMagritteBuilderUtility class >> newSingleOptionDropdownMemento: aMemento using: aDescription [
 
-	| aLabel |
-	aLabel := BrLabel new.
-	aLabel aptitude: (BrGlamorousLabelAptitude new
-			 glamorousCodeFont;
-			 fontSize: 10).
-
-	aLabel
-		addAptitude: (BrGlamorousWithDropdownAptitude
-				 handle: [ 
-					 BrLabel new
-						 geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-						 aptitude: (BrGlamorousLabelAptitude new
-								  glamorousCodeFont;
-								  fontSize: 10);
-						 withAsyncSinkDo: [ :anElementSink | 
-							 anElementSink
-								 sink: AsyncPeakSink new;
-								 whenUpdate: [ :theLabel :aSink | 
-									 | aFileModel aText |
-									 aFileModel := aSink value currentValue.
-									 aText := aDescription displayStringFor: aFileModel.
-									 theLabel text: aText ].
-							 (aMemento readObservableValueUsing: aDescription) observe:
-								 anElementSink ] ]
-				 content: [ 
-					 self
-						 newSingleOptionDropdownContent: aLabel
-						 memento: aMemento
-						 description: aDescription ]);
-		margin: (BlInsets bottom: self defaultSpaceNumber);
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		constraintsDo: [ :c | c grid horizontal alignCenter ];
-		background: BrGlamorousColors disabledButtonBackgroundColor.
-
-	aLabel withAsyncSinkDo: [ :anElementSink | 
-		anElementSink
-			sink: AsyncPeakSink new;
-			whenUpdate: [ :theLabel :aSink | 
-				| aFileModel aText |
-				aFileModel := aSink value currentValue.
-				aText := aDescription displayStringFor: aFileModel.
-				theLabel text: aText ].
-		(aMemento readObservableValueUsing: aDescription) observe:
-			anElementSink ].
-
-	^ aLabel
+	^ self
+		  addDropdownMemento: aMemento
+		  using: aDescription
+		  withContent: [ :aLabel | 
+			  [ 
+			  self
+				  newSingleOptionDropdownContent: aLabel
+				  memento: aMemento
+				  description: aDescription ] ]
 ]
 
 { #category : #'api - ui' }
