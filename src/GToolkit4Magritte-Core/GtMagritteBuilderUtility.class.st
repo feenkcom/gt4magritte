@@ -17,7 +17,7 @@ GtMagritteBuilderUtility class >> addCommentTooltip: anElement using: aDescripti
 		(BrGlamorousWithLabelTooltipAptitude new text: aText)
 ]
 
-{ #category : #accessing }
+{ #category : #'private - ui' }
 GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescription withContent: aContentBlock [
 
 	| aLabel |
@@ -46,10 +46,12 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 							 (aMemento readObservableValueUsing: aDescription) observe:
 								 anElementSink ] ]
 				 content: (aContentBlock value: aLabel));
-		margin: (BlInsets all: self defaultSpaceNumber);
+		margin: ((BlInsets left: self defaultSpaceNumber) withBottom: self defaultSpaceNumber);
 		padding: (BlInsets all: self defaultSpaceNumber);
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		constraintsDo: [ :c | c grid horizontal alignCenter ];
+		constraintsDo: [ :c | 
+			c grid horizontal alignCenter.
+			c grid vertical alignCenter  ];
 		background: BrGlamorousColors disabledButtonBackgroundColor.
 
 	aLabel withAsyncSinkDo: [ :anElementSink | 
