@@ -300,7 +300,7 @@ GtMagritteElementBuilder >> initialize [
 
 { #category : #'private - building' }
 GtMagritteElementBuilder >> isReadOnlyForm [
-	^ self magritteDescription children allSatisfy: #isReadOnly
+	^ self objectDescription children allSatisfy: #isReadOnly
 ]
 
 { #category : #'private - building' }
