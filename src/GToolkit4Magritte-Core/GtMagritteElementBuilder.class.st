@@ -238,6 +238,8 @@ GtMagritteElementBuilder >> buildActions [
 
 	| aToolbar |
 	self hasActions ifFalse: [ ^ self ].
+	
+	self isReadOnlyForm ifTrue: [ ^ self ].
 
 	self toolbarContainerDo: [ :aContainer |
 	 
@@ -294,6 +296,11 @@ GtMagritteElementBuilder >> initialize [
 	super initialize.
 
 	actions := #(  )
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> isReadOnlyForm [
+	^ self magritteDescription children allSatisfy: #isReadOnly
 ]
 
 { #category : #'private - building' }
