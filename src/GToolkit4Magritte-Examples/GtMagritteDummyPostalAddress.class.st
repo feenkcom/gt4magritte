@@ -70,6 +70,8 @@ GtMagritteDummyPostalAddress >> descriptionStreet [
 		  default: '';
 		  priority: 1;
 		  beRequired;
+		  updateOn: GtMagritteDummyPostalAddressStreetChanged
+		  from: [ self ];
 		  addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
 		  labelled: 'Street must be non empty';
 		  addCondition: [ :aValue | 
@@ -107,6 +109,16 @@ GtMagritteDummyPostalAddress >> notifyPrimaryChanged [
 ]
 
 { #category : #'private - notifying' }
+GtMagritteDummyPostalAddress >> notifyStreetChanged [
+
+	announcer ifNil: [ ^ self ].
+
+	self announce: (GtMagritteDummyPostalAddressStreetChanged new
+			 address: self;
+			 street: self street)
+]
+
+{ #category : #'private - notifying' }
 GtMagritteDummyPostalAddress >> requestToBePrimaryAddress [
 
 	| aRequest |
@@ -129,7 +141,11 @@ GtMagritteDummyPostalAddress >> street [
 { #category : #accessing }
 GtMagritteDummyPostalAddress >> street: anObject [
 
-	street := anObject
+	street = anObject ifTrue: [ ^ self ].
+
+	street := anObject.
+	
+	self notifyStreetChanged.
 ]
 
 { #category : #subscriptions }
