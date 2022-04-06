@@ -144,7 +144,7 @@ GtMagritteElementBuilder >> addFlowListUsing: aDescription [
 { #category : #visiting }
 GtMagritteElementBuilder >> addIconUsing: aDescription [
 
-	| aMemento anIcon aStencilBuilder |
+	| aMemento anIcon |
 	aMemento := self memento.
 
 	anIcon := GtMagritteBuilderUtility
@@ -201,12 +201,23 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 
 
 	aDescription blocCompletion ifNotNil: [ :aStencil | 
-		(GtCompletionController on: anInputElement strategy: aStencil create)
-			install ].
-	aValidationElement := GtMagritteBuilderUtility
-		                      newValidationContainerWith: anInputElement
-		                      memento: aMemento
-		                      using: aDescription.
+		| aCompletionStrategy |
+		aCompletionStrategy := aStencil
+			                       memento: aMemento;
+			                       description: aDescription;
+			                       build.
+
+		(GtCompletionController
+			 on: anInputElement
+			 strategy: aCompletionStrategy) install ].
+
+	aDescription isWithChangeIndicator
+		ifTrue: [ 
+			aValidationElement := GtMagritteBuilderUtility
+				                      newValidationContainerWith: anInputElement
+				                      memento: aMemento
+				                      using: aDescription ]
+		ifFalse: [ aValidationElement := anInputElement ].
 
 	aLabel := self
 		          addFieldElement: aValidationElement
@@ -373,42 +384,48 @@ GtMagritteElementBuilder >> toolbarContainerDo: aBlock [
 	self form magritte toolbarContainerDo: aBlock
 ]
 
-{ #category : #visiting }
+{ #category : #'visiting-description' }
 GtMagritteElementBuilder >> visitBooleanDescription: aDescription [
 
 	self addBooleanField: aDescription
 ]
 
-{ #category : #visiting }
+{ #category : #'visiting-description' }
 GtMagritteElementBuilder >> visitContainer: aDescription [
 
 	aDescription do: [ :each | self visit: each ]
 ]
 
-{ #category : #visiting }
+{ #category : #'visiting-description' }
 GtMagritteElementBuilder >> visitDirectoryDescription: aDescription [
 
 	self addDirectoryDropdown: aDescription
 ]
 
-{ #category : #'private - building' }
+{ #category : #'visiting-description' }
 GtMagritteElementBuilder >> visitIconDescription: aDescription [
 
 	self addIconUsing: aDescription
 ]
 
-{ #category : #visiting }
+{ #category : #'visiting-description' }
+GtMagritteElementBuilder >> visitPictureDescription: aDescription [
+
+	self addPictureUsing: aDescription
+]
+
+{ #category : #'visiting-description' }
 GtMagritteElementBuilder >> visitSingleOptionDescription: aDescription [
 	self addSingleOptionDropdownUsing: aDescription
 ]
 
-{ #category : #visiting }
+{ #category : #'visiting-description' }
 GtMagritteElementBuilder >> visitStringDescription: aDescription [
 
 	self addStringFieldUsing: aDescription
 ]
 
-{ #category : #visiting }
+{ #category : #'visiting-description' }
 GtMagritteElementBuilder >> visitToManyRelationDescription: aDescription [
 
 	self addFlowListUsing: aDescription
