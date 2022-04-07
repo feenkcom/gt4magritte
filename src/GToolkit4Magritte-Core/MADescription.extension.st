@@ -20,6 +20,18 @@ MADescription >> beAlwaysEditable [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MADescription >> beWithChangeIndicator [
+
+	self propertyAt: #changeIndicator put: true
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MADescription >> beWithoutChangeIndicator [
+
+	self propertyAt: #changeIndicator put: false
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MADescription >> definingMethod [
 
 	^ self propertyAt: #definingMethod ifAbsent: [ nil ]
@@ -56,6 +68,12 @@ MADescription >> hasDefiningMethod [
 MADescription >> isAlwaysEditable [
 
 	^ self propertyAt: #alwaysEditable ifAbsent: [ false ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MADescription >> isWithChangeIndicator [
+
+	^ self propertyAt: #changeIndicator ifAbsent: [ true ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
