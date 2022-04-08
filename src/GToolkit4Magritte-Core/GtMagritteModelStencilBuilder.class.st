@@ -3,7 +3,8 @@ Class {
 	#superclass : #BrStencilBuilder,
 	#instVars : [
 		'model',
-		'description'
+		'description',
+		'memento'
 	],
 	#category : #'GToolkit4Magritte-Core-Support'
 }
@@ -28,6 +29,18 @@ GtMagritteModelStencilBuilder >> description: anObject [
 ]
 
 { #category : #accessing }
+GtMagritteModelStencilBuilder >> memento [
+
+	^ memento
+]
+
+{ #category : #accessing }
+GtMagritteModelStencilBuilder >> memento: anObject [
+
+	memento := anObject
+]
+
+{ #category : #accessing }
 GtMagritteModelStencilBuilder >> model [
 
 	^ model
@@ -45,5 +58,15 @@ GtMagritteModelStencilBuilder >> paramsOn: aStencilExecutor [
 	super paramsOn: aStencilExecutor.
 	aStencilExecutor
 		push: self model;
-		push: self description
+		push: self description;
+		push: self memento
+]
+
+{ #category : #initialization }
+GtMagritteModelStencilBuilder >> reset [
+
+	super reset.
+	self model: nil.
+	self description: nil.
+	self memento: nil
 ]

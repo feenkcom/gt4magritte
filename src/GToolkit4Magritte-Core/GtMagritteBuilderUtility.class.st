@@ -311,8 +311,11 @@ GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescripti
 					anIcon := aDescription blocStencil
 						          model: aValue;
 						          description: aDescription;
+						          memento: aMemento;
 						          asElement.
-					aContainer addChild: anIcon ].
+					aContainer
+						removeChildren;
+						addChild: anIcon ].
 
 			(aMemento readObservableValueUsing: aDescription) observe:
 				anElementSink ].
