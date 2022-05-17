@@ -5,7 +5,8 @@ Class {
 		'street',
 		'city',
 		'isPrimary',
-		'announcer'
+		'announcer',
+		'zipCode'
 	],
 	#category : #'GToolkit4Magritte-Examples-Support'
 }
@@ -77,6 +78,17 @@ GtMagritteDummyPostalAddress >> descriptionStreet [
 		  addCondition: [ :aValue | 
 			  (aValue select: [ :e | e isDigit ]) isNotEmpty ]
 		  labelled: 'Street must include street number'
+]
+
+{ #category : #'magritte-accessing' }
+GtMagritteDummyPostalAddress >> descriptionZipCode [
+
+	<magritteDescription>
+	^ MANumberDescription new
+		  accessor: #zipCode;
+		  default: 1000;
+		  priority: 3;
+		  kind: Object
 ]
 
 { #category : #accessing }
@@ -168,4 +180,14 @@ GtMagritteDummyPostalAddress >> when: anAnnnouncement send: aSelector to: aRecei
 	announcer ifNil: [ announcer := Announcer new ].
 
 	^ announcer weak when: anAnnnouncement send: aSelector to: aReceiver
+]
+
+{ #category : #accessing }
+GtMagritteDummyPostalAddress >> zipCode [
+	^ zipCode
+]
+
+{ #category : #accessing }
+GtMagritteDummyPostalAddress >> zipCode: aNumber [
+	zipCode := aNumber
 ]
