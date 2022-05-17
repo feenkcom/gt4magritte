@@ -408,6 +408,11 @@ GtMagritteElementBuilder >> visitIconDescription: aDescription [
 	self addIconUsing: aDescription
 ]
 
+{ #category : #accessing }
+GtMagritteElementBuilder >> visitNumberDescription: aDescription [
+	self visitStringDescription: aDescription
+]
+
 { #category : #'visiting-description' }
 GtMagritteElementBuilder >> visitPictureDescription: aDescription [
 
