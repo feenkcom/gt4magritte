@@ -13,7 +13,8 @@ GtMagritteModelExamples >> addressObject [
 
 	anAddress
 		street: 'Husova 108/12';
-		city: 'Všetín'.
+		city: 'Všetín';
+		zipCode: 75501.
 
 	^ anAddress
 ]
