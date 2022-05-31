@@ -298,31 +298,30 @@ GtMagritteMemento >> setCache: aDictionary [
 
 { #category : #private }
 GtMagritteMemento >> subscribeToModelUsing: aDescription observable: anObservable [
-
 	| aHandler |
-	aDescription announcerSubscriptionsDo: [ 
-		:anAnnouncementClass 
-		:anAnnouncerValuable | 
-		anAnnouncerValuable value ifNotNil: [ :anAnnouncer | 
-			| aSubscriptionBuilder |
-			aSubscriptionBuilder := (anAnnouncer respondsTo: #weak)
-				                        ifTrue: [ anAnnouncer weak ]
-				                        ifFalse: [ anAnnouncer ].
+	aDescription
+		announcerSubscriptionsDo: [ :anAnnouncementClass :anAnnouncerValuable | 
+			anAnnouncerValuable value
+				ifNotNil: [ :anAnnouncer | 
+					| aSubscriptionBuilder |
+					aSubscriptionBuilder := [ anAnnouncer weak ]
+							onDNU: #weak
+							do: [ :ex | anAnnouncer ].
 
-			aSubscriptionBuilder
-				when: anAnnouncementClass
-				send: #onAnnouncement:
-				to: (aHandler := GtMagritteMementoAnnouncementHandler new
-						             model: self model;
-						             memento: self;
-						             description: aDescription;
-						             observable: anObservable;
-						             announcementClass: anAnnouncementClass).
+					aSubscriptionBuilder
+						when: anAnnouncementClass
+						send: #onAnnouncement:
+						to: (aHandler := GtMagritteMementoAnnouncementHandler new
+									model: self model;
+									memento: self;
+									description: aDescription;
+									observable: anObservable;
+									announcementClass: anAnnouncementClass).
 
-			subscriptions
-				at: aDescription
-				ifPresent: [ :aCollection | aCollection add: aHandler ]
-				ifAbsentPut: [ OrderedCollection with: aHandler ] ] ]
+					subscriptions
+						at: aDescription
+						ifPresent: [ :aCollection | aCollection add: aHandler ]
+						ifAbsentPut: [ OrderedCollection with: aHandler ] ] ]
 ]
 
 { #category : #private }
