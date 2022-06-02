@@ -64,9 +64,7 @@ GtMagritteModelStencilBuilder >> paramsOn: aStencilExecutor [
 
 { #category : #initialization }
 GtMagritteModelStencilBuilder >> reset [
-
-	super reset.
-	self model: nil.
-	self description: nil.
-	self memento: nil
+	model := nil.
+	description := nil.
+	memento := nil
 ]

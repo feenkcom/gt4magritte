@@ -75,3 +75,10 @@ GtMagritteListElementStencilBuilder >> paramsOn: aStencilExecutor [
 		push: self description;
 		push: self form
 ]
+
+{ #category : #accessing }
+GtMagritteListElementStencilBuilder >> reset [
+	memento := nil.
+	description := nil.
+	form := nil
+]
