@@ -25,3 +25,8 @@ GtMagritteFormStencilBuilder >> paramsOn: aStencilExecutor [
 	super paramsOn: aStencilExecutor.
 	aStencilExecutor push: self memento
 ]
+
+{ #category : #accessing }
+GtMagritteFormStencilBuilder >> reset [
+	memento := nil
+]

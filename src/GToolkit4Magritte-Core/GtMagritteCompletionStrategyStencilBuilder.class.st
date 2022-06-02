@@ -50,9 +50,6 @@ GtMagritteCompletionStrategyStencilBuilder >> paramsOn: aStencilExecutor [
 
 { #category : #initialization }
 GtMagritteCompletionStrategyStencilBuilder >> reset [
-
-	super reset.
-	self memento: nil.
-	self description: nil.
-
+	memento := nil.
+	description := nil.
 ]
