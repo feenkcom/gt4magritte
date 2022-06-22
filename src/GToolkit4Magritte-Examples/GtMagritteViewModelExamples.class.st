@@ -8,7 +8,7 @@ Class {
 GtMagritteViewModelExamples >> asyncViewModelWithPersonObjectWithTwoAddresses [
 
 	<gtExample>
-	| aViewModel anObject aResult |
+	| aViewModel anObject |
 	anObject := self personObjectWithTwoAddresses.
 	aViewModel := GtMagritteViewModel forObject: anObject.
 	
@@ -21,7 +21,7 @@ GtMagritteViewModelExamples >> asyncViewModelWithPersonObjectWithTwoAddresses [
 GtMagritteViewModelExamples >> asyncViewModelWithPersonObjectWithTwoAddresses_WithAddressesDescriptionOnly [
 
 	<gtExample>
-	| aViewModel anObject aResult |
+	| aViewModel anObject |
 	anObject := self personObjectWithTwoAddresses.
 	aViewModel := anObject asGtMagritteViewModelWithDescription: [ 
 		              anObject descriptionPostalAddresses asContainer 
@@ -43,7 +43,7 @@ GtMagritteViewModelExamples >> asyncViewModelWithPersonObjectWithTwoAddresses_Wi
 GtMagritteViewModelExamples >> asyncViewModelWithPrimaryAddress [
 
 	<gtExample>
-	| aViewModel anObject aResult |
+	| aViewModel anObject |
 	anObject := self primaryAddressObject.
 	aViewModel := GtMagritteViewModel forObject: anObject.
 	
@@ -56,7 +56,7 @@ GtMagritteViewModelExamples >> asyncViewModelWithPrimaryAddress [
 GtMagritteViewModelExamples >> asyncViewModelWithSimpleBaseline [
 
 	<gtExample>
-	| aViewModel anObject aResult aDescription |
+	| aViewModel anObject aDescription |
 	anObject := self simpleBaselineObject.
 	aDescription := self simpleBaselineDescription.
 	aViewModel := GtMagritteViewModel
@@ -72,7 +72,7 @@ GtMagritteViewModelExamples >> asyncViewModelWithSimpleBaseline [
 GtMagritteViewModelExamples >> asyncViewModelWithSimpleBaselines [
 
 	<gtExample>
-	| aViewModel anObject aResult aDescription |
+	| aViewModel anObject aDescription |
 	anObject := GtMagritteModelExamples new simpleBaselinesObject.
 	aDescription := GtMagritteModelExamples new
 		                simpleBaselinesDescription.
@@ -208,7 +208,7 @@ GtMagritteViewModelExamples >> simpleBaselineObject [
 GtMagritteViewModelExamples >> viewModelWithBaselines [
 
 	<gtExample>
-	| aViewModel anObject aResult aDescription |
+	| aViewModel anObject aDescription |
 	anObject := GtMagritteModelExamples new simpleBaselinesObject.
 	aDescription := GtMagritteModelExamples new
 		                simpleBaselinesDescription.
@@ -225,7 +225,7 @@ GtMagritteViewModelExamples >> viewModelWithBaselines [
 GtMagritteViewModelExamples >> viewModelWithDirectory [
 
 	<gtExample>
-	| aViewModel anObject aResult aDescription |
+	| aViewModel anObject aDescription |
 	anObject := GtMagritteModelExamples new simpleDirectoryObject.
 	aDescription := GtMagritteModelExamples new
 		                simpleDirectoryDescription.

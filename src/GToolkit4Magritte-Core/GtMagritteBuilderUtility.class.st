@@ -359,7 +359,6 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 				anElementSink ].
 
 	anEditor editor when: BrTextEditorModifiedEvent do: [ :anEvent | 
-		| aPromise |
 		aMemento write: anEvent text asString using: aDescription ].
 
 	^ anEditor
