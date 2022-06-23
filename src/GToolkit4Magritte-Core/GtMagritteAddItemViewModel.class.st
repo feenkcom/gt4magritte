@@ -60,7 +60,7 @@ GtMagritteAddItemViewModel >> memento: anObject [
 { #category : #'private - event handling' }
 GtMagritteAddItemViewModel >> onClick: anEvent [
 
-	| aNewItem aNewViewModel anExistingItems aNewItems aNewViewModels |
+	| aNewItem anExistingItems aNewItems |
 	self memento ifNil: [ ^ self ].
 	self description ifNil: [ ^ self ].
 	self stencil ifNil: [ ^ self ].
