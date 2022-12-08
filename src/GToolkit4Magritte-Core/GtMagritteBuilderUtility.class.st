@@ -539,29 +539,28 @@ GtMagritteBuilderUtility class >> onFlowList: aFlowElement sinkUpdate: aSink mem
 
 { #category : #'private - support' }
 GtMagritteBuilderUtility class >> recycleViewModels: anExistingViewModels forModels: aModels into: aStream memento: aMemento description: aDescription [
+	aModels
+		do: [ :aModel | 
+			anExistingViewModels
+				detect: [ :eachViewModel | eachViewModel isForObject: aModel ]
+				ifFound: [ :aViewModel | aStream nextPut: aViewModel ]
+				ifNone: [ | aViewModel |
+					aViewModel := aDescription blocItemViewModelStencil
+							model: aModel;
+							description: aDescription;
+							build.
+					aDescription definitive
+						ifFalse: [ aViewModel
+								addButton: (GtMagritteButtonWithIconAction new
+										icon: BrGlamorousVectorIcons remove;
+										tooltip: 'Remove';
+										action: [ :anItemModel :aButton :anItemMemento | 
+											[ self
+												removeItem: aModel
+												memento: aMemento
+												description: aDescription ] asAsyncFuture await ]) ].
 
-	aModels do: [ :aModel | 
-		anExistingViewModels
-			detect: [ :eachViewModel | eachViewModel isForObject: aModel ]
-			ifFound: [ :aViewModel | aStream nextPut: aViewModel ]
-			ifNone: [ 
-				| aViewModel |
-				aViewModel := aDescription blocItemViewModelStencil
-					              model: aModel;
-					              description: aDescription;
-					              build.
-				aDescription definitive ifFalse: [ 
-					aViewModel addButton: (GtMagritteButtonWithIconAction new
-							 icon: BrGlamorousVectorIcons remove;
-							 tooltip: 'Remove';
-							 action: [ :anItemMemento :aButton | 
-								 [ 
-								 self
-									 removeItem: aModel
-									 memento: aMemento
-									 description: aDescription ] asAsyncFuture await ]) ].
-
-				aStream nextPut: aViewModel ] ]
+					aStream nextPut: aViewModel ] ]
 ]
 
 { #category : #'private - support' }

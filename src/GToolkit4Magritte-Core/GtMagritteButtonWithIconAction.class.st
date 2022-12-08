@@ -33,10 +33,10 @@ GtMagritteButtonWithIconAction >> asBlockButtonWithMemento: aMemento [
 		           label: self tooltip;
 		           action: [ :theButton | 
 			           self action ifNotNil: [ :anAction | 
-					           anAction cull: aMemento cull: theButton ] ].
+					           anAction cull: aMemento model cull: theButton cull: aMemento ] ].
 
 	self installOn ifNotNil: [ :anAction | 
-		anAction cull: aMemento cull: aButton ].
+		anAction  cull: aMemento model cull: aButton cull: aMemento ].
 
 	^ aButton
 ]
