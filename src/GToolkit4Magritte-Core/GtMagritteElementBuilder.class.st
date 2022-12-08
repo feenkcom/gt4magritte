@@ -334,48 +334,92 @@ GtMagritteElementBuilder >> memento: anObject [
 
 { #category : #'api - building' }
 GtMagritteElementBuilder >> newCancelButton [
-
 	^ GtMagritteButtonWithIconAction new
-		  icon: BrGlamorousVectorIcons cancel;
-		  tooltip: 'Cancel';
-		  installOn: [ :aMemento :aButton | 
-			  aButton withAsyncSinkDo: [ :anElementSink | 
-					  anElementSink
-						  sink: AsyncPeakSink new;
-						  whenUpdate: [ :theButton :aSink | 
-							  aSink value isChanged
-								  ifTrue: [ theButton enabled: true ]
-								  ifFalse: [ theButton enabled: false ] ].
-					  aMemento overallStatus observe: anElementSink ] ];
-		  action: [ :aMemento :aButton | 
-		  [ aMemento reset ] asAsyncFuture await ]
+		icon: BrGlamorousVectorIcons cancel;
+		tooltip: 'Cancel';
+		installOn: [ :aModel :aButton :aMemento | 
+			aButton
+				withAsyncSinkDo: [ :anElementSink | 
+					anElementSink
+						sink: AsyncPeakSink new;
+						whenUpdate: [ :theButton :aSink | 
+							aSink value isChanged
+								ifTrue: [ theButton enabled: true ]
+								ifFalse: [ theButton enabled: false ] ].
+					aMemento overallStatus observe: anElementSink ] ];
+		action: [ :aModel :aButton :aMemento | 
+			[ self
+				resetFrom: aButton
+				usingModel: aModel
+				andMemento: aMemento ] asAsyncFuture await ]
 ]
 
 { #category : #'api - building' }
 GtMagritteElementBuilder >> newSaveButton [
-
 	^ GtMagritteButtonWithIconAction new
-		  icon: BrGlamorousVectorIcons accept;
-		  tooltip: 'Save';
-		  installOn: [ :aMemento :aButton | 
-			  aButton withAsyncSinkDo: [ :anElementSink | 
-					  anElementSink
-						  sink: AsyncPeakSink new;
-						  whenUpdate: [ :theButton :aSink | 
-							  | aStatus |
-							  aStatus := aSink value.
-							  aStatus isChanged
-								  ifTrue: [ theButton enabled: aStatus isValid ]
-								  ifFalse: [ theButton enabled: false ] ].
-					  aMemento overallStatus observe: anElementSink ] ];
-		  action: [ :aMemento :aButton | 
-		  [ aMemento commit ] asAsyncFuture await ]
+		icon: BrGlamorousVectorIcons accept;
+		tooltip: 'Save';
+		installOn: [ :aModel :aButton :aMemento | 
+			aButton
+				withAsyncSinkDo: [ :anElementSink | 
+					anElementSink
+						sink: AsyncPeakSink new;
+						whenUpdate: [ :theButton :aSink | 
+							| aStatus |
+							aStatus := aSink value.
+							aStatus isChanged
+								ifTrue: [ theButton enabled: aStatus isValid ]
+								ifFalse: [ theButton enabled: false ] ].
+					aMemento overallStatus observe: anElementSink ] ];
+		action: [ :aModel :aButton :aMemento | 
+			[ self
+				saveFrom: aButton
+				usingModel: aModel
+				andMemento: aMemento ] asAsyncFuture await ]
 ]
 
 { #category : #'private - accessing' }
 GtMagritteElementBuilder >> objectDescription [
 
 	^ self memento magritteDescription
+]
+
+{ #category : #'api - building' }
+GtMagritteElementBuilder >> resetFrom: aButton usingModel: aModel andMemento: aMemento [
+	[ aMemento reset.
+	(aModel magritteActions select: #isCommitAction)
+		do: [ :anAction | 
+			anAction action
+				cull: aModel
+				cull: aButton
+				cull: aMemento ] ]
+		on: Error
+		do: [ :anError | 
+			(aModel magritteActions select: #isCommitAction)
+				do: [ :anAction | 
+					anAction onErrorAction
+						cull: aModel
+						cull: aButton
+						cull: aMemento ] ]
+]
+
+{ #category : #'api - building' }
+GtMagritteElementBuilder >> saveFrom: aButton usingModel: aModel andMemento: aMemento [
+	[ aMemento commit.
+	(aModel magritteActions select: #isResetAction)
+		do: [ :anAction | 
+			anAction action
+				cull: aModel
+				cull: aButton
+				cull: aMemento ] ]
+		on: Error
+		do: [ :anError | 
+			(aModel magritteActions select: #isResetAction)
+				do: [ :anAction | 
+					anAction onErrorAction
+						cull: aModel
+						cull: aButton
+						cull: aMemento ] ]
 ]
 
 { #category : #'private - building' }
