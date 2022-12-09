@@ -201,28 +201,32 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: a
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
-
 	| anEditor |
-	anEditor := BrEditableLabel new.
+	anEditor := BrEditor new.
 	anEditor
-		aptitude:
-			GtMagritteEditableLabelAptitude new glamorousRegularFontAndSize;
+		aptitude: GtMagritteEditorAptitude new glamorousRegularFontAndSize;
 		vFitContent;
 		hFitContentLimited;
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
 				sink: AsyncPeakSink new;
-				whenUpdate: [ :theEditor :aSink | 
-					theEditor text: aSink value currentValue ].
-			(aMemento readObservableValueUsing: aDescription) observe:
-				anElementSink ];
-		when: BrEditorAcceptWish do: [ :aWish | 
-		aWish consumed: true.
-		aMemento write: aWish text asString using: aDescription ];
+				whenUpdate: [ :theEditor :aSink | theEditor text: aSink value currentValue ].
+			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ];
+		when: BrEditorAcceptWish
+			do: [ :aWish | 
+				aWish consumed: true.
+				aMemento write: aWish text asString using: aDescription ];
 		margin: (BlInsets bottom: self defaultSpaceNumber);
 		constraintsDo: [ :c | 
 			c grid vertical alignCenter.
 			c minWidth: 42 ].
+
+	anEditor
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination enter;
+				action: [ :anEvent | 
+					anEditor fireEvent: (BrEditorAcceptWish new text: anEditor text).
+					anEditor loseFocus ]).
 
 	^ anEditor
 ]
@@ -441,12 +445,11 @@ GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aM
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement memento: aMemento using: aDescription [
-
-	| aContainer anIssuesElement aChangeElement |
+	| aContainer anIssuesElement aChangeElement anErrorElement |
 	aContainer := BrHorizontalGrid new.
 	aContainer
 		cellSpacing: 0;
-		columnCount: 2;
+		columnCount: 3;
 		hFitContentLimited;
 		vFitContent.
 
@@ -457,28 +460,52 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	aChangeElement visibility: BlVisibility hidden.
 	aChangeElement margin: (BlInsets bottom: self defaultSpaceNumber).
 	aChangeElement geometry: (BlRoundedRectangleGeometry cornerRadius: 4).
-	aChangeElement withAsyncSinkDo: [ :anElementSink | 
-		anElementSink
-			sink: AsyncPeakSink new;
-			whenUpdate: [ :aLabel :aSink | 
-				| aValue |
-				aValue := aSink value.
-				aValue isChanged
-					ifTrue: [ aLabel visibility: BlVisibility visible ]
-					ifFalse: [ aLabel visibility: BlVisibility hidden ] ].
-		(aMemento readObservableValueUsing: aDescription) observe:
-			anElementSink ].
+	aChangeElement
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeakSink new;
+				whenUpdate: [ :aLabel :aSink | 
+					| aValue |
+					aValue := aSink value.
+					aValue isChanged
+						ifTrue: [ aLabel visibility: BlVisibility visible ]
+						ifFalse: [ aLabel visibility: BlVisibility hidden ] ].
+			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ].
+
+	anErrorElement := BrFrame new.
+	anErrorElement hExact: self defaultThickness.
+	anErrorElement vMatchParent.
+	anErrorElement background: BrGlamorousColors errorBackgroundColor.
+	anErrorElement visibility: BlVisibility hidden.
+	anErrorElement margin: (BlInsets bottom: self defaultSpaceNumber).
+	anErrorElement geometry: (BlRoundedRectangleGeometry cornerRadius: 4).
+	anErrorElement
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeakSink new;
+				whenUpdate: [ :aLabel :aSink | 
+					| aValue |
+					aValue := aSink value.
+					aValue isSuccess
+						ifTrue: [ aLabel visibility: BlVisibility hidden ]
+						ifFalse: [ aLabel visibility: BlVisibility visible ] ].
+			(aMemento validatorUsing: aDescription) observe: anElementSink ].
 
 	anIssuesElement := BrEditor new.
 	anIssuesElement
 		aptitude: (BrGlamorousRegularEditorAptitude new
-				 glamorousRegularFont;
-				 glamorousCodeSmallSize;
-				 foreground: BrGlamorousColors errorBackgroundColor);
+				glamorousRegularFont;
+				glamorousCodeSmallSize;
+				foreground: BrGlamorousColors errorBackgroundColor);
 		beReadOnlyWithSelection;
 		hFitContentLimited;
 		vFitContent;
 		text: '';
+		padding: (BlInsets
+				top: -4
+				left: 5
+				bottom: 5
+				right: 5);
 		visibility: BlVisibility gone;
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
@@ -487,19 +514,19 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 					| aValue |
 					aValue := aSink value.
 					aValue isSuccess
-						ifTrue: [ 
-							aLabel
+						ifTrue: [ aLabel
 								text: '';
 								visibility: BlVisibility gone ]
-						ifFalse: [ 
-							aLabel
+						ifFalse: [ aLabel
 								text: aValue issuesDescription;
 								visibility: BlVisibility visible ] ].
 			(aMemento validatorUsing: aDescription) observe: anElementSink ].
 
 	aContainer addChild: aChangeElement as: #changeIndicator.
+	aContainer addChild: anErrorElement as: #errorIndicator.
 	aContainer addChild: aFieldElement as: #field.
 	aContainer addChild: (BlElement new size: 0 @ 0) as: #placeHolder.
+	aContainer addChild: (BlElement new size: 0 @ 0) as: #placeHolder2.
 	aContainer addChild: anIssuesElement as: #issues.
 
 	^ aContainer
