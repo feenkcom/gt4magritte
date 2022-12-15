@@ -501,11 +501,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 		hFitContentLimited;
 		vFitContent;
 		text: '';
-		padding: (BlInsets
-				top: -4
-				left: 5
-				bottom: 5
-				right: 5);
+		padding: (BlInsets top: -4 bottom: 5);
 		visibility: BlVisibility gone;
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
