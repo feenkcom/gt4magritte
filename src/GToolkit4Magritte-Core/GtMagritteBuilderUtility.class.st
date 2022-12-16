@@ -221,12 +221,10 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 			c grid vertical alignCenter.
 			c minWidth: 42 ].
 
-	anEditor
-		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination enter;
-				action: [ :anEvent | 
-					anEditor fireEvent: (BrEditorAcceptWish new text: anEditor text).
-					anEditor loseFocus ]).
+
+	anEditor editor
+		when: BrTextEditorModifiedEvent
+		do: [ :anEvent | aMemento write: anEvent text asString using: aDescription ].
 
 	^ anEditor
 ]

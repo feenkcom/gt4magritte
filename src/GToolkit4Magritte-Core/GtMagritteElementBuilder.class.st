@@ -241,7 +241,8 @@ GtMagritteElementBuilder >> build [
 		description: [ 'Form element must be defined' ].
 
 	self visit: self objectDescription.
-	self buildActions
+	self buildActions.
+	self buildShortcuts
 ]
 
 { #category : #'private - building' }
@@ -269,6 +270,35 @@ GtMagritteElementBuilder >> buildActions [
 		aToolbar visibility: BlVisibility hidden.
 
 		aContainer addChild: aToolbar as: #toolbar ]
+]
+
+{ #category : #'private - building' }
+GtMagritteElementBuilder >> buildShortcuts [
+	self form
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination tab;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					anEvent target fireEvent: (BrEditorAcceptWish new text: anEvent target text).
+					anEvent target loseFocus ]).
+	self form
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination enter;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					[ self
+						saveFrom: self form
+						usingModel: self memento model
+						andMemento: self memento ] asAsyncFuture await ]).
+	self form
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination escape;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					[ self
+						resetFrom: self form
+						usingModel: self memento model
+						andMemento: self memento ] asAsyncFuture await ])
 ]
 
 { #category : #'private - building' }
