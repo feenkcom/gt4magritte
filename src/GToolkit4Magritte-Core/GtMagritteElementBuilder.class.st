@@ -286,10 +286,11 @@ GtMagritteElementBuilder >> buildShortcuts [
 				combination: BlKeyCombination enter;
 				overrideChildren: true;
 				action: [ :anEvent | 
-					[ self
-						saveFrom: self form
-						usingModel: self memento model
-						andMemento: self memento ] asAsyncFuture await ]).
+					self memento overallStatus valueOrNil isValid
+						ifTrue: [ [ self
+								saveFrom: self form
+								usingModel: self memento model
+								andMemento: self memento ] asAsyncFuture await ] ]).
 	self form
 		addShortcut: (BlShortcutWithAction new
 				combination: BlKeyCombination escape;
@@ -298,7 +299,18 @@ GtMagritteElementBuilder >> buildShortcuts [
 					[ self
 						resetFrom: self form
 						usingModel: self memento model
-						andMemento: self memento ] asAsyncFuture await ])
+						andMemento: self memento ] asAsyncFuture await ]).
+	self form
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination tab;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					anEvent target loseFocus.
+					BlFocusFinder new
+						direction: BlFocusSearchDirectionForward new;
+						root: self form;
+						referenceElement: anEvent target;
+						nextFocusDo: #requestFocus ifNone: [  ] ])
 ]
 
 { #category : #'private - building' }
