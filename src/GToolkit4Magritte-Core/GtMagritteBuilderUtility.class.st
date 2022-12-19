@@ -499,7 +499,11 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 		hFitContentLimited;
 		vFitContent;
 		text: '';
-		padding: (BlInsets top: -4 bottom: 5);
+		padding: (BlInsets
+				top: -4
+				left: 5
+				bottom: 5
+				right: 0);
 		visibility: BlVisibility gone;
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
@@ -507,7 +511,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 				whenUpdate: [ :aLabel :aSink | 
 					| aValue |
 					aValue := aSink value.
-					aValue isSuccess
+					(aValue value isChanged not or: [ aValue isSuccess ])
 						ifTrue: [ aLabel
 								text: '';
 								visibility: BlVisibility gone ]
