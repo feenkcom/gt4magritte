@@ -461,7 +461,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	aChangeElement
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
-				sink: AsyncPeakSink new;
+				sink: AsyncPeekSink new;
 				whenUpdate: [ :aLabel :aSink | 
 					| aValue |
 					aValue := aSink value.
@@ -480,7 +480,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	anErrorElement
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
-				sink: AsyncPeakSink new;
+				sink: AsyncPeekSink new;
 				whenUpdate: [ :aLabel :aSink | 
 					| aValue |
 					aValue := aSink value.
@@ -507,7 +507,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 		visibility: BlVisibility gone;
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
-				sink: AsyncPeakSink new;
+				sink: AsyncPeekSink new;
 				whenUpdate: [ :aLabel :aSink | 
 					| aValue |
 					aValue := aSink value.
