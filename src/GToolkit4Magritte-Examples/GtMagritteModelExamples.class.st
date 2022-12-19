@@ -217,7 +217,7 @@ GtMagritteModelExamples >> simpleBaselinesDescription [
 						   using: aDescription ].
 				   aTagger withAsyncSinkDo: [ :anElementSink | 
 					   anElementSink
-						   sink: AsyncPeakSink new;
+						   sink: AsyncPeekSink new;
 						   whenUpdate: [ :theTagger :aSink | 
 							   | theValues theTexts |
 							   theValues := aSink value currentValue.
