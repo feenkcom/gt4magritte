@@ -39,7 +39,7 @@ GtMagritteElementBuilder >> addBooleanField: aDescription [
 
 			aLabelElement withAsyncSinkDo: [ :anElementSink | 
 				anElementSink
-					sink: AsyncPeakSink new;
+					sink: AsyncPeekSink new;
 					whenUpdate: [ :theEditor :aSink | 
 						theEditor text:
 								(aDescription labelForOption: aSink value currentValue) ].
@@ -371,7 +371,7 @@ GtMagritteElementBuilder >> newCancelButton [
 			aButton
 				withAsyncSinkDo: [ :anElementSink | 
 					anElementSink
-						sink: AsyncPeakSink new;
+						sink: AsyncPeekSink new;
 						whenUpdate: [ :theButton :aSink | 
 							aSink value isChanged
 								ifTrue: [ theButton enabled: true ]
@@ -393,7 +393,7 @@ GtMagritteElementBuilder >> newSaveButton [
 			aButton
 				withAsyncSinkDo: [ :anElementSink | 
 					anElementSink
-						sink: AsyncPeakSink new;
+						sink: AsyncPeekSink new;
 						whenUpdate: [ :theButton :aSink | 
 							| aStatus |
 							aStatus := aSink value.

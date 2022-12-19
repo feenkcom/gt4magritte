@@ -72,7 +72,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 
 			  aLabel withAsyncSinkDo: [ :anElementSink | 
 					  anElementSink
-						  sink: AsyncPeakSink new;
+						  sink: AsyncPeekSink new;
 						  whenUpdate: [ :theLabel :aSink | 
 							  | aValue |
 							  aValue := aSink value.
@@ -89,7 +89,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 			  aLabel := BrLabel new aptitude: BrGlamorousLabelAptitude.
 			  aLabel withAsyncSinkDo: [ :anElementSink | 
 				  anElementSink
-					  sink: AsyncPeakSink new;
+					  sink: AsyncPeekSink new;
 					  whenUpdate: [ :theLabel :aSink | 
 						  | aValue |
 						  aValue := aSink value.
@@ -111,7 +111,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 
 			  aLabel withAsyncSinkDo: [ :anElementSink | 
 				  anElementSink
-					  sink: AsyncPeakSink new;
+					  sink: AsyncPeekSink new;
 					  whenUpdate: [ :theLabel :aSink | 
 						  | aValue aText |
 						  aValue := aSink value.
