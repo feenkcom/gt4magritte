@@ -70,7 +70,7 @@ GtMagritteValidatedFieldElement >> newChangeElement [
 		  geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 		  withAsyncSinkDo: [ :anElementSink | 
 			  anElementSink
-				  sink: AsyncPeakSink new;
+				  sink: AsyncPeekSink new;
 				  whenUpdate: [ :aLabel :aSink | 
 					  | aValue |
 					  aValue := aSink value.
@@ -94,7 +94,7 @@ GtMagritteValidatedFieldElement >> newIssuesElement [
 		  visibility: BlVisibility gone;
 		  withAsyncSinkDo: [ :anElementSink | 
 			  anElementSink
-				  sink: AsyncPeakSink new;
+				  sink: AsyncPeekSink new;
 				  whenUpdate: [ :aLabel :aSink | 
 					  | aValue |
 					  aValue := aSink value.

@@ -37,7 +37,7 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 						 padding: (BlInsets all: self defaultSpaceNumber);
 						 withAsyncSinkDo: [ :anElementSink | 
 							 anElementSink
-								 sink: AsyncPeakSink new;
+								 sink: AsyncPeekSink new;
 								 whenUpdate: [ :theLabel :aSink | 
 									 | aFileModel aText |
 									 aFileModel := aSink value currentValue.
@@ -56,7 +56,7 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 
 	aLabel withAsyncSinkDo: [ :anElementSink | 
 		anElementSink
-			sink: AsyncPeakSink new;
+			sink: AsyncPeekSink new;
 			whenUpdate: [ :theLabel :aSink | 
 				| aFileModel aText |
 				aFileModel := aSink value currentValue.
@@ -132,7 +132,7 @@ GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescripti
 		aptitude: BrGlamorousCheckboxAptitude;
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
-				sink: AsyncPeakSink new;
+				sink: AsyncPeekSink new;
 				whenUpdate: [ :theCheckbox :aSink | 
 					theCheckbox checked: aSink value currentValue ].
 			(aMemento readObservableValueUsing: aDescription) observe:
@@ -173,7 +173,7 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento
 
 	aFileBrowser withAsyncSinkDo: [ :anElementSink | 
 		anElementSink
-			sink: AsyncPeakSink new;
+			sink: AsyncPeekSink new;
 			whenUpdate: [ :theFileBrowser :aSink | 
 				| aFileModel aFileReference |
 				aFileModel := aSink value currentValue.
@@ -209,7 +209,7 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 		hFitContentLimited;
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
-				sink: AsyncPeakSink new;
+				sink: AsyncPeekSink new;
 				whenUpdate: [ :theEditor :aSink | theEditor text: aSink value currentValue ].
 			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ];
 		when: BrEditorAcceptWish
@@ -261,7 +261,7 @@ GtMagritteBuilderUtility class >> newFlowListMemento: aMemento using: aDescripti
 		stencil: aDescription blocItemStencil;
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
-				sink: AsyncPeakSink new;
+				sink: AsyncPeekSink new;
 				whenUpdate: [ :theFlowElement :aSink | 
 					self
 						onFlowList: theFlowElement
@@ -306,7 +306,7 @@ GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescripti
 			c grid horizontal alignLeft ];
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
-				sink: AsyncPeakSink new;
+				sink: AsyncPeekSink new;
 				whenUpdate: [ :aContainer :aSink | 
 					| aValue anIcon |
 					aValue := aSink value currentValue.
@@ -354,7 +354,7 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 			c minWidth: 20 ];
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
-				sink: AsyncPeakSink new;
+				sink: AsyncPeekSink new;
 				whenUpdate: [ :theEditor :aSink | 
 					theEditor text: aSink value currentValue ].
 			(aMemento readObservableValueUsing: aDescription) observe:
@@ -376,7 +376,7 @@ GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: 
 
 	anEditor withAsyncSinkDo: [ :anElementSink | 
 		anElementSink
-			sink: AsyncPeakSink new;
+			sink: AsyncPeekSink new;
 			whenUpdate: [ :theEditor :aSink | 
 				theEditor text: aSink value currentValue ].
 		(aMemento readObservableValueUsing: aDescription) observe:
