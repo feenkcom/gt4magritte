@@ -305,7 +305,6 @@ GtMagritteElementBuilder >> buildShortcuts [
 				combination: BlKeyCombination tab;
 				overrideChildren: true;
 				action: [ :anEvent | 
-					anEvent target loseFocus.
 					BlFocusFinder new
 						direction: BlFocusSearchDirectionForward new;
 						root: self form;
