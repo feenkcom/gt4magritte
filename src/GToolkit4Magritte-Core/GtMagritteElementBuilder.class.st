@@ -281,7 +281,8 @@ GtMagritteElementBuilder >> buildShortcuts [
 				action: [ :anEvent | 
 					anEvent target fireEvent: (BrEditorAcceptWish new text: anEvent target text).
 					anEvent target loseFocus ]).
-	self form
+	"TODO: find a way to add this without breaking completion"
+	"self form
 		addShortcut: (BlShortcutWithAction new
 				combination: BlKeyCombination enter;
 				overrideChildren: true;
@@ -290,7 +291,7 @@ GtMagritteElementBuilder >> buildShortcuts [
 						ifTrue: [ [ self
 								saveFrom: self form
 								usingModel: self memento model
-								andMemento: self memento ] asAsyncFuture await ] ]).
+								andMemento: self memento ] asAsyncFuture await ] ])."
 	self form
 		addShortcut: (BlShortcutWithAction new
 				combination: BlKeyCombination escape;
