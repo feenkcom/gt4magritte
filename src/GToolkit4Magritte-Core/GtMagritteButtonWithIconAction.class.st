@@ -24,19 +24,27 @@ GtMagritteButtonWithIconAction >> action: anObject [
 
 { #category : #'api - building' }
 GtMagritteButtonWithIconAction >> asBlockButtonWithMemento: aMemento [
-
 	| aButton |
 	aButton := BrButton new
-		           beTinySize;
-		           aptitude: BrGlamorousButtonWithIconAptitude;
-		           icon: self icon;
-		           label: self tooltip;
-		           action: [ :theButton | 
-			           self action ifNotNil: [ :anAction | 
-					           anAction cull: aMemento model cull: theButton cull: aMemento ] ].
+			beFocusable;
+			beTinySize;
+			aptitude: BrGlamorousButtonWithIconAptitude;
+			icon: self icon;
+			label: self tooltip;
+			action: [ :theButton | 
+				self action
+					ifNotNil: [ :anAction | 
+						anAction
+							cull: aMemento model
+							cull: theButton
+							cull: aMemento ] ].
 
-	self installOn ifNotNil: [ :anAction | 
-		anAction  cull: aMemento model cull: aButton cull: aMemento ].
+	self installOn
+		ifNotNil: [ :anAction | 
+			anAction
+				cull: aMemento model
+				cull: aButton
+				cull: aMemento ].
 
 	^ aButton
 ]
