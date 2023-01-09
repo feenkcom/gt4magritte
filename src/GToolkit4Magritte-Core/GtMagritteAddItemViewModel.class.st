@@ -20,6 +20,11 @@ GtMagritteAddItemViewModel >> asElement [
 		  constraintsDo: [ :c | c flow vertical alignCenter ]
 ]
 
+{ #category : #'api - converting' }
+GtMagritteAddItemViewModel >> asGtMagritteViewModel [
+	^ self
+]
+
 { #category : #accessing }
 GtMagritteAddItemViewModel >> description [
 
