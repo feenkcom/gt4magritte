@@ -276,7 +276,7 @@ GtMagritteElementBuilder >> buildActions [
 GtMagritteElementBuilder >> buildShortcuts [
 	self form
 		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination tab;
+				combination: BlKeyCombination shiftTab;
 				overrideChildren: true;
 				action: [ :anEvent | 
 					anEvent target fireEvent: (BrEditorAcceptWish new text: anEvent target text).
@@ -308,6 +308,16 @@ GtMagritteElementBuilder >> buildShortcuts [
 				action: [ :anEvent | 
 					BlFocusFinder new
 						direction: BlFocusSearchDirectionForward new;
+						root: self form;
+						referenceElement: anEvent target;
+						nextFocusDo: #requestFocus ifNone: [  ] ]).
+	self form
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination shiftTab;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					BlFocusFinder new
+						direction: BlFocusSearchDirectionBackward new;
 						root: self form;
 						referenceElement: anEvent target;
 						nextFocusDo: #requestFocus ifNone: [  ] ])
