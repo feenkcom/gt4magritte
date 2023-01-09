@@ -162,7 +162,16 @@ GtMagritteMemento >> gtCacheFor: aView [
 					ifTrue: [ 'yes' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
 					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
 			width: 70;
-		contextItemLabel: 'Validate current value in a debugger'
+		contextItemLabel: 'Inspect current value'
+			action: [ :anElement :anAssoc | 
+				anAssoc value valueOrNil
+					ifNotNil: [ :aValue | anElement phlow spawnObject: aValue currentValue ] ];
+		contextItemLabel: 'Inspect original value'
+			action: [ :anElement :anAssoc | 
+				anAssoc value valueOrNil
+					ifNotNil: [ :aValue | anElement phlow spawnObject: aValue originalValue ] ];
+		send: [ :anAssoc | anAssoc value valueOrNil ];
+		contextItemLabel: 'Debug current value validation'
 			action: [ :anElement :anAssoc | anAssoc value valueOrNil ifNotNil: [ :aValue | self debugValidateValue: aValue ] ];
 		contextItemLabel: 'Inspect last validation result'
 			action: [ :anElement :anAssoc | 
