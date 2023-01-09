@@ -2,10 +2,15 @@ Extension { #name : #MAToManyRelationDescription }
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAToManyRelationDescription >> blocItemStencil [
-
-	^ self propertyAt: #blocItemStencil ifAbsentPut: [ 
-		  [ :anItem | anItem asGtMagritteViewModel ] asStencilBuilder:
-			  BrListRowStencilBuilder ]
+	^ self
+		propertyAt: #blocItemStencil
+		ifAbsentPut: [ [ :anItem | 
+			anItem asGtMagritteViewModel asElement
+				margin: (BlInsets
+						top: 0
+						right: 10
+						bottom: 10
+						left: 0) ] asStencilBuilder: BrListRowStencilBuilder ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }

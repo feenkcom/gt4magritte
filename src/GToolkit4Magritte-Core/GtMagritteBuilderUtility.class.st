@@ -58,9 +58,9 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 		anElementSink
 			sink: AsyncPeekSink new;
 			whenUpdate: [ :theLabel :aSink | 
-				| aFileModel aText |
-				aFileModel := aSink value currentValue.
-				aText := aDescription displayStringFor: aFileModel.
+				| aValue aText |
+				aValue := aSink value currentValue.
+				aText := aDescription displayStringFor: aValue.
 				theLabel text: aText ].
 		(aMemento readObservableValueUsing: aDescription) observe:
 			anElementSink ].
@@ -532,32 +532,30 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 
 { #category : #'private - support' }
 GtMagritteBuilderUtility class >> onFlowList: aFlowElement sinkUpdate: aSink memento: aMemento description: aDescription [
-
 	| aModels anExistingViewModels isEditable aViewModels |
-	aModels := aSink value currentValue.
+	aModels := aSink value currentValue ifNil: [ #() ].
 	anExistingViewModels := aFlowElement items.
-	isEditable := aDescription definitive not and: [ 
-		              aDescription newItemStencil isNotNil ].
+	isEditable := aDescription definitive not
+			and: [ aDescription newItemStencil isNotNil ].
 
 	aViewModels := Array
-		               new: aModels size + isEditable asBit
-		               streamContents: [ :aStream | 
-			               self
-				               recycleViewModels: anExistingViewModels
-				               forModels: aModels
-				               into: aStream
-				               memento: aMemento
-				               description: aDescription.
+			new: aModels size + isEditable asBit
+			streamContents: [ :aStream | 
+				self
+					recycleViewModels: anExistingViewModels
+					forModels: aModels
+					into: aStream
+					memento: aMemento
+					description: aDescription.
 
-			               isEditable ifTrue: [ 
-				               | anAddViewModel |
-				               anAddViewModel := GtMagritteAddItemViewModel
-					                                 new
-					                                 memento: aMemento;
-					                                 description: aDescription;
-					                                 stencil:
-						                                 aDescription newItemStencil.
-				               aStream nextPut: anAddViewModel ] ].
+				isEditable
+					ifTrue: [ | anAddViewModel |
+						anAddViewModel := GtMagritteAddItemViewModel new
+								memento: aMemento;
+								description: aDescription;
+								stencil: aDescription newItemStencil.
+						aStream nextPut: anAddViewModel ] ].
+
 
 	^ aFlowElement items: aViewModels
 ]
