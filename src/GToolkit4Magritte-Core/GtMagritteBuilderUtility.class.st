@@ -94,25 +94,21 @@ GtMagritteBuilderUtility class >> defaultThickness [
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aDescription using: aMemento [
-
-	| anEditor |
+	| anEditor aptitude |
 	anEditor := BrEditor new.
+	aptitude := BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize.
+	aDescription textStyler ifNotNil: [:aBlock | aBlock value: aptitude ].
 	anEditor
 		beReadOnlyWithSelection;
-		aptitude:
-			BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize;
+		aptitude: aptitude;
 		addAptitude: (BrStyleCommonAptitude new
-				 default: [ :aStyle | aStyle border: BlBorder empty ];
-				 hovered: [ :aStyle | 
-					 aStyle border:
-							 (BlBorder
-								  paint: BrGlamorousColors disabledButtonBorderColor
-								  width: 1) ];
-				 focused: [ :aStyle | 
-					 aStyle border:
-							 (BlBorder
-								  paint: BrGlamorousColors focusedEditorBorderColor
-								  width: 1) ]);
+				default: [ :aStyle | aStyle border: BlBorder empty ];
+				hovered: [ :aStyle | 
+					aStyle
+						border: (BlBorder paint: BrGlamorousColors disabledButtonBorderColor width: 1) ];
+				focused: [ :aStyle | 
+					aStyle
+						border: (BlBorder paint: BrGlamorousColors focusedEditorBorderColor width: 1) ]);
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 		vFitContent;
 		hFitContentLimited;
@@ -201,10 +197,12 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: a
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
-	| anEditor |
+	| anEditor aptitude |
 	anEditor := BrEditor new.
+	aptitude := GtMagritteEditorAptitude new glamorousRegularFontAndSize.	
+	aDescription textStyler ifNotNil: [:aBlock | aBlock value: aptitude ].
 	anEditor
-		aptitude: GtMagritteEditorAptitude new glamorousRegularFontAndSize;
+		aptitude: aptitude;
 		vFitContent;
 		hFitContentLimited;
 		withAsyncSinkDo: [ :anElementSink | 
@@ -327,24 +325,20 @@ GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescripti
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
-
-	| anEditor |
+	| anEditor aptitude |
 	anEditor := BrEditor new.
+	aptitude := BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize.
+	aDescription textStyler ifNotNil: [:aBlock | aBlock value: aptitude ].
 	anEditor
-		aptitude:
-			BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize;
+		aptitude: aptitude;
 		addAptitude: (BrStyleCommonAptitude new
-				 default: [ :aStyle | aStyle border: BlBorder empty ];
-				 hovered: [ :aStyle | 
-					 aStyle border:
-							 (BlBorder
-								  paint: BrGlamorousColors disabledButtonBorderColor
-								  width: 1) ];
-				 focused: [ :aStyle | 
-					 aStyle border:
-							 (BlBorder
-								  paint: BrGlamorousColors focusedEditorBorderColor
-								  width: 1) ]);
+				default: [ :aStyle | aStyle border: BlBorder empty ];
+				hovered: [ :aStyle | 
+					aStyle
+						border: (BlBorder paint: BrGlamorousColors disabledButtonBorderColor width: 1) ];
+				focused: [ :aStyle | 
+					aStyle
+						border: (BlBorder paint: BrGlamorousColors focusedEditorBorderColor width: 1) ]);
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 		vFitContent;
 		hFitContentLimited;
@@ -355,13 +349,12 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
 				sink: AsyncPeekSink new;
-				whenUpdate: [ :theEditor :aSink | 
-					theEditor text: aSink value currentValue ].
-			(aMemento readObservableValueUsing: aDescription) observe:
-				anElementSink ].
+				whenUpdate: [ :theEditor :aSink | theEditor text: aSink value currentValue ].
+			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ].
 
-	anEditor editor when: BrTextEditorModifiedEvent do: [ :anEvent | 
-		aMemento write: anEvent text asString using: aDescription ].
+	anEditor editor
+		when: BrTextEditorModifiedEvent
+		do: [ :anEvent | aMemento write: anEvent text asString using: aDescription ].
 
 	^ anEditor
 ]
