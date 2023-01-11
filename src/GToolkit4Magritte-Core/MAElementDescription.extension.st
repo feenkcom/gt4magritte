@@ -11,3 +11,13 @@ MAElementDescription >> blocCompletion: aStrategyStencil [
 
 	self propertyAt: #blocCompletion put: (aStrategyStencil asStencilBuilder: GtMagritteCompletionStrategyStencilBuilder)
 ]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> textStyler [
+	^ self propertyAt: #textStyler ifAbsent: [ nil ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> textStyler: aBlock [
+	self propertyAt: #textStyler put: aBlock
+]
