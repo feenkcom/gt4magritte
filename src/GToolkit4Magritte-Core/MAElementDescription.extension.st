@@ -13,6 +13,33 @@ MAElementDescription >> blocCompletion: aStrategyStencil [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> gtPreviewFor: aView [
+	<gtView>
+	^ aView explicit
+		title: 'Preview';
+		priority: 1;
+		stencil: [ | form memento stencil |
+			form := BrFrame new fitContent.
+			memento := GtMagritteMemento new
+					setDescription: self asContainer;
+					reset.
+			form userData at: #gtmemento put: memento.
+
+			stencil := memento magritteDescription blocElementContainerStencil
+					asStencilBuilder: GtMagritteFormStencilBuilder.
+
+			form
+				addChild: (stencil
+						memento: memento;
+						asElement).
+			GtMagritteElementBuilder new
+				form: form;
+				memento: memento;
+				build.
+			form ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAElementDescription >> textStyler [
 	^ self propertyAt: #textStyler ifAbsent: [ nil ]
 ]
