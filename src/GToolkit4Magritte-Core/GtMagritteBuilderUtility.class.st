@@ -93,7 +93,7 @@ GtMagritteBuilderUtility class >> defaultThickness [
 ]
 
 { #category : #'api - ui' }
-GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aDescription using: aMemento [
+GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
 	anEditor := BrEditor new.
 	aptitude := BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize.
@@ -364,8 +364,8 @@ GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: 
 
 	| anEditor |
 	anEditor := self
-		            newBasicReadOnlyEditorWithMemento: aDescription
-		            using: aMemento.
+		            newBasicReadOnlyEditorWithMemento: aMemento
+		            using: aDescription.
 
 	anEditor withAsyncSinkDo: [ :anElementSink | 
 		anElementSink
