@@ -95,9 +95,9 @@ GtMagritteBuilderUtility class >> defaultThickness [
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
-	anEditor := BrEditor new.
+	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
 	aptitude := BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize.
-	aDescription textStyler ifNotNil: [:aBlock | aBlock value: aptitude ].
+	aDescription textStyler ifNotNil: [ :aBlock | aBlock value: aptitude ].
 	anEditor
 		beReadOnlyWithSelection;
 		aptitude: aptitude;
@@ -198,9 +198,9 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: a
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
-	anEditor := BrEditor new.
-	aptitude := GtMagritteEditorAptitude new glamorousRegularFontAndSize.	
-	aDescription textStyler ifNotNil: [:aBlock | aBlock value: aptitude ].
+	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
+	aptitude := GtMagritteEditorAptitude new glamorousRegularFontAndSize.
+	aDescription textStyler ifNotNil: [ :aBlock | aBlock value: aptitude ].
 	anEditor
 		aptitude: aptitude;
 		vFitContent;
@@ -218,7 +218,6 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 		constraintsDo: [ :c | 
 			c grid vertical alignCenter.
 			c minWidth: 42 ].
-
 
 	anEditor editor
 		when: BrTextEditorModifiedEvent
@@ -326,9 +325,9 @@ GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescripti
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
-	anEditor := BrEditor new.
+	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
 	aptitude := BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize.
-	aDescription textStyler ifNotNil: [:aBlock | aBlock value: aptitude ].
+	aDescription textStyler ifNotNil: [ :aBlock | aBlock value: aptitude ].
 	anEditor
 		aptitude: aptitude;
 		addAptitude: (BrStyleCommonAptitude new
