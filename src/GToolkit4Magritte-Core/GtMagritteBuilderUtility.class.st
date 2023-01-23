@@ -113,6 +113,8 @@ GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento us
 		vFitContent;
 		hFitContentLimited;
 		margin: (BlInsets bottom: self defaultSpaceNumber);
+		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
+		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
 		constraintsDo: [ :c | 
 			c grid vertical alignCenter.
 			c minWidth: 20 ].
@@ -215,6 +217,8 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 				aWish consumed: true.
 				aMemento write: aWish text asString using: aDescription ];
 		margin: (BlInsets bottom: self defaultSpaceNumber);
+		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
+		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
 		constraintsDo: [ :c | 
 			c grid vertical alignCenter.
 			c minWidth: 42 ].
@@ -345,6 +349,8 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 		constraintsDo: [ :c | 
 			c grid vertical alignCenter.
 			c minWidth: 20 ];
+		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
+		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
 				sink: AsyncPeekSink new;
