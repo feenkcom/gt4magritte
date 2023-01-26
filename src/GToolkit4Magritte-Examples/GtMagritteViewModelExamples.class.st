@@ -221,6 +221,17 @@ GtMagritteViewModelExamples >> viewModelWithBaselines [
 	^ aViewModel
 ]
 
+{ #category : #'examples - simple baselines' }
+GtMagritteViewModelExamples >> viewModelWithBaselinesWithoutSaveOrCancelButton [
+	<gtExample>
+	| aViewModel |
+	aViewModel := self viewModelWithBaselines.
+
+	aViewModel actions: #().
+
+	^ aViewModel
+]
+
 { #category : #'examples - simple directory' }
 GtMagritteViewModelExamples >> viewModelWithDirectory [
 

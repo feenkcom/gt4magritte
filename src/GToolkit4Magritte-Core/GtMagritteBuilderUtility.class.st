@@ -122,6 +122,39 @@ GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento us
 ]
 
 { #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newCancelButton [
+	^ GtMagritteButtonWithIconAction new
+		icon: BrGlamorousVectorIcons cancel;
+		tooltip: 'Cancel';
+		installOn: [ :aModel :aButton :aMemento | 
+			aButton
+				withAsyncSinkDo: [ :anElementSink | 
+					anElementSink
+						sink: AsyncPeekSink new;
+						whenUpdate: [ :theButton :aSink | 
+							aSink value isChanged
+								ifTrue: [ theButton enabled: true ]
+								ifFalse: [ theButton enabled: false ] ].
+					aMemento overallStatus observe: anElementSink ] ];
+		action: [ :aModel :aButton :aMemento | 
+			[ [ aMemento reset.
+			(aModel magritteActions select: #isResetAction)
+				do: [ :anAction | 
+					anAction action
+						cull: aModel
+						cull: aButton
+						cull: aMemento ] ]
+				on: Error
+				do: [ :anError | 
+					(aModel magritteActions select: #isResetAction)
+						do: [ :anAction | 
+							anAction onErrorAction
+								cull: aModel
+								cull: aButton
+								cull: aMemento ] ] ] asAsyncFuture await ]
+]
+
+{ #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescription [
 
 	| aCheckbox |
@@ -381,6 +414,41 @@ GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: 
 			anElementSink ].
 
 	^ anEditor
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newSaveButton [
+	^ GtMagritteButtonWithIconAction new
+		icon: BrGlamorousVectorIcons accept;
+		tooltip: 'Save';
+		installOn: [ :aModel :aButton :aMemento | 
+			aButton
+				withAsyncSinkDo: [ :anElementSink | 
+					anElementSink
+						sink: AsyncPeekSink new;
+						whenUpdate: [ :theButton :aSink | 
+							| aStatus |
+							aStatus := aSink value.
+							aStatus isChanged
+								ifTrue: [ theButton enabled: aStatus isValid ]
+								ifFalse: [ theButton enabled: false ] ].
+					aMemento overallStatus observe: anElementSink ] ];
+		action: [ :aModel :aButton :aMemento | 
+			[ [ aMemento commit.
+			(aModel magritteActions select: #isCommitAction)
+				do: [ :anAction | 
+					anAction action
+						cull: aModel
+						cull: aButton
+						cull: aMemento ] ]
+				on: Error
+				do: [ :anError | 
+					(aModel magritteActions select: #isCommitAction)
+						do: [ :anAction | 
+							anAction onErrorAction
+								cull: aModel
+								cull: aButton
+								cull: aMemento ] ] ] asAsyncFuture await ]
 ]
 
 { #category : #'private - building' }

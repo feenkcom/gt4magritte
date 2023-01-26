@@ -68,14 +68,6 @@ GtMagritteElementBuilder >> addBooleanField: aDescription [
 ]
 
 { #category : #'api - building' }
-GtMagritteElementBuilder >> addButtons [
-
-	self addButtons: { 
-			self newSaveButton.
-			self newCancelButton }
-]
-
-{ #category : #'api - building' }
 GtMagritteElementBuilder >> addButtons: aCollection [
 
 	"#addButtons: is part of the existing Morphic/Seaside API.
@@ -382,52 +374,6 @@ GtMagritteElementBuilder >> memento [
 GtMagritteElementBuilder >> memento: anObject [
 
 	memento := anObject
-]
-
-{ #category : #'api - building' }
-GtMagritteElementBuilder >> newCancelButton [
-	^ GtMagritteButtonWithIconAction new
-		icon: BrGlamorousVectorIcons cancel;
-		tooltip: 'Cancel';
-		installOn: [ :aModel :aButton :aMemento | 
-			aButton
-				withAsyncSinkDo: [ :anElementSink | 
-					anElementSink
-						sink: AsyncPeekSink new;
-						whenUpdate: [ :theButton :aSink | 
-							aSink value isChanged
-								ifTrue: [ theButton enabled: true ]
-								ifFalse: [ theButton enabled: false ] ].
-					aMemento overallStatus observe: anElementSink ] ];
-		action: [ :aModel :aButton :aMemento | 
-			[ self
-				resetFrom: aButton
-				usingModel: aModel
-				andMemento: aMemento ] asAsyncFuture await ]
-]
-
-{ #category : #'api - building' }
-GtMagritteElementBuilder >> newSaveButton [
-	^ GtMagritteButtonWithIconAction new
-		icon: BrGlamorousVectorIcons accept;
-		tooltip: 'Save';
-		installOn: [ :aModel :aButton :aMemento | 
-			aButton
-				withAsyncSinkDo: [ :anElementSink | 
-					anElementSink
-						sink: AsyncPeekSink new;
-						whenUpdate: [ :theButton :aSink | 
-							| aStatus |
-							aStatus := aSink value.
-							aStatus isChanged
-								ifTrue: [ theButton enabled: aStatus isValid ]
-								ifFalse: [ theButton enabled: false ] ].
-					aMemento overallStatus observe: anElementSink ] ];
-		action: [ :aModel :aButton :aMemento | 
-			[ self
-				saveFrom: aButton
-				usingModel: aModel
-				andMemento: aMemento ] asAsyncFuture await ]
 ]
 
 { #category : #'private - accessing' }
