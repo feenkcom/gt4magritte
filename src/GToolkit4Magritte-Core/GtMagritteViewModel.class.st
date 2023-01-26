@@ -61,7 +61,6 @@ GtMagritteViewModel >> addButtons: aCollection [
 
 { #category : #'api - converting' }
 GtMagritteViewModel >> asElement [
-
 	| aFrame |
 	aFrame := BrFrame new.
 
@@ -72,10 +71,10 @@ GtMagritteViewModel >> asElement [
 				whenPending: [ :theContainer | 
 					theContainer
 						addChild: (BrLabel new
-								 fitContent;
-								 aptitude: (BrGlamorousLabelAptitude new foreground:
-											  BrGlamorousColors disabledButtonTextColor);
-								 text: 'Preparing...');
+								fitContent;
+								aptitude: (BrGlamorousLabelAptitude new
+										foreground: BrGlamorousColors disabledButtonTextColor);
+								text: 'Preparing...');
 						constraintsDo: [ :c | 
 							c frame horizontal alignCenter.
 							c frame vertical alignCenter ] ];
@@ -85,8 +84,8 @@ GtMagritteViewModel >> asElement [
 					theContainer
 						removeChildren;
 						addChild: (anError asDebuggableElement
-								 hFitContentLimited;
-								 vFitContent);
+								hFitContentLimited;
+								vFitContent);
 						constraintsDo: [ :c | 
 							c frame horizontal alignCenter.
 							c frame vertical alignCenter ] ];
@@ -96,23 +95,20 @@ GtMagritteViewModel >> asElement [
 
 					theFrame removeChildren.
 
-					aStencil := aMemento magritteDescription
-						            blocElementContainerStencil asStencilBuilder:
-						            	GtMagritteFormStencilBuilder.
+					aStencil := aMemento magritteDescription blocElementContainerStencil
+							asStencilBuilder: GtMagritteFormStencilBuilder.
 
 					aContainer := aStencil
-						              memento: aMemento;
-						              asElement.
+							memento: aMemento;
+							asElement.
 
-					theFrame addAptitude:
-						(BrLayoutResizerAptitude inherit inherit: aContainer).
+					theFrame addAptitude: (BrLayoutResizerAptitude inherit inherit: aContainer).
 
 					theFrame addChild: aContainer.
 
 					GtMagritteElementBuilder new
 						form: theFrame;
 						memento: aMemento;
-						addButtons;
 						addButtons: self actions;
 						build ] ].
 
@@ -152,11 +148,10 @@ GtMagritteViewModel >> gtLiveFor: aView [
 
 { #category : #initialization }
 GtMagritteViewModel >> initialize [
-
 	super initialize.
 
 	cache := AsyncFutureCache new.
-	actions := #(  )
+	actions := {GtMagritteBuilderUtility newSaveButton . GtMagritteBuilderUtility newCancelButton }
 ]
 
 { #category : #'api - testing' }
