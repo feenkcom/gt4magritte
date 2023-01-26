@@ -239,29 +239,18 @@ GtMagritteElementBuilder >> build [
 
 { #category : #'private - building' }
 GtMagritteElementBuilder >> buildActions [
-
 	| aToolbar |
 	self hasActions ifFalse: [ ^ self ].
-	
+
 	self isReadOnlyForm ifTrue: [ ^ self ].
 
-	self toolbarContainerDo: [ :aContainer |
-	 
-		aToolbar := GtMagritteBuilderUtility
-			            newToolbarWithActions: self actions
-			            memento: self memento.
+	self
+		toolbarContainerDo: [ :aContainer | 
+			aToolbar := GtMagritteBuilderUtility
+					newToolbarWithActions: self actions
+					memento: self memento.
 
-		self form
-			when: BlMouseEnterEvent
-			do: [ :anEvent | aToolbar visibility: BlVisibility visible ].
-
-		self form
-			when: BlMouseLeaveEvent
-			do: [ :anEvent | aToolbar visibility: BlVisibility hidden ].
-
-		aToolbar visibility: BlVisibility hidden.
-
-		aContainer addChild: aToolbar as: #toolbar ]
+			aContainer addChild: aToolbar as: #toolbar ]
 ]
 
 { #category : #'private - building' }
