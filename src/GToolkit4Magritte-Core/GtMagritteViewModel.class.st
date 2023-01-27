@@ -5,7 +5,8 @@ Class {
 		'cache',
 		'mementoBlock',
 		'actions',
-		'object'
+		'object',
+		'onElementCreated'
 	],
 	#category : #'GToolkit4Magritte-Core-Models'
 }
@@ -110,7 +111,8 @@ GtMagritteViewModel >> asElement [
 						form: theFrame;
 						memento: aMemento;
 						addButtons: self actions;
-						build ] ].
+						build.
+					self onElementCreated cull: theFrame ] ].
 
 	aFrame asyncFuture future: self mementoFuture.
 
@@ -151,6 +153,7 @@ GtMagritteViewModel >> initialize [
 	super initialize.
 
 	cache := AsyncFutureCache new.
+	onElementCreated := [:aFrame | ].
 	actions := {GtMagritteBuilderUtility newSaveButton . GtMagritteBuilderUtility newCancelButton }
 ]
 
@@ -189,4 +192,16 @@ GtMagritteViewModel >> mementoFuture [
 GtMagritteViewModel >> object [
 
 	^ object
+]
+
+{ #category : #accessing }
+GtMagritteViewModel >> onElementCreated [
+	"accessor for the callback that is executed once the element is first rendered completely"
+	^ onElementCreated
+]
+
+{ #category : #accessing }
+GtMagritteViewModel >> onElementCreated: aBlock [
+	"sets a block to be executed once the view model is first fully rendered as an element. It takes the element as an optional argument. Since the element is created asynchronously, this should be used when access to the element is necessary"
+	onElementCreated := aBlock
 ]
