@@ -562,6 +562,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 				glamorousCodeSmallSize;
 				foreground: BrGlamorousColors errorBackgroundColor);
 		beReadOnlyWithSelection;
+		beNotFocusable;
 		hFitContentLimited;
 		vFitContent;
 		text: '';
