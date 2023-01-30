@@ -248,7 +248,9 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 		when: BrEditorAcceptWish
 			do: [ :aWish | 
 				aWish consumed: true.
-				aMemento write: aWish text asString using: aDescription ];
+				aMemento write: ((aDescription isKindOf: GtMATextDescription)
+						ifTrue: [ aWish text copy ]
+						ifFalse: [ aWish text asString ]) using: aDescription ];
 		margin: (BlInsets bottom: self defaultSpaceNumber);
 		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
 		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
@@ -258,7 +260,12 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 
 	anEditor editor
 		when: BrTextEditorModifiedEvent
-		do: [ :anEvent | aMemento write: anEvent text asString using: aDescription ].
+		do: [ :anEvent | 
+			aMemento
+				write: ((aDescription isKindOf: GtMATextDescription)
+						ifTrue: [ anEvent text copy ]
+						ifFalse: [ anEvent text asString ])
+				using: aDescription ].
 
 	^ anEditor
 ]
@@ -392,7 +399,12 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 
 	anEditor editor
 		when: BrTextEditorModifiedEvent
-		do: [ :anEvent | aMemento write: anEvent text asString using: aDescription ].
+		do: [ :anEvent | 
+			aMemento
+				write: ((aDescription isKindOf: GtMATextDescription)
+						ifTrue: [ anEvent text ]
+						ifFalse: [ anEvent text asString ])
+				using: aDescription ].
 
 	^ anEditor
 ]
@@ -513,7 +525,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	aContainer := BrHorizontalGrid new.
 	aContainer
 		cellSpacing: 0;
-		columnCount: 3;
+		columnCount: 4;
 		hFitContentLimited;
 		vFitContent.
 
@@ -581,17 +593,15 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 					(aValue value isChanged not or: [ aValue isSuccess ])
 						ifTrue: [ aLabel
 								text: '';
-								visibility: BlVisibility gone ]
+								visibility: BlVisibility hidden ]
 						ifFalse: [ aLabel
 								text: aValue issuesDescription;
 								visibility: BlVisibility visible ] ].
 			(aMemento validatorUsing: aDescription) observe: anElementSink ].
 
 	aContainer addChild: aChangeElement as: #changeIndicator.
-	aContainer addChild: anErrorElement as: #errorIndicator.
 	aContainer addChild: aFieldElement as: #field.
-	aContainer addChild: (BlElement new size: 0 @ 0) as: #placeHolder.
-	aContainer addChild: (BlElement new size: 0 @ 0) as: #placeHolder2.
+	aContainer addChild: anErrorElement as: #errorIndicator.
 	aContainer addChild: anIssuesElement as: #issues.
 
 	^ aContainer
