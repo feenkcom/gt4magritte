@@ -150,6 +150,8 @@ GtMagritteElementBuilder >> addIconUsing: aDescription [
 GtMagritteElementBuilder >> addShortcutsTo: anElement [
 	anElement
 		addShortcut: (BlShortcutWithAction new
+				name: 'Discard form contents';
+				description: 'Discards the form contents and resets the form to its original state';
 				combination: BlKeyCombination escape;
 				overrideChildren: true;
 				action: [ :anEvent | 
@@ -159,7 +161,9 @@ GtMagritteElementBuilder >> addShortcutsTo: anElement [
 						andMemento: self memento ] asAsyncFuture await ]).
 	anElement
 		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination tab;
+				name: 'Move to next form item';
+				description: 'Moves to the next form item. If none is found, we cycle back to the first.';
+				combination: (BlKeyCombination tab or: BlKeyCombination enter);
 				overrideChildren: true;
 				action: [ :anEvent | 
 					BlFocusFinder new
@@ -169,6 +173,8 @@ GtMagritteElementBuilder >> addShortcutsTo: anElement [
 						nextFocusDo: #requestFocus ifNone: [  ] ]).
 	anElement
 		addShortcut: (BlShortcutWithAction new
+				name: 'Move to previous form item';
+				description: 'Moves to the previous form item. If none is found, we cycle back to the last.';
 				combination: BlKeyCombination shiftTab;
 				overrideChildren: true;
 				action: [ :anEvent | 
