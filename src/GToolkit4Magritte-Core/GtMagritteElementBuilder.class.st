@@ -147,6 +147,39 @@ GtMagritteElementBuilder >> addIconUsing: aDescription [
 ]
 
 { #category : #'private - building' }
+GtMagritteElementBuilder >> addShortcutsTo: anElement [
+	anElement
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination escape;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					[ self
+						resetFrom: self form
+						usingModel: self memento model
+						andMemento: self memento ] asAsyncFuture await ]).
+	anElement
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination tab;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					BlFocusFinder new
+						direction: BlFocusSearchDirectionForward new;
+						root: self form;
+						referenceElement: anEvent target;
+						nextFocusDo: #requestFocus ifNone: [  ] ]).
+	anElement
+		addShortcut: (BlShortcutWithAction new
+				combination: BlKeyCombination shiftTab;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					BlFocusFinder new
+						direction: BlFocusSearchDirectionBackward new;
+						root: self form;
+						referenceElement: anEvent target;
+						nextFocusDo: #requestFocus ifNone: [  ] ])
+]
+
+{ #category : #'private - building' }
 GtMagritteElementBuilder >> addSingleOptionDropdownUsing: aDescription [
 
 	| aMemento aButton aValidationElement |
@@ -191,6 +224,7 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 								                  newOneLineEditorWithMemento: aMemento
 								                  using: aDescription ] ] ].
 
+	self addShortcutsTo: anInputElement.
 
 	aDescription blocCompletion ifNotNil: [ :aStencil | 
 		| aCompletionStrategy |
@@ -233,8 +267,7 @@ GtMagritteElementBuilder >> build [
 		description: [ 'Form element must be defined' ].
 
 	self visit: self objectDescription.
-	self buildActions.
-	self buildShortcuts
+	self buildActions
 ]
 
 { #category : #'private - building' }
@@ -251,57 +284,6 @@ GtMagritteElementBuilder >> buildActions [
 					memento: self memento.
 
 			aContainer addChild: aToolbar as: #toolbar ]
-]
-
-{ #category : #'private - building' }
-GtMagritteElementBuilder >> buildShortcuts [
-	self form
-		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination shiftTab;
-				overrideChildren: true;
-				action: [ :anEvent | 
-					anEvent target fireEvent: (BrEditorAcceptWish new text: anEvent target text).
-					anEvent target loseFocus ]).
-	"TODO: find a way to add this without breaking completion"
-	"self form
-		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination enter;
-				overrideChildren: true;
-				action: [ :anEvent | 
-					self memento overallStatus valueOrNil isValid
-						ifTrue: [ [ self
-								saveFrom: self form
-								usingModel: self memento model
-								andMemento: self memento ] asAsyncFuture await ] ])."
-	self form
-		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination escape;
-				overrideChildren: true;
-				action: [ :anEvent | 
-					[ self
-						resetFrom: self form
-						usingModel: self memento model
-						andMemento: self memento ] asAsyncFuture await ]).
-	self form
-		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination tab;
-				overrideChildren: true;
-				action: [ :anEvent | 
-					BlFocusFinder new
-						direction: BlFocusSearchDirectionForward new;
-						root: self form;
-						referenceElement: anEvent target;
-						nextFocusDo: #requestFocus ifNone: [  ] ]).
-	self form
-		addShortcut: (BlShortcutWithAction new
-				combination: BlKeyCombination shiftTab;
-				overrideChildren: true;
-				action: [ :anEvent | 
-					BlFocusFinder new
-						direction: BlFocusSearchDirectionBackward new;
-						root: self form;
-						referenceElement: anEvent target;
-						nextFocusDo: #requestFocus ifNone: [  ] ])
 ]
 
 { #category : #'private - building' }
