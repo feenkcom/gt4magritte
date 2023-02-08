@@ -501,20 +501,21 @@ GtMagritteBuilderUtility class >> newSingleOptionDropdownMemento: aMemento using
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
-
 	| aToolbar |
 	aToolbar := BrToolbar new
-		            aptitude: BrGlamorousToolbarAptitude new;
-		            fitContent;
-		            constraintsDo: [ :c | 
-			            c grid horizontal alignLeft.
-			            c grid horizontal span: 2.
-			            c linear horizontal alignLeft ].
+			aptitude: BrGlamorousToolbarAptitude new;
+			fitContent;
+			padding: (BlInsets top: 5 left: -3);
+			constraintsDo: [ :c | 
+				c grid horizontal alignLeft.
+				c grid horizontal span: 2.
+				c linear horizontal alignLeft ].
 
-	aCollection do: [ :eachAction | 
-		| aButton |
-		aButton := eachAction asBlockButtonWithMemento: aMemento.
-		aToolbar addItem: aButton ].
+	aCollection
+		do: [ :eachAction | 
+			| aButton |
+			aButton := eachAction asBlockButtonWithMemento: aMemento.
+			aToolbar addItem: aButton ].
 
 	^ aToolbar
 ]
