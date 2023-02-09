@@ -21,7 +21,7 @@ GtMagritteBuilderUtility class >> addCommentTooltip: anElement using: aDescripti
 GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescription withContent: aContentBlock [
 
 	| aLabel |
-	aLabel := BrLabel new.
+	aLabel := BrLabel new beFocusable.
 	aLabel aptitude: (BrGlamorousLabelAptitude new
 			 glamorousCodeFont;
 			 fontSize: 10).

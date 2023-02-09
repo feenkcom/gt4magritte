@@ -10,12 +10,13 @@ MAOptionDescription >> blocItemDataBinderStencil [
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAOptionDescription >> blocItemStencil [
-
-	^ self propertyAt: #blocItemStencil ifAbsentPut: [ 
-		  [ :anItemType :aListWidget | 
-		  BrLabel new
-			  fitContent;
-			  aptitude: BrGlamorousLabelAptitude
-				  + (BrStyleCommonAptitude new hovered: [ :aStyle | 
-							   aStyle background: BrGlamorousColors hoveredListItemColor ]) ] ]
+	^ self
+		propertyAt: #blocItemStencil
+		ifAbsentPut: [ [ :anItemType :aListWidget | 
+			BrLabel new
+				vFitContent;
+				hMatchParent;
+				aptitude: BrGlamorousLabelAptitude
+						+ (BrStyleCommonAptitude new
+								hovered: [ :aStyle | aStyle background: BrGlamorousColors hoveredListItemColor ]) ] ]
 ]

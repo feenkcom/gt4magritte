@@ -195,6 +195,8 @@ GtMagritteElementBuilder >> addSingleOptionDropdownUsing: aDescription [
 	aButton := GtMagritteBuilderUtility
 		           newSingleOptionDropdownMemento: aMemento
 		           using: aDescription.
+		           
+	self addShortcutsTo: aButton.
 
 	aValidationElement := GtMagritteBuilderUtility
 		                      newValidationContainerWith: aButton
