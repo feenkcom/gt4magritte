@@ -272,24 +272,25 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aDescription [
-
 	<return: #BrLabel>
-	| aText |
+	| aText labelAptitude |
 	aText := aDescription label asRopedText.
 	aDescription isRequired ifTrue: [ aText append: '*' asRopedText ].
 	aText append: ':' asRopedText.
-
+	labelAptitude := BrGlamorousLabelAptitude new
+			foreground: BrGlamorousColors disabledButtonTextColor.
+	aDescription labelStyler ifNotNil: [ :aStyler | aStyler value: labelAptitude ].
+ 
 	^ BrLabel new
-		  text: aText;
-		  aptitude: (BrGlamorousLabelAptitude new foreground:
-					   BrGlamorousColors disabledButtonTextColor);
-		  fitContent;
-		  margin: (BlInsets
-				   top: 0
-				   right: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
-				   bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
-				   left: 0);
-		  constraintsDo: [ :c | c grid vertical alignTop ]
+		text: aText;
+		aptitude: labelAptitude;
+		fitContent;
+		margin: (BlInsets
+				top: 0
+				right: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
+				bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
+				left: 0);
+		constraintsDo: [ :c | c grid vertical alignTop ]
 ]
 
 { #category : #'api - ui' }
