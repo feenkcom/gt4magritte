@@ -40,6 +40,16 @@ MAElementDescription >> gtPreviewFor: aView [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> labelStyler [
+	^ self propertyAt: #labelStyler ifAbsent: [ nil ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> labelStyler: aBlock [
+	self propertyAt: #labelStyler put: aBlock
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAElementDescription >> textStyler [
 	^ self propertyAt: #textStyler ifAbsent: [ nil ]
 ]
