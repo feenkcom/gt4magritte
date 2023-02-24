@@ -13,6 +13,16 @@ MAElementDescription >> blocCompletion: aStrategyStencil [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> editorAptitude [
+	^ self propertyAt: #editorAptitude ifAbsent: [ nil ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> editorAptitude: aBlock [
+	self propertyAt: #editorAptitude put: aBlock
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAElementDescription >> gtPreviewFor: aView [
 	<gtView>
 	^ aView explicit
@@ -40,21 +50,11 @@ MAElementDescription >> gtPreviewFor: aView [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MAElementDescription >> labelStyler [
-	^ self propertyAt: #labelStyler ifAbsent: [ nil ]
+MAElementDescription >> labelAptitude [
+	^ self propertyAt: #labelAptitude ifAbsent: [ nil ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MAElementDescription >> labelStyler: aBlock [
-	self propertyAt: #labelStyler put: aBlock
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
-MAElementDescription >> textStyler [
-	^ self propertyAt: #textStyler ifAbsent: [ nil ]
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
-MAElementDescription >> textStyler: aBlock [
-	self propertyAt: #textStyler put: aBlock
+MAElementDescription >> labelAptitude: aBlock [
+	self propertyAt: #labelAptitude put: aBlock
 ]
