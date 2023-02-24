@@ -13,6 +13,11 @@ MAElementDescription >> blocCompletion: aStrategyStencil [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> editorAptitude [
+	^ self propertyAt: #editorAptitude ifAbsent: [ nil ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAElementDescription >> editorAptitude: aBlock [
 	self propertyAt: #editorAptitude put: aBlock
 ]
