@@ -96,8 +96,10 @@ GtMagritteBuilderUtility class >> defaultThickness [
 GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
 	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
-	aptitude := BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize.
-	aDescription textStyler ifNotNil: [ :aBlock | aBlock value: aptitude ].
+	aptitude := aDescription editorAptitude
+			ifNil: [ BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize ]
+			ifNotNil: #value.
+
 	anEditor
 		beReadOnlyWithSelection;
 		aptitude: aptitude;
@@ -234,8 +236,10 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: a
 GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
 	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
-	aptitude := GtMagritteEditorAptitude new glamorousRegularFontAndSize.
-	aDescription textStyler ifNotNil: [ :aBlock | aBlock value: aptitude ].
+	aptitude := aDescription editorAptitude
+			ifNil: [ BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize ]
+			ifNotNil: #value.
+
 	anEditor
 		aptitude: aptitude;
 		vFitContent;
@@ -248,9 +252,11 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 		when: BrEditorAcceptWish
 			do: [ :aWish | 
 				aWish consumed: true.
-				aMemento write: ((aDescription isKindOf: GtMATextDescription)
-						ifTrue: [ aWish text copy ]
-						ifFalse: [ aWish text asString ]) using: aDescription ];
+				aMemento
+					write: ((aDescription isKindOf: GtMATextDescription)
+							ifTrue: [ aWish text copy ]
+							ifFalse: [ aWish text asString ])
+					using: aDescription ];
 		margin: (BlInsets bottom: self defaultSpaceNumber);
 		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
 		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
@@ -277,10 +283,11 @@ GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aD
 	aText := aDescription label asRopedText.
 	aDescription isRequired ifTrue: [ aText append: '*' asRopedText ].
 	aText append: ':' asRopedText.
-	labelAptitude := BrGlamorousLabelAptitude new
-			foreground: BrGlamorousColors disabledButtonTextColor.
-	aDescription labelStyler ifNotNil: [ :aStyler | aStyler value: labelAptitude ].
- 
+	labelAptitude := aDescription labelAptitude
+			ifNil: [ BrGlamorousLabelAptitude new
+					foreground: BrGlamorousColors disabledButtonTextColor ]
+			ifNotNil: #value.
+
 	^ BrLabel new
 		text: aText;
 		aptitude: labelAptitude;
@@ -371,8 +378,10 @@ GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescripti
 GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
 	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
-	aptitude := BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize.
-	aDescription textStyler ifNotNil: [ :aBlock | aBlock value: aptitude ].
+	aptitude := aDescription editorAptitude
+			ifNil: [ BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize ]
+			ifNotNil: #value.
+
 	anEditor
 		aptitude: aptitude;
 		addAptitude: (BrStyleCommonAptitude new
