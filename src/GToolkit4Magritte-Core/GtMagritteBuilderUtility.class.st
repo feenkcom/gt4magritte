@@ -246,6 +246,15 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 
 	anEditor
 		aptitude: aptitude;
+		addAptitude: (BrStyleCommonAptitude new
+				default: [ :aStyle | aStyle border: BlBorder empty ];
+				hovered: [ :aStyle | 
+					aStyle
+						border: (BlBorder paint: BrGlamorousColors disabledButtonBorderColor width: 1) ];
+				focused: [ :aStyle | 
+					aStyle
+						border: (BlBorder paint: BrGlamorousColors focusedEditorBorderColor width: 1) ]);
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 		vFitContent;
 		hFitContentLimited;
 		withAsyncSinkDo: [ :anElementSink | 
