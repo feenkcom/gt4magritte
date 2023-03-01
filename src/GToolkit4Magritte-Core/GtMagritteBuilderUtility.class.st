@@ -270,7 +270,7 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 							ifTrue: [ aWish text copy ]
 							ifFalse: [ aWish text asString ])
 					using: aDescription ];
-		margin: (BlInsets bottom: self defaultSpaceNumber);
+		margin: (BlInsets top: 2 bottom: self defaultSpaceNumber);
 		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
 		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
 		constraintsDo: [ :c | 
