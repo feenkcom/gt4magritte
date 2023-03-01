@@ -597,7 +597,6 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 				glamorousRegularFont;
 				glamorousCodeSmallSize;
 				foreground: BrGlamorousColors errorBackgroundColor);
-		beReadOnlyWithSelection;
 		beNotFocusable;
 		hFitContentLimited;
 		vFitContent;
@@ -605,7 +604,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 		padding: (BlInsets
 				top: -4
 				left: 5
-				bottom: 5
+				bottom: 0
 				right: 0);
 		visibility: BlVisibility gone;
 		withAsyncSinkDo: [ :anElementSink | 
@@ -626,7 +625,14 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	aContainer addChild: aChangeElement as: #changeIndicator.
 	aContainer addChild: aFieldElement as: #field.
 	aContainer addChild: anErrorElement as: #errorIndicator.
-	aContainer addChild: anIssuesElement as: #issues.
+	aContainer
+		addChild: (BlElement new
+		layout: BlLinearLayout vertical alignCenter;
+				addChild: anIssuesElement;
+				constraintsDo: [ :c | 
+					c horizontal fitContent.
+					c vertical matchParent])
+		as: #issues.
 
 	^ aContainer
 ]
