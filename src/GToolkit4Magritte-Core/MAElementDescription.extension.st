@@ -13,6 +13,18 @@ MAElementDescription >> blocCompletion: aStrategyStencil [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> blocShortcuts [
+
+	^ self propertyAt: #blocShortcuts ifAbsent: [ nil ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAElementDescription >> blocShortcuts: aCollectionOfShortcuts [
+
+	self propertyAt: #blocShortcuts put: aCollectionOfShortcuts
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAElementDescription >> editorAptitude [
 	^ self propertyAt: #editorAptitude ifAbsent: [ nil ]
 ]

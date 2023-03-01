@@ -186,6 +186,48 @@ GtMagritteElementBuilder >> addShortcutsTo: anElement [
 ]
 
 { #category : #'private - building' }
+GtMagritteElementBuilder >> addShortcutsTo: anElement using: aDescription [
+	anElement
+		addShortcut: (BlShortcutWithAction new
+				name: 'Discard form contents';
+				description: 'Discards the form contents and resets the form to its original state';
+				combination: BlKeyCombination escape;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					[ self
+						resetFrom: self form
+						usingModel: self memento model
+						andMemento: self memento ] asAsyncFuture await ]).
+	anElement
+		addShortcut: (BlShortcutWithAction new
+				name: 'Move to next form item';
+				description: 'Moves to the next form item. If none is found, we cycle back to the first.';
+				combination: (BlKeyCombination tab or: BlKeyCombination enter);
+				overrideChildren: true;
+				action: [ :anEvent | 
+					BlFocusFinder new
+						direction: BlFocusSearchDirectionForward new;
+						root: self form;
+						referenceElement: anEvent target;
+						nextFocusDo: #requestFocus ifNone: [  ] ]).
+	anElement
+		addShortcut: (BlShortcutWithAction new
+				name: 'Move to previous form item';
+				description: 'Moves to the previous form item. If none is found, we cycle back to the last.';
+				combination: BlKeyCombination shiftTab;
+				overrideChildren: true;
+				action: [ :anEvent | 
+					BlFocusFinder new
+						direction: BlFocusSearchDirectionBackward new;
+						root: self form;
+						referenceElement: anEvent target;
+						nextFocusDo: #requestFocus ifNone: [  ] ]).
+
+	aDescription blocShortcuts
+		ifNotNil: [ :aBlockReturningCollection | aBlockReturningCollection value do: [ :aShortcut | anElement addShortcut: aShortcut ] ]
+]
+
+{ #category : #'private - building' }
 GtMagritteElementBuilder >> addSingleOptionDropdownUsing: aDescription [
 
 	| aMemento aButton aValidationElement |
@@ -232,7 +274,7 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 								                  newOneLineEditorWithMemento: aMemento
 								                  using: aDescription ] ] ].
 
-	self addShortcutsTo: anInputElement.
+	self addShortcutsTo: anInputElement using: aDescription.
 
 	aDescription blocCompletion ifNotNil: [ :aStencil | 
 		| aCompletionStrategy |
