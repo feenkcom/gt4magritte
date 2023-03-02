@@ -551,7 +551,8 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 		cellSpacing: 0;
 		columnCount: 4;
 		hFitContentLimited;
-		vFitContent.
+		vFitContent;
+		clipChildren: false.
 
 	aChangeElement := BrFrame new.
 	aChangeElement hExact: self defaultThickness.
