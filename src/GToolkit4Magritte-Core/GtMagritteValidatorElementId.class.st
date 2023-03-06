@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteFieldElementId,
+	#name : #GtMagritteValidatorElementId,
 	#superclass : #BlElementId,
 	#instVars : [
 		'description'
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #comparing }
-GtMagritteFieldElementId >> = anObject [
+GtMagritteValidatorElementId >> = anObject [
 	self == anObject
 		ifTrue: [ ^ true ].
 
@@ -19,21 +19,21 @@ GtMagritteFieldElementId >> = anObject [
 ]
 
 { #category : #accessing }
-GtMagritteFieldElementId >> asSymbol [
-	^ #'gt-magritte--field-', description label asSymbol
+GtMagritteValidatorElementId >> asSymbol [
+	^ #'gt-magritte--validator-', description label asSymbol
 ]
 
 { #category : #accessing }
-GtMagritteFieldElementId >> description [
+GtMagritteValidatorElementId >> description [
 	^ description
 ]
 
 { #category : #accessing }
-GtMagritteFieldElementId >> description: anObject [
+GtMagritteValidatorElementId >> description: anObject [
 	description := anObject
 ]
 
 { #category : #comparing }
-GtMagritteFieldElementId >> hash [
+GtMagritteValidatorElementId >> hash [
 	^ self description hash
 ]

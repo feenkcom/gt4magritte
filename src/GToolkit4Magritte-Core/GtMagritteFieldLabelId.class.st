@@ -1,5 +1,5 @@
 Class {
-	#name : #GtMagritteFieldElementId,
+	#name : #GtMagritteFieldLabelId,
 	#superclass : #BlElementId,
 	#instVars : [
 		'description'
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #comparing }
-GtMagritteFieldElementId >> = anObject [
+GtMagritteFieldLabelId >> = anObject [
 	self == anObject
 		ifTrue: [ ^ true ].
 
@@ -19,21 +19,21 @@ GtMagritteFieldElementId >> = anObject [
 ]
 
 { #category : #accessing }
-GtMagritteFieldElementId >> asSymbol [
-	^ #'gt-magritte--field-', description label asSymbol
+GtMagritteFieldLabelId >> asSymbol [
+	^ #'gt-magritte--field-label-', description label asSymbol
 ]
 
 { #category : #accessing }
-GtMagritteFieldElementId >> description [
+GtMagritteFieldLabelId >> description [
 	^ description
 ]
 
 { #category : #accessing }
-GtMagritteFieldElementId >> description: anObject [
+GtMagritteFieldLabelId >> description: anObject [
 	description := anObject
 ]
 
 { #category : #comparing }
-GtMagritteFieldElementId >> hash [
+GtMagritteFieldLabelId >> hash [
 	^ self description hash
 ]
