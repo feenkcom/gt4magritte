@@ -548,6 +548,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	| aContainer anIssuesElement aChangeElement anErrorElement |
 	aContainer := BrHorizontalGrid new.
 	aContainer
+		id: (GtMagritteFieldElementId new description: aDescription);
 		cellSpacing: 0;
 		columnCount: 4;
 		hFitContentLimited;
