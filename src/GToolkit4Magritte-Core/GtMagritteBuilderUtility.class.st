@@ -302,6 +302,7 @@ GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aD
 			ifNotNil: #value.
 
 	^ BrLabel new
+		id: (GtMagritteFieldLabelId new description: aDescription);
 		text: aText;
 		aptitude: labelAptitude;
 		fitContent;
@@ -548,6 +549,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	| aContainer anIssuesElement aChangeElement anErrorElement |
 	aContainer := BrHorizontalGrid new.
 	aContainer
+		id: (GtMagritteValidatorElementId new description: aDescription);
 		cellSpacing: 0;
 		columnCount: 4;
 		hFitContentLimited;
@@ -594,6 +596,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 
 	anIssuesElement := BrEditor new.
 	anIssuesElement
+		id: GtMagritteIssuesExplanationId;
 		aptitude: (BrGlamorousRegularEditorAptitude new
 				glamorousRegularFont;
 				glamorousCodeSmallSize;
@@ -623,12 +626,12 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 								visibility: BlVisibility visible ] ].
 			(aMemento validatorUsing: aDescription) observe: anElementSink ].
 
-	aContainer addChild: aChangeElement as: #changeIndicator.
-	aContainer addChild: aFieldElement as: #field.
-	aContainer addChild: anErrorElement as: #errorIndicator.
+	aContainer addChild: aChangeElement as: GtMagritteChangeIndicatorId.
+	aContainer addChild: aFieldElement as: (GtMagritteFieldElementId new description: aDescription).
+	aContainer addChild: anErrorElement as: GtMagritteChangeErrorIndicatorId.
 	aContainer
 		addChild: (BlElement new
-		layout: BlLinearLayout vertical alignCenter;
+				layout: BlLinearLayout vertical alignCenter;
 				addChild: anIssuesElement;
 				constraintsDo: [ :c | 
 					c horizontal fitContent.
