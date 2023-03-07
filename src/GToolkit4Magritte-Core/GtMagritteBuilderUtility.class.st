@@ -143,21 +143,23 @@ GtMagritteBuilderUtility class >> newCancelButton [
 								ifFalse: [ theButton enabled: false ] ].
 					aMemento overallStatus observe: anElementSink ] ];
 		action: [ :aModel :aButton :aMemento | 
-			[ [ aMemento reset.
-			(aModel magritteActions select: #isResetAction)
-				do: [ :anAction | 
-					anAction action
-						cull: aModel
-						cull: aButton
-						cull: aMemento ] ]
-				on: Error
-				do: [ :anError | 
-					(aModel magritteActions select: #isResetAction)
-						do: [ :anAction | 
-							anAction onErrorAction
-								cull: aModel
-								cull: aButton
-								cull: aMemento ] ] ] asAsyncFuture await ]
+			aButton
+				enqueueTask: (BlPromiseTask new
+						promise: [ [ aMemento reset.
+							(aModel magritteActions select: #isResetAction)
+								do: [ :anAction | 
+									anAction action
+										cull: aModel
+										cull: aButton
+										cull: aMemento ] ]
+								on: Error
+								do: [ :anError | 
+									(aModel magritteActions select: #isResetAction)
+										do: [ :anAction | 
+											anAction onErrorAction
+												cull: aModel
+												cull: aButton
+												cull: aMemento ] ] ] asAsyncFuture await) ]
 ]
 
 { #category : #'api - ui' }
@@ -470,21 +472,23 @@ GtMagritteBuilderUtility class >> newSaveButton [
 								ifFalse: [ theButton enabled: false ] ].
 					aMemento overallStatus observe: anElementSink ] ];
 		action: [ :aModel :aButton :aMemento | 
-			[ [ aMemento commit.
-			(aModel magritteActions select: #isCommitAction)
-				do: [ :anAction | 
-					anAction action
-						cull: aModel
-						cull: aButton
-						cull: aMemento ] ]
-				on: Error
-				do: [ :anError | 
-					(aModel magritteActions select: #isCommitAction)
-						do: [ :anAction | 
-							anAction onErrorAction
-								cull: aModel
-								cull: aButton
-								cull: aMemento ] ] ] asAsyncFuture await ]
+			aButton
+				enqueueTask: (BlPromiseTask new
+						promise: [ [ aMemento commit.
+							(aModel magritteActions select: #isCommitAction)
+								do: [ :anAction | 
+									anAction action
+										cull: aModel
+										cull: aButton
+										cull: aMemento ] ]
+								on: Error
+								do: [ :anError | 
+									(aModel magritteActions select: #isCommitAction)
+										do: [ :anAction | 
+											anAction onErrorAction
+												cull: aModel
+												cull: aButton
+												cull: aMemento ] ] ] asAsyncFuture await) ]
 ]
 
 { #category : #'private - building' }
