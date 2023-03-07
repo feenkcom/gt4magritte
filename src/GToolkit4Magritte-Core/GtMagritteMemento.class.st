@@ -6,7 +6,9 @@ Class {
 		'validators',
 		'overallStatus',
 		'internalStatus',
-		'subscriptions'
+		'subscriptions',
+		'pendingPromise',
+		'monitor'
 	],
 	#category : #'GToolkit4Magritte-Core-Models'
 }
@@ -218,6 +220,7 @@ GtMagritteMemento >> initialize [
 	cache := Dictionary new.
 	validators := Dictionary new.
 	subscriptions := Dictionary new.
+	monitor := Monitor new.
 	internalStatus := AsyncObservableValue new.
 	overallStatus := (internalStatus observe map: [ :aValidationResult | 
 		                  self computeOverallStatus ]) asAsyncObservable
@@ -400,9 +403,12 @@ GtMagritteMemento >> validators [
 
 { #category : #actions }
 GtMagritteMemento >> write: anObject using: aDescription [
+	"must only be called in UI thread"
 
 	| anObservable aNewValue |
 	anObservable := self readObservableValueUsing: aDescription.
 	aNewValue := anObservable valueOrNil copyWithCurrentValue: anObject.
-	anObservable value: aNewValue
+	anObservable value: aNewValue.
+
+	^ (self validatorUsing: aDescription) observeNext next
 ]

@@ -175,57 +175,66 @@ GtMagritteModelExamples >> simpleBaselineObject [
 
 { #category : #'examples - simple baselines' }
 GtMagritteModelExamples >> simpleBaselinesDescription [
-
 	<gtExample>
-	^ MAPriorityContainer withAll: { (MAToManyRelationDescription new
-			   label: 'Baselines';
-			   classes: { String };
-			   accessor: (MADictionaryAccessor key: #baselines);
-			   blocListStencil: [ :aMemento :aDescription :aForm | 
-				   | aTagger |
-				   aTagger := BrTagger new.
-				   aTagger
-					   hMatchParent;
-					   vFitContent.
-				   aForm hMatchParent.
-				   aTagger aptitude:
-					   (BrGlamorousTaggerEditableAptitude new tagLabel: [ :aTag | 
-						    | aLabel |
-						    aLabel := BrEditableLabel new
-							              text: aTag name;
-							              aptitude: (BrGlamorousEditableLabelAptitude new
-									               glamorousCodeFont;
-									               defaultForeground: Color black;
-									               fontSize: 10).
+	^ MAPriorityContainer
+		withAll: {MAToManyRelationDescription new
+					label: 'Baselines';
+					classes: {String};
+					accessor: (MADictionaryAccessor key: #baselines);
+					blocListStencil: [ :aMemento :aDescription :aForm | 
+						| aTagger |
+						aTagger := BrTagger new.
+						aTagger
+							hMatchParent;
+							vFitContent.
+						aForm hMatchParent.
+						aTagger
+							aptitude: (BrGlamorousTaggerEditableAptitude new
+									tagLabel: [ :aTag | 
+										| aLabel |
+										aLabel := BrEditableLabel new
+												text: aTag name;
+												aptitude: (BrGlamorousEditableLabelAptitude new
+														glamorousCodeFont;
+														defaultForeground: Color black;
+														fontSize: 10).
 
-						    (GtCompletionController
-							     on: aLabel
-							     strategy: GtClassesCompletionStrategy new) install.
+										(GtCompletionController
+											on: aLabel
+											strategy: GtClassesCompletionStrategy new) install.
 
-						    aLabel ]).
-				   aTagger when: BrTaggerAddTagRequest do: [ :aRequest | 
-					   aMemento
-						   write: ((aTagger tags collect: #name)
-								    add: aRequest tag name;
-								    yourself)
-						   using: aDescription ].
-				   aTagger when: BrTaggerRemoveTagRequest do: [ :aRequest | 
-					   aMemento
-						   write: ((aTagger tags collect: #name)
-								    remove: aRequest tag name;
-								    yourself)
-						   using: aDescription ].
-				   aTagger withAsyncSinkDo: [ :anElementSink | 
-					   anElementSink
-						   sink: AsyncPeekSink new;
-						   whenUpdate: [ :theTagger :aSink | 
-							   | theValues theTexts |
-							   theValues := aSink value currentValue.
-							   theTexts := theValues collect: [ :each | 
-									               aDescription displayStringFor: each ].
-							   theTagger namedTags: theTexts ].
-					   (aMemento readObservableValueUsing: aDescription) observe:
-						   anElementSink ] ]) }
+										aLabel ]).
+						aTagger
+							when: BrTaggerAddTagRequest
+							do: [ :aRequest | 
+								aTagger
+									enqueueTask: (BlPromiseTask new
+											promise: (aMemento
+													write: ((aTagger tags collect: #name)
+															add: aRequest tag name;
+															yourself)
+													using: aDescription) asAsyncPromise) ].
+						aTagger
+							when: BrTaggerRemoveTagRequest
+							do: [ :aRequest | 
+								aTagger
+									enqueueTask: (BlPromiseTask new
+											promise: (aMemento
+													write: ((aTagger tags collect: #name)
+															remove: aRequest tag name;
+															yourself)
+													using: aDescription) asAsyncPromise) ].
+						aTagger
+							withAsyncSinkDo: [ :anElementSink | 
+								anElementSink
+									sink: AsyncPeekSink new;
+									whenUpdate: [ :theTagger :aSink | 
+										| theValues theTexts |
+										theValues := aSink value currentValue.
+										theTexts := theValues
+												collect: [ :each | aDescription displayStringFor: each ].
+										theTagger namedTags: theTexts ].
+								(aMemento readObservableValueUsing: aDescription) observe: anElementSink ] ]}
 ]
 
 { #category : #'examples - simple baselines' }
