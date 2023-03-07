@@ -162,7 +162,6 @@ GtMagritteBuilderUtility class >> newCancelButton [
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescription [
-
 	| aCheckbox |
 	aCheckbox := BrCheckbox new.
 	aCheckbox
@@ -170,24 +169,25 @@ GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescripti
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
 				sink: AsyncPeekSink new;
-				whenUpdate: [ :theCheckbox :aSink | 
-					theCheckbox checked: aSink value currentValue ].
-			(aMemento readObservableValueUsing: aDescription) observe:
-				anElementSink ];
-		whenCheckedDo: [ aMemento write: true using: aDescription ];
-		whenUncheckedDo: [ aMemento write: false using: aDescription ];
+				whenUpdate: [ :theCheckbox :aSink | theCheckbox checked: aSink value currentValue ].
+			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ];
+		whenCheckedDo: [ aCheckbox
+				enqueueTask: (BlPromiseTask new
+						promise: (aMemento write: true using: aDescription) asAsyncPromise) ];
+		whenUncheckedDo: [ aCheckbox
+				enqueueTask: (BlPromiseTask new
+						promise: (aMemento write: false using: aDescription) asAsyncPromise) ];
 		margin: (BlInsets
-				 top: 0
-				 right: 0
-				 bottom: self defaultSpaceNumber
-				 left: 3).
+				top: 0
+				right: 0
+				bottom: self defaultSpaceNumber
+				left: 3).
 
 	^ aCheckbox
 ]
 
 { #category : #'private - ui' }
 GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento: aMemento description: aDescription [
-
 	| aFileBrowser |
 	aFileBrowser := BrFileSelector new.
 	aFileBrowser
@@ -195,29 +195,35 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento
 		hExact: 400;
 		buttonLabel: 'Set';
 		padding: (BlInsets all: 10);
-		addAptitude: BrGlamorousWithVerticalResizerAptitude + BrGlamorousWithHorizontalResizerAptitude + BrGlamorousWithHorizontalResizerAptitude new beLeft.
+		addAptitude: BrGlamorousWithVerticalResizerAptitude
+				+ BrGlamorousWithHorizontalResizerAptitude
+				+ BrGlamorousWithHorizontalResizerAptitude new beLeft.
 
-	aFileBrowser okAction: [ :aFileReference | 
-		aMemento write: aFileReference using: aDescription.
-	
-		aDropdown enqueueTask: (BlTaskAction new action: [ 
-				 aDropdown dispatchEvent:
-					 (BrDropdownHideWish new anchor: aDropdown) ]) ].
+	aFileBrowser
+		okAction: [ :aFileReference | 
+			aDropdown
+				enqueueTask: (BlPromiseTask new
+						promise: (aMemento write: aFileReference using: aDescription) asAsyncPromise).
 
-	aFileBrowser fileFilterBlock: [ :aFileReference | 
-		aFileReference isDirectory and: [ 
-			(FileSystemDirectoryEntry reference: aFileReference) isHidden not ] ].
+			aDropdown
+				enqueueTask: (BlTaskAction new
+						action: [ aDropdown dispatchEvent: (BrDropdownHideWish new anchor: aDropdown) ]) ].
 
-	aFileBrowser withAsyncSinkDo: [ :anElementSink | 
-		anElementSink
-			sink: AsyncPeekSink new;
-			whenUpdate: [ :theFileBrowser :aSink | 
-				| aFileModel aFileReference |
-				aFileModel := aSink value currentValue.
-				aFileReference := aDescription pharoFileReferenceFor: aFileModel.
-				theFileBrowser folder: aFileReference ].
-		(aMemento readObservableValueUsing: aDescription) observe:
-			anElementSink ].
+	aFileBrowser
+		fileFilterBlock: [ :aFileReference | 
+			aFileReference isDirectory
+				and: [ (FileSystemDirectoryEntry reference: aFileReference) isHidden not ] ].
+
+	aFileBrowser
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeekSink new;
+				whenUpdate: [ :theFileBrowser :aSink | 
+					| aFileModel aFileReference |
+					aFileModel := aSink value currentValue.
+					aFileReference := aDescription pharoFileReferenceFor: aFileModel.
+					theFileBrowser folder: aFileReference ].
+			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ].
 
 	^ aFileBrowser
 ]
@@ -262,14 +268,6 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 				sink: AsyncPeekSink new;
 				whenUpdate: [ :theEditor :aSink | theEditor text: aSink value currentValue ].
 			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ];
-		when: BrEditorAcceptWish
-			do: [ :aWish | 
-				aWish consumed: true.
-				aMemento
-					write: ((aDescription isKindOf: GtMATextDescription)
-							ifTrue: [ aWish text copy ]
-							ifFalse: [ aWish text asString ])
-					using: aDescription ];
 		margin: (BlInsets top: 2 bottom: self defaultSpaceNumber);
 		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
 		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
@@ -280,11 +278,11 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 	anEditor editor
 		when: BrTextEditorModifiedEvent
 		do: [ :anEvent | 
-			aMemento
+			anEditor enqueueTask: (BlPromiseTask new promise: (aMemento
 				write: ((aDescription isKindOf: GtMATextDescription)
 						ifTrue: [ anEvent text copy ]
 						ifFalse: [ anEvent text asString ])
-				using: aDescription ].
+				using: aDescription) asAsyncPromise) ].
 
 	^ anEditor
 ]
@@ -424,11 +422,13 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 	anEditor editor
 		when: BrTextEditorModifiedEvent
 		do: [ :anEvent | 
-			aMemento
-				write: ((aDescription isKindOf: GtMATextDescription)
-						ifTrue: [ anEvent text ]
-						ifFalse: [ anEvent text asString ])
-				using: aDescription ].
+			anEditor
+				enqueueTask: (BlPromiseTask new
+						promise: (aMemento
+								write: ((aDescription isKindOf: GtMATextDescription)
+										ifTrue: [ anEvent text ]
+										ifFalse: [ anEvent text asString ])
+								using: aDescription) asAsyncPromise) ].
 
 	^ anEditor
 ]
@@ -489,24 +489,26 @@ GtMagritteBuilderUtility class >> newSaveButton [
 
 { #category : #'private - building' }
 GtMagritteBuilderUtility class >> newSingleOptionDropdownContent: aLabel memento: aMemento description: aDescription [
-
 	^ BrSimpleList new
-		  itemStencil: aDescription blocItemStencil;
-		  itemDataBinder: aDescription blocItemDataBinderStencil;
-		  hFitContent;
-		  vFitContent;
-		  padding: (BlInsets all: self defaultSpaceNumber);
-		  items: aDescription options;
-		  when: BrSelectionChanged do: [ :anEvent | 
-			  | aWidgetElement |
-			  aWidgetElement := anEvent currentTarget.
+		itemStencil: aDescription blocItemStencil;
+		itemDataBinder: aDescription blocItemDataBinderStencil;
+		hFitContent;
+		vFitContent;
+		padding: (BlInsets all: self defaultSpaceNumber);
+		items: aDescription options;
+		when: BrSelectionChanged
+			do: [ :anEvent | 
+				| aWidgetElement |
+				aWidgetElement := anEvent currentTarget.
 
-			  anEvent selectedDo: [ :anInterval | 
-					  | selectedObject |
-					  selectedObject := aWidgetElement viewModel itemAt:
-							                    anInterval first.
-					  aMemento write: selectedObject using: aDescription.
-					  aLabel fireEvent: BrDropdownHideWish new ] ]
+				anEvent
+					selectedDo: [ :anInterval | 
+						| selectedObject |
+						selectedObject := aWidgetElement viewModel itemAt: anInterval first.
+						aLabel
+							enqueueTask: (BlPromiseTask new
+									promise: (aMemento write: selectedObject using: aDescription) asAsyncPromise).
+						aLabel fireEvent: BrDropdownHideWish new ] ]
 ]
 
 { #category : #'private - building' }
