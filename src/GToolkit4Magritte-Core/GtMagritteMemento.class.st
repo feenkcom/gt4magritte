@@ -6,9 +6,7 @@ Class {
 		'validators',
 		'overallStatus',
 		'internalStatus',
-		'subscriptions',
-		'pendingPromise',
-		'monitor'
+		'subscriptions'
 	],
 	#category : #'GToolkit4Magritte-Core-Models'
 }
@@ -220,7 +218,6 @@ GtMagritteMemento >> initialize [
 	cache := Dictionary new.
 	validators := Dictionary new.
 	subscriptions := Dictionary new.
-	monitor := Monitor new.
 	internalStatus := AsyncObservableValue new.
 	overallStatus := (internalStatus observe map: [ :aValidationResult | 
 		                  self computeOverallStatus ]) asAsyncObservable
