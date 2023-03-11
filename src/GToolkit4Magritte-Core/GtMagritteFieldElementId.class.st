@@ -15,7 +15,7 @@ GtMagritteFieldElementId >> = anObject [
 	self class = anObject class
 		ifFalse: [ ^ false ].
 
-	^ self description = anObject description
+	^ self asSymbol = anObject asSymbol
 ]
 
 { #category : #accessing }
