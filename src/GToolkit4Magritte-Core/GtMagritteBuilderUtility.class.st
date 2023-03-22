@@ -33,10 +33,10 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 				handle: [ BrLabel new
 						geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 						aptitude: (aDescription editorAptitude
-			ifNil: [ BrGlamorousLabelAptitude new
-					glamorousCodeFont;
-					fontSize: 10 ]
-			ifNotNil: #value);
+							ifNil: [ BrGlamorousLabelAptitude new
+									glamorousCodeFont;
+									fontSize: 10 ]
+							ifNotNil: #value);
 						padding: (BlInsets all: self defaultSpaceNumber);
 						withAsyncSinkDo: [ :anElementSink | 
 							anElementSink
@@ -47,7 +47,7 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 									aText := aDescription displayStringFor: aFileModel.
 									theLabel text: aText ].
 							(aMemento readObservableValueUsing: aDescription) observe: anElementSink ] ]
-				content: (aContentBlock value: aLabel));
+				content: (aContentBlock value: aLabel)) beNotResizable;
 		margin: ((BlInsets left: self defaultSpaceNumber) withBottom: self defaultSpaceNumber);
 		padding: (BlInsets all: self defaultSpaceNumber);
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
