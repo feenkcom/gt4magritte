@@ -40,3 +40,37 @@ Object >> hasMagritteDescription [
 
 	^ Pragma hasNamed: #magritteDescription from: self class to: Object
 ]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+Object >> magritteAcceptAction [
+	<magritteActionDescription>
+	^ MAActionDescription new
+		priority: 10;
+		label: 'New Accept';
+		"isLabelVisible: false;"
+		blocIcon: BrGlamorousVectorIcons accept;
+		action: [ :aModel :aButton :aMemento :aDescription | 
+			aButton inUIProcessDo: [ aMemento commit ] ];
+		onOverallStatusChanged: [ :aStatus :aButton :aMemento :aDescription | 
+			aStatus isChanged
+				ifTrue: [ aButton enabled: aStatus isValid ]
+				ifFalse: [ aButton enabled: false ] ];
+		beToolbarAction
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+Object >> magritteCancelAction [
+	<magritteActionDescription>
+	^ MAActionDescription new
+		priority: 12;
+		label: 'New Cancel';
+		"isLabelVisible: false;"
+		blocIcon: BrGlamorousVectorIcons cancel;
+		action: [ :aModel :aButton :aMemento :aDescription | 
+			aButton inUIProcessDo: [ aMemento reset ] ];
+		onOverallStatusChanged: [ :aStatus :aButton :aMemento :aDescription | 
+			aStatus isChanged
+				ifTrue: [ aButton enabled: true ]
+				ifFalse: [ aButton enabled: false ] ];
+		beToolbarAction
+]

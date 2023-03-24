@@ -7,12 +7,7 @@ MAActionDescription >> asBlockButtonWithMemento: aMemento [
 			beFocusable;
 			beTinySize.
 
-	self blocIcon
-		ifNotNil: [ :aStencilBuilder | 
-			aButton
-				icon: [ aStencilBuilder
-						memento: aMemento;
-						description: self ] asStencil ].
+	self blocIcon ifNotNil: [ :aStencil | aButton icon: aStencil ].
 
 	self label ifNotNil: [ :aLabel | aButton label: aLabel ].
 
@@ -20,13 +15,12 @@ MAActionDescription >> asBlockButtonWithMemento: aMemento [
 		ifTrue: [ aButton aptitude: BrGlamorousButtonWithIconAndLabelAptitude ]
 		ifFalse: [ aButton aptitude: BrGlamorousButtonWithIconAptitude ].
 
-	aButton
-		action: [ :theButton | 
-			self action
-				ifNotNil: [ :anAction | 
+	self action
+		ifNotNil: [ :anAction | 
+			aButton
+				action: [ :theButton | 
 					anAction
-						cull: aMemento model
-						cull: theButton
+						cull: aMemento model cull: theButton
 						cull: aMemento
 						cull: self ] ].
 
@@ -37,17 +31,14 @@ MAActionDescription >> asBlockButtonWithMemento: aMemento [
 				whenUpdate: [ :theButton :aSink | 
 					| aStatus |
 					aStatus := aSink value.
-					
+
 					self onOverallStatusChanged
-						status: aStatus;
-						element: aButton;
-						memento: aMemento;
-						description: self;
-						build.
-					
-					"aStatus isChanged
-						ifTrue: [ theButton enabled: aStatus isValid ]
-						ifFalse: [ theButton enabled: false ]" ].
+						ifNotNil: [ :aBlock | 
+							aBlock
+								cull: aStatus
+								cull: aButton
+								cull: aMemento
+								cull: self ] ].
 			aMemento overallStatus observe: anElementSink ].
 
 	^ aButton
@@ -87,21 +78,15 @@ MAActionDescription >> blocEnabled: aBlock [
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> blocIcon [
-	<return: #GtMagritteActionIconStencilBuilder or: nil>
-	^ self
-		propertyAt: #blocIcon
-		ifAbsent: [ self icon ifNotNil: [ 
-			self blocIcon: [ self icon 
-				ifNotNil: #asElement 
-				ifNil: [ BlElement new size: 0 @ 0 ] ] ].
-			self propertyAt: #blocIcon ifAbsent: [ nil ] ]
+	"Return an object that understands #asElement, 
+	providing a {{gtClass:BlElement}}"
+
+	^ self propertyAt: #blocIcon ifAbsent: [ self icon ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> blocIcon: aStencil [
-	self
-		propertyAt: #blocIcon
-		put: (aStencil asStencilBuilder: GtMagritteActionIconStencilBuilder)
+	self propertyAt: #blocIcon put: aStencil
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
@@ -133,10 +118,7 @@ MAActionDescription >> onErrorAction: anAction [
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> onOverallStatusChanged [
-	<return: #GtMagritteActionOnOverallStatusChangedStencilBuilder>
-	^ self
-		propertyAt: #onOverallStatusChanged
-		ifAbsentPut: [ GtMagritteActionOnOverallStatusChangedStencilBuilder new ]
+	^ self propertyAt: #onOverallStatusChanged ifAbsent: [ nil ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
@@ -145,5 +127,5 @@ MAActionDescription >> onOverallStatusChanged: aBlock [
 
 	self
 		propertyAt: #onOverallStatusChanged
-		put: (aBlock asStencilBuilder: GtMagritteActionOnOverallStatusChangedStencilBuilder)
+		put: aBlock
 ]

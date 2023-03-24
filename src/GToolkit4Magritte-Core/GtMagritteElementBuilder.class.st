@@ -379,7 +379,7 @@ GtMagritteElementBuilder >> hasActions [
 
 { #category : #accessing }
 GtMagritteElementBuilder >> implicitActions [
-	^ self memento magritteActions
+	^ self memento magritteActions select: #isToolbarAction
 ]
 
 { #category : #initialization }
