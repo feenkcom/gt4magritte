@@ -4,6 +4,7 @@ Extension { #name : #MAActionDescription }
 MAActionDescription >> asBlockButtonWithMemento: aMemento [
 	| aButton |
 	aButton := BrButton new
+			id: (GtMagritteActionElementId new description: self);
 			beFocusable;
 			beTinySize.
 
@@ -20,7 +21,8 @@ MAActionDescription >> asBlockButtonWithMemento: aMemento [
 			aButton
 				action: [ :theButton | 
 					anAction
-						cull: aMemento model cull: theButton
+						cull: aMemento model
+						cull: theButton
 						cull: aMemento
 						cull: self ] ].
 

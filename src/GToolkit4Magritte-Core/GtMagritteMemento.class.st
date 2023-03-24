@@ -30,10 +30,12 @@ GtMagritteMemento >> cache [
 
 { #category : #actions }
 GtMagritteMemento >> commit [
-
-	super commit.
+	<return: #TAsyncFuture>
+	super commit.	
 	self push: self cache.
-	self reset
+	self reset.
+	
+	^ self overallStatus observeNext next
 ]
 
 { #category : #private }
@@ -311,8 +313,11 @@ GtMagritteMemento >> readUsing: aDescription [
 
 { #category : #actions }
 GtMagritteMemento >> reset [
+	<return: #TAsyncFuture>
 	super reset.
 	self setCache: self pull.
+
+	^ self overallStatus observeNext next
 ]
 
 { #category : #private }
@@ -425,6 +430,7 @@ GtMagritteMemento >> validators [
 GtMagritteMemento >> write: anObject using: aDescription [
 	"must only be called in UI thread"
 
+	<return: #TAsyncFuture>
 	| anObservable aNewValue |
 	anObservable := self readObservableValueUsing: aDescription.
 	aNewValue := anObservable valueOrNil copyWithCurrentValue: anObject.
