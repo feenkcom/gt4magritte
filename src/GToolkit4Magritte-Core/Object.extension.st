@@ -49,15 +49,17 @@ Object >> magritteAcceptAction [
 		label: 'New Accept';
 		"isLabelVisible: false;"
 		blocIcon: BrGlamorousVectorIcons accept;
-		action: [ :aModel :aButton :aMemento :aDescription | 
-			aButton inUIProcessDo: [ 
-				aButton enqueueTask: (BlPromiseTask new 
-					promise: aMemento commit asAsyncPromise) ] ];
-		onOverallStatusChanged: [ :aStatus :aButton :aMemento :aDescription |
-			aButton inUIProcessDo: [ 
-				aStatus isChanged
-					ifTrue: [ aButton enabled: aStatus isValid ]
-					ifFalse: [ aButton enabled: false ] ] ];
+		action: (GtMagritteActionExecutor new
+				beInUIProcess;
+				beWithFutureResponse;
+				beWithCallbacks;
+				action: [ :aModel :aButton :aMemento :aDescription | aMemento commit ]);
+		onOverallStatusChanged: (GtMagritteActionExecutor new
+				beInUIProcess;
+				action: [ :aStatus :aButton :aMemento :aDescription | 
+					aStatus isChanged
+						ifTrue: [ aButton enabled: aStatus isValid ]
+						ifFalse: [ aButton enabled: false ] ]);
 		beToolbarAction
 ]
 
@@ -69,14 +71,15 @@ Object >> magritteCancelAction [
 		label: 'New Cancel';
 		"isLabelVisible: false;"
 		blocIcon: BrGlamorousVectorIcons cancel;
-		action: [ :aModel :aButton :aMemento :aDescription | 
-			aButton inUIProcessDo: [ 
-				aButton enqueueTask: (BlPromiseTask new 
-					promise: aMemento reset asAsyncPromise) ] ];
-		onOverallStatusChanged: [ :aStatus :aButton :aMemento :aDescription |
-			aButton inUIProcessDo: [ 
-				aStatus isChanged
-					ifTrue: [ aButton enabled: true ]
-					ifFalse: [ aButton enabled: false ] ] ];
+		action: (GtMagritteActionExecutor new
+				beInUIProcess;
+				beWithFutureResponse;
+				beWithCallbacks;
+				action: [ :aModel :aButton :aMemento :aDescription | aMemento reset ]);
+		onOverallStatusChanged: (GtMagritteActionExecutor new
+				beInUIProcess;
+				action: [ :aStatus :aButton :aMemento :aDescription | aStatus isChanged
+						ifTrue: [ aButton enabled: true ]
+						ifFalse: [ aButton enabled: false ] ]);
 		beToolbarAction
 ]

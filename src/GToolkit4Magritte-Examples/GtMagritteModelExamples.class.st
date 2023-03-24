@@ -20,6 +20,36 @@ GtMagritteModelExamples >> addressObject [
 ]
 
 { #category : #'examples - address' }
+GtMagritteModelExamples >> addressObjectWithCallbacks [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self basicAddressObjectWithCallbacks.
+
+	anAddress
+		street: 'Husova 108/12';
+		city: 'Všetín';
+		zipCode: 75501.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> addressObjectWithoutCancel [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self basicAddressObjectWithoutCancel.
+
+	anAddress
+		street: 'Husova 108/12';
+		city: 'Všetín';
+		zipCode: 75501.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
 GtMagritteModelExamples >> addressTwoObject [
 
 	<gtExample>
@@ -39,6 +69,26 @@ GtMagritteModelExamples >> basicAddressObject [
 	<gtExample>
 	| anAddress |
 	anAddress := GtMagritteDummyPostalAddress new.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> basicAddressObjectWithCallbacks [
+
+	<gtExample>
+	| anAddress |
+	anAddress := GtMagritteDummyPostalAddressWithCallbacks new.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> basicAddressObjectWithoutCancel [
+
+	<gtExample>
+	| anAddress |
+	anAddress := GtMagritteDummyPostalAddressWithoutCancel new.
 
 	^ anAddress
 ]

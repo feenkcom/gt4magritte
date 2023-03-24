@@ -119,6 +119,23 @@ MAActionDescription >> onErrorAction: anAction [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> onErrorCallback: aCallback [
+	self onErrorCallbacks add: aCallback
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> onErrorCallbacks [
+	^ self 
+		propertyAt: #onErrorCallbacks 
+		ifAbsentPut: [ OrderedCollection new ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> onErrorCallbacks: aCollection [
+	^ self propertyAt: #onErrorCallbacks put: aCollection
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> onOverallStatusChanged [
 	^ self propertyAt: #onOverallStatusChanged ifAbsent: [ nil ]
 ]
@@ -130,4 +147,21 @@ MAActionDescription >> onOverallStatusChanged: aBlock [
 	self
 		propertyAt: #onOverallStatusChanged
 		put: aBlock
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> onSuccessCallback: aCallback [
+	self onSuccessCallbacks add: aCallback
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> onSuccessCallbacks [
+	^ self 
+		propertyAt: #onSuccessCallbacks 
+		ifAbsentPut: [ OrderedCollection new ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> onSuccessCallbacks: aCollection [
+	^ self propertyAt: #onSuccessCallbacks put: aCollection
 ]
