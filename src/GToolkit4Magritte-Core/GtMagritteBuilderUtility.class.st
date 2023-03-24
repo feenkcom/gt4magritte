@@ -128,6 +128,7 @@ GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento us
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newCancelButton [
 	^ GtMagritteButtonWithIconAction new
+		priority: 2;
 		icon: BrGlamorousVectorIcons cancel;
 		tooltip: 'Cancel';
 		installOn: [ :aModel :aButton :aMemento | 
@@ -455,6 +456,7 @@ GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newSaveButton [
 	^ GtMagritteButtonWithIconAction new
+		priority: 1;
 		icon: BrGlamorousVectorIcons accept;
 		tooltip: 'Save';
 		installOn: [ :aModel :aButton :aMemento | 

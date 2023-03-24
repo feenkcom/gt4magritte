@@ -14,27 +14,25 @@ Object >> asGtMagritteViewModelWithDescription: aDescription [
 
 { #category : #'*GToolkit4Magritte-Core' }
 Object >> gtMagritteFor: aView [
-
-	<gtView>
 	"We do not compute descriptions because this can be expensive
 	and we want the view to be fast."
+
+	<gtView>
 	self hasMagritteDescription ifFalse: [ ^ aView empty ].
 
 	^ aView explicit
-		  title: 'GT Magritte';
-		  priority: 49;
-		  stencil: [ self asGtMagritteViewModel ];
-		  actionButtonIcon: BrGlamorousVectorIcons inspect
-		  label: 'Memento'
-		  tooltip: 'Inspect Memento'
-		  action: [ :aButton :aTab | 
-			  aTab viewContentElement
-				  allChildrenBreadthFirstDetect: [ :anElement | 
-					  anElement userData includesKey:
-							  GtMagritteViewModel gtMementoSymbol ]
-				  ifFound: [ :anElement | 
-					  aButton phlow spawnObject:
-							  (anElement userData at: GtMagritteViewModel gtMementoSymbol) ] ]
+		title: 'GT Magritte';
+		priority: 49;
+		stencil: [ self asGtMagritteViewModel asElement margin: (BlInsets all: 10) ];
+		actionButtonIcon: BrGlamorousVectorIcons inspect
+			label: 'Memento'
+			tooltip: 'Inspect Memento'
+			action: [ :aButton :aTab | 
+				aTab viewContentElement
+					allChildrenBreadthFirstDetect: [ :anElement | anElement userData includesKey: GtMagritteViewModel gtMementoSymbol ]
+					ifFound: [ :anElement | 
+						aButton phlow
+							spawnObject: (anElement userData at: GtMagritteViewModel gtMementoSymbol) ] ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }

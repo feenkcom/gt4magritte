@@ -1,6 +1,59 @@
 Extension { #name : #MAActionDescription }
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> asBlockButtonWithMemento: aMemento [
+	| aButton |
+	aButton := BrButton new
+			beFocusable;
+			beTinySize.
+
+	self blocIcon
+		ifNotNil: [ :aStencilBuilder | 
+			aButton
+				icon: [ aStencilBuilder
+						memento: aMemento;
+						description: self ] asStencil ].
+
+	self label ifNotNil: [ :aLabel | aButton label: aLabel ].
+
+	self isLabelVisible
+		ifTrue: [ aButton aptitude: BrGlamorousButtonWithIconAndLabelAptitude ]
+		ifFalse: [ aButton aptitude: BrGlamorousButtonWithIconAptitude ].
+
+	aButton
+		action: [ :theButton | 
+			self action
+				ifNotNil: [ :anAction | 
+					anAction
+						cull: aMemento model
+						cull: theButton
+						cull: aMemento
+						cull: self ] ].
+
+	aButton
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeekSink new;
+				whenUpdate: [ :theButton :aSink | 
+					| aStatus |
+					aStatus := aSink value.
+					
+					self onOverallStatusChanged
+						status: aStatus;
+						element: aButton;
+						memento: aMemento;
+						description: self;
+						build.
+					
+					"aStatus isChanged
+						ifTrue: [ theButton enabled: aStatus isValid ]
+						ifFalse: [ theButton enabled: false ]" ].
+			aMemento overallStatus observe: anElementSink ].
+
+	^ aButton
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> beCommitAction [
 	self propertyAt: #beCommitAction put: true
 ]
@@ -8,6 +61,47 @@ MAActionDescription >> beCommitAction [
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> beResetAction [
 	self propertyAt: #beResetAction put: true
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> beToolbarAction [
+	self propertyAt: #beToolbarAction put: true
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> blocEnabled [
+	"aBlock with arguments [ :aMemento :aDescription | ].
+	aBlock returns boolean values."
+
+	^ self
+		propertyAt: #blocEnabled
+		ifAbsent: [ [ :aMemento :aDescription | self enableBlock cull: aMemento model ] ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> blocEnabled: aBlock [
+	"aBlock with arguments [ :aMemento :aDescription | ].
+	aBlock returns boolean values."
+	self propertyAt: #blocEnabled put: aBlock
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> blocIcon [
+	<return: #GtMagritteActionIconStencilBuilder or: nil>
+	^ self
+		propertyAt: #blocIcon
+		ifAbsent: [ self icon ifNotNil: [ 
+			self blocIcon: [ self icon 
+				ifNotNil: #asElement 
+				ifNil: [ BlElement new size: 0 @ 0 ] ] ].
+			self propertyAt: #blocIcon ifAbsent: [ nil ] ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> blocIcon: aStencil [
+	self
+		propertyAt: #blocIcon
+		put: (aStencil asStencilBuilder: GtMagritteActionIconStencilBuilder)
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
@@ -21,6 +115,11 @@ MAActionDescription >> isResetAction [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> isToolbarAction [
+	^ self propertyAt: #beToolbarAction ifAbsent: [ false ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> onErrorAction [
 	^ self
 		propertyAt: #onErrorAction
@@ -30,4 +129,21 @@ MAActionDescription >> onErrorAction [
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> onErrorAction: anAction [
 	self propertyAt: #onErrorAction put: anAction
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> onOverallStatusChanged [
+	<return: #GtMagritteActionOnOverallStatusChangedStencilBuilder>
+	^ self
+		propertyAt: #onOverallStatusChanged
+		ifAbsentPut: [ GtMagritteActionOnOverallStatusChangedStencilBuilder new ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> onOverallStatusChanged: aBlock [
+	"aBlock with arguments [ :aStatus :anElement :aMemento :aDescription | ]."
+
+	self
+		propertyAt: #onOverallStatusChanged
+		put: (aBlock asStencilBuilder: GtMagritteActionOnOverallStatusChangedStencilBuilder)
 ]

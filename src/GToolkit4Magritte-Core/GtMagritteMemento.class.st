@@ -77,6 +77,22 @@ GtMagritteMemento >> debugValidateValue: aValue [
 ]
 
 { #category : #'gt - extensions' }
+GtMagritteMemento >> gtActionsFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'Actions';
+		priority: 12;
+		items: [ self magritteActions sorted: [ :a :b | a priority < b priority ] ];
+		column: 'Priority'
+			text: #priority
+			width: 50;
+		column: 'Icon'
+			icon: [ :anAction | anAction blocIcon ifNotNil: #asElement ifNil: [ BlElement new size: 0 @ 0 ] ];
+		column: 'Label' text: #label;
+		column: 'Is Toolbar Action' text: #isToolbarAction
+]
+
+{ #category : #'gt - extensions' }
 GtMagritteMemento >> gtCacheFor: aView [
 	<gtView>
 	self cache ifNil: [ ^ aView empty ].
@@ -221,6 +237,11 @@ GtMagritteMemento >> initialize [
 	internalStatus := AsyncObservableValue new.
 	overallStatus := (internalStatus observe map: [ :aValidationResult | 
 		                  self computeOverallStatus ]) asAsyncObservable
+]
+
+{ #category : #accessing }
+GtMagritteMemento >> magritteActions [
+	^ self model magritteActions
 ]
 
 { #category : #accessing }
