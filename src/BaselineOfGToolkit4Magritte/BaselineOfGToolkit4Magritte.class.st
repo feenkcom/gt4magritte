@@ -10,16 +10,16 @@ BaselineOfGToolkit4Magritte >> baseline: spec [
 	spec for: #'common' do: [
 		spec
 			baseline: 'MagritteForGToolkit' with: [
-				spec repository: 'github://feenkcom/magritte:v4.0.8/source' ].
+				spec repository: 'github://feenkcom/magritte:v4.0.9/source' ].
 		spec
 			baseline: 'Brick' with: [
-				spec repository: 'github://feenkcom/Brick:v0.8.898/src' ].
+				spec repository: 'github://feenkcom/Brick:v0.8.899/src' ].
 		spec
 			baseline: 'GToolkitCompleter' with: [
-				spec repository: 'github://feenkcom/gtoolkit-completer:v0.8.943/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-completer:v0.8.944/src' ].
 		spec
 			baseline: 'GToolkitCoder' with: [
-				spec repository: 'github://feenkcom/gtoolkit-coder:v0.8.1210/src' ].
+				spec repository: 'github://feenkcom/gtoolkit-coder:v0.8.1211/src' ].
 
 		spec package: 'GToolkit4Magritte-Core' with: [
 			spec requires: #('MagritteForGToolkit' 'Brick' 'GToolkitCompleter') ].
