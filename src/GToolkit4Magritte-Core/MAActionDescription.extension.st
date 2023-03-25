@@ -55,11 +55,6 @@ MAActionDescription >> beAlwaysEnabled [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MAActionDescription >> beCommitAction [
-	self propertyAt: #beCommitAction put: true
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> beEnabledOnChangedAndValidOverallStatus [
 	self
 		onOverallStatusChanged: (GtMagritteActionExecutor new
@@ -87,11 +82,6 @@ MAActionDescription >> beEnabledOnValidOverallStatus [
 			beInUIProcess;
 			action: [ :aStatus :aButton :aMemento :aDescription | 
 				aButton enabled: aStatus isValid ])
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
-MAActionDescription >> beResetAction [
-	self propertyAt: #beResetAction put: true
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
@@ -130,30 +120,8 @@ MAActionDescription >> blocIcon: aStencil [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MAActionDescription >> isCommitAction [
-	^ self propertyAt: #beCommitAction ifAbsent: [ false ]
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
-MAActionDescription >> isResetAction [
-	^ self propertyAt: #beResetAction ifAbsent: [ false ]
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> isToolbarAction [
 	^ self propertyAt: #beToolbarAction ifAbsent: [ false ]
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
-MAActionDescription >> onErrorAction [
-	^ self
-		propertyAt: #onErrorAction
-		ifAbsent: [ [ :aModel :aButton :aMemento |  ] ]
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
-MAActionDescription >> onErrorAction: anAction [
-	self propertyAt: #onErrorAction put: anAction
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }

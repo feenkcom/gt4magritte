@@ -421,40 +421,7 @@ GtMagritteElementBuilder >> objectDescription [
 
 { #category : #'api - building' }
 GtMagritteElementBuilder >> resetFrom: aButton usingModel: aModel andMemento: aMemento [
-	[ aMemento reset.
-	(aModel magritteActions select: #isResetAction)
-		do: [ :anAction | 
-			anAction action
-				cull: aModel
-				cull: aButton
-				cull: aMemento ] ]
-		on: Error
-		do: [ :anError | 
-			(aModel magritteActions select: #isResetAction)
-				do: [ :anAction | 
-					anAction onErrorAction
-						cull: aModel
-						cull: aButton
-						cull: aMemento ] ]
-]
-
-{ #category : #'api - building' }
-GtMagritteElementBuilder >> saveFrom: aButton usingModel: aModel andMemento: aMemento [
-	[ aMemento commit.
-	(aModel magritteActions select: #isCommitAction)
-		do: [ :anAction | 
-			anAction action
-				cull: aModel
-				cull: aButton
-				cull: aMemento ] ]
-		on: Error
-		do: [ :anError | 
-			(aModel magritteActions select: #isCommitAction)
-				do: [ :anAction | 
-					anAction onErrorAction
-						cull: aModel
-						cull: aButton
-						cull: aMemento ] ]
+	aMemento reset
 ]
 
 { #category : #'private - building' }

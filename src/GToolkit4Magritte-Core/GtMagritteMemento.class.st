@@ -95,16 +95,6 @@ GtMagritteMemento >> gtActionsFor: aView [
 			text: [ :anAction | 
 				anAction isToolbarAction
 					ifTrue: [ 'yes' asRopedText ]
-					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ];
-		column: 'Is Commit Action'
-			text: [ :anAction | 
-				anAction isCommitAction
-					ifTrue: [ 'yes' asRopedText ]
-					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ];
-		column: 'Is Reset Action'
-			text: [ :anAction | 
-				anAction isResetAction
-					ifTrue: [ 'yes' asRopedText ]
 					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
 ]
 
