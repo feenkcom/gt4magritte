@@ -46,8 +46,8 @@ Object >> magritteAcceptAction [
 	<magritteActionDescription>
 	^ MAActionDescription new
 		priority: 10;
-		label: 'New Accept';
-		"isLabelVisible: false;"
+		label: 'Accept';
+		isLabelVisible: false;
 		blocIcon: BrGlamorousVectorIcons accept;
 		action: (GtMagritteActionExecutor new
 				beInUIProcess;
@@ -63,15 +63,14 @@ Object >> magritteCancelAction [
 	<magritteActionDescription>
 	^ MAActionDescription new
 		priority: 12;
-		label: 'New Cancel';
-		"isLabelVisible: false;"
+		label: 'Cancel';
+		isLabelVisible: false;
 		blocIcon: BrGlamorousVectorIcons cancel;
 		action: (GtMagritteActionExecutor new
 				beInUIProcess;
 				beWithFutureResponse;
 				beWithCallbacks;
-				action: [ :aModel :aButton :aMemento :aDescription | 
-					aMemento reset ]);
+				action: [ :aModel :aButton :aMemento :aDescription | aMemento reset ]);
 		beEnabledOnChangedOverallStatus;
 		beToolbarAction
 ]
