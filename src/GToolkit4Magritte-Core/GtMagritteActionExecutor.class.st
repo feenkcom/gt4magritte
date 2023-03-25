@@ -112,7 +112,11 @@ GtMagritteActionExecutor >> executeActionWithCallbacks [
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> executeErrorCallback: aCallback exception: anException [
-	aCallback cull: anException cull: self memento
+	aCallback
+		cull: anException
+		cull: self element
+		cull: self memento
+		cull: self description
 ]
 
 { #category : #'private - execution' }
@@ -143,7 +147,11 @@ GtMagritteActionExecutor >> executeInUIProcess [
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> executeSuccessCallback: aCallback result: aResult [
-	aCallback cull: aResult cull: self memento
+	aCallback
+		cull: aResult
+		cull: self element
+		cull: self memento
+		cull: self description
 ]
 
 { #category : #'private - execution' }

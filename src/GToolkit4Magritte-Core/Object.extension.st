@@ -54,12 +54,7 @@ Object >> magritteAcceptAction [
 				beWithFutureResponse;
 				beWithCallbacks;
 				action: [ :aModel :aButton :aMemento :aDescription | aMemento commit ]);
-		onOverallStatusChanged: (GtMagritteActionExecutor new
-				beInUIProcess;
-				action: [ :aStatus :aButton :aMemento :aDescription | 
-					aStatus isChanged
-						ifTrue: [ aButton enabled: aStatus isValid ]
-						ifFalse: [ aButton enabled: false ] ]);
+		beEnabledOnChangedAndValidOverallStatus;
 		beToolbarAction
 ]
 
@@ -75,11 +70,8 @@ Object >> magritteCancelAction [
 				beInUIProcess;
 				beWithFutureResponse;
 				beWithCallbacks;
-				action: [ :aModel :aButton :aMemento :aDescription | aMemento reset ]);
-		onOverallStatusChanged: (GtMagritteActionExecutor new
-				beInUIProcess;
-				action: [ :aStatus :aButton :aMemento :aDescription | aStatus isChanged
-						ifTrue: [ aButton enabled: true ]
-						ifFalse: [ aButton enabled: false ] ]);
+				action: [ :aModel :aButton :aMemento :aDescription | 
+					aMemento reset ]);
+		beEnabledOnChangedOverallStatus;
 		beToolbarAction
 ]

@@ -91,9 +91,21 @@ GtMagritteMemento >> gtActionsFor: aView [
 		column: 'Icon'
 			icon: [ :anAction | anAction blocIcon ifNotNil: #asElement ifNil: [ BlElement new size: 0 @ 0 ] ];
 		column: 'Label' text: #label;
-		column: 'Is Toolbar Action' text: #isToolbarAction;
-		column: 'Is Commit Action' text: #isCommitAction;
-		column: 'Is Reset Action' text: #isResetAction
+		column: 'Is Toolbar Action'
+			text: [ :anAction | 
+				anAction isToolbarAction
+					ifTrue: [ 'yes' asRopedText ]
+					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ];
+		column: 'Is Commit Action'
+			text: [ :anAction | 
+				anAction isCommitAction
+					ifTrue: [ 'yes' asRopedText ]
+					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ];
+		column: 'Is Reset Action'
+			text: [ :anAction | 
+				anAction isResetAction
+					ifTrue: [ 'yes' asRopedText ]
+					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
 ]
 
 { #category : #'gt - extensions' }
