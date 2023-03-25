@@ -5,7 +5,8 @@ Class {
 		'action',
 		'installOn',
 		'tooltip',
-		'icon'
+		'icon',
+		'priority'
 	],
 	#category : #'GToolkit4Magritte-Core-Support'
 }
@@ -77,6 +78,16 @@ GtMagritteButtonWithIconAction >> installOn [
 GtMagritteButtonWithIconAction >> installOn: anObject [
 
 	installOn := anObject
+]
+
+{ #category : #accessing }
+GtMagritteButtonWithIconAction >> priority [
+	^ priority ifNil: [ 50 ]
+]
+
+{ #category : #accessing }
+GtMagritteButtonWithIconAction >> priority: aNumber [
+	priority := aNumber
 ]
 
 { #category : #accessing }

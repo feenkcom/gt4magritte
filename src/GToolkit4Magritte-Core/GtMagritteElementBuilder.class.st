@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'memento',
 		'form',
-		'actions'
+		'explicitActions'
 	],
 	#category : #'GToolkit4Magritte-Core-Builders'
 }
@@ -12,13 +12,13 @@ Class {
 { #category : #accessing }
 GtMagritteElementBuilder >> actions [
 
-	^ actions
+	^ explicitActions
 ]
 
 { #category : #accessing }
 GtMagritteElementBuilder >> actions: anObject [
 
-	actions := anObject
+	explicitActions := anObject
 ]
 
 { #category : #'private - building' }
@@ -302,6 +302,16 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing)
 ]
 
+{ #category : #accessing }
+GtMagritteElementBuilder >> allActions [
+	| allActions |
+	allActions := self actions , self implicitActions.
+
+	allActions sort: [ :a :b | a priority < b priority ].
+
+	^ allActions
+]
+
 { #category : #'api - building' }
 GtMagritteElementBuilder >> build [
 
@@ -322,15 +332,16 @@ GtMagritteElementBuilder >> build [
 
 { #category : #'private - building' }
 GtMagritteElementBuilder >> buildActions [
-	| aToolbar |
-	self hasActions ifFalse: [ ^ self ].
+	| aToolbar allActions |
+	allActions := self allActions.
+	allActions ifEmpty: [ ^ self ].
 
 	self isReadOnlyForm ifTrue: [ ^ self ].
 
 	self
 		toolbarContainerDo: [ :aContainer | 
 			aToolbar := GtMagritteBuilderUtility
-					newToolbarWithActions: self actions
+					newToolbarWithActions: allActions
 					memento: self memento.
 
 			aContainer addChild: aToolbar as: #toolbar ]
@@ -366,12 +377,17 @@ GtMagritteElementBuilder >> hasActions [
 	^ self actions isNotEmpty
 ]
 
+{ #category : #accessing }
+GtMagritteElementBuilder >> implicitActions [
+	^ self memento magritteActions select: #isToolbarAction
+]
+
 { #category : #initialization }
 GtMagritteElementBuilder >> initialize [
 
 	super initialize.
 
-	actions := #(  )
+	explicitActions := #(  )
 ]
 
 { #category : #'private - building' }
@@ -405,40 +421,7 @@ GtMagritteElementBuilder >> objectDescription [
 
 { #category : #'api - building' }
 GtMagritteElementBuilder >> resetFrom: aButton usingModel: aModel andMemento: aMemento [
-	[ aMemento reset.
-	(aModel magritteActions select: #isResetAction)
-		do: [ :anAction | 
-			anAction action
-				cull: aModel
-				cull: aButton
-				cull: aMemento ] ]
-		on: Error
-		do: [ :anError | 
-			(aModel magritteActions select: #isResetAction)
-				do: [ :anAction | 
-					anAction onErrorAction
-						cull: aModel
-						cull: aButton
-						cull: aMemento ] ]
-]
-
-{ #category : #'api - building' }
-GtMagritteElementBuilder >> saveFrom: aButton usingModel: aModel andMemento: aMemento [
-	[ aMemento commit.
-	(aModel magritteActions select: #isCommitAction)
-		do: [ :anAction | 
-			anAction action
-				cull: aModel
-				cull: aButton
-				cull: aMemento ] ]
-		on: Error
-		do: [ :anError | 
-			(aModel magritteActions select: #isCommitAction)
-				do: [ :anAction | 
-					anAction onErrorAction
-						cull: aModel
-						cull: aButton
-						cull: aMemento ] ]
+	aMemento reset
 ]
 
 { #category : #'private - building' }

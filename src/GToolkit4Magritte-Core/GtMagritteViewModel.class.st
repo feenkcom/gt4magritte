@@ -153,8 +153,8 @@ GtMagritteViewModel >> initialize [
 	super initialize.
 
 	cache := AsyncFutureCache new.
-	onElementCreated := [:aFrame | ].
-	actions := {GtMagritteBuilderUtility newSaveButton . GtMagritteBuilderUtility newCancelButton }
+	onElementCreated := [ :aFrame | ].
+	actions := { }
 ]
 
 { #category : #'api - testing' }

@@ -20,6 +20,36 @@ GtMagritteModelExamples >> addressObject [
 ]
 
 { #category : #'examples - address' }
+GtMagritteModelExamples >> addressObjectWithCallbacks [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self basicAddressObjectWithCallbacks.
+
+	anAddress
+		street: 'Husova 108/12';
+		city: 'Všetín';
+		zipCode: 75501.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> addressObjectWithoutCancel [
+
+	<gtExample>
+	| anAddress |
+	anAddress := self basicAddressObjectWithoutCancel.
+
+	anAddress
+		street: 'Husova 108/12';
+		city: 'Všetín';
+		zipCode: 75501.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
 GtMagritteModelExamples >> addressTwoObject [
 
 	<gtExample>
@@ -39,6 +69,26 @@ GtMagritteModelExamples >> basicAddressObject [
 	<gtExample>
 	| anAddress |
 	anAddress := GtMagritteDummyPostalAddress new.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> basicAddressObjectWithCallbacks [
+
+	<gtExample>
+	| anAddress |
+	anAddress := GtMagritteDummyPostalAddressWithCallbacks new.
+
+	^ anAddress
+]
+
+{ #category : #'examples - address' }
+GtMagritteModelExamples >> basicAddressObjectWithoutCancel [
+
+	<gtExample>
+	| anAddress |
+	anAddress := GtMagritteDummyPostalAddressWithoutCancel new.
 
 	^ anAddress
 ]
@@ -68,6 +118,19 @@ GtMagritteModelExamples >> basicPersonObject [
 	^ aPerson
 ]
 
+{ #category : #'examples - person' }
+GtMagritteModelExamples >> basicPersonWithExtraActionsObject [
+
+	<gtExample>
+	| aPerson |
+	aPerson := GtMagritteDummyPersonWithExtraActions new.
+
+	self assert: aPerson name isNil.
+	self assert: aPerson addresses isEmpty.
+
+	^ aPerson
+]
+
 { #category : #'examples - broken object' }
 GtMagritteModelExamples >> brokenObject [
 
@@ -89,6 +152,41 @@ GtMagritteModelExamples >> personObjectWithTwoAddresses [
 	<gtExample>
 	| aPerson anAddressOne anAddressTwo |
 	aPerson := self basicPersonObject.
+
+	aPerson name: 'Adélka'.
+	anAddressOne := self primaryAddressObject.
+	anAddressTwo := self addressTwoObject.
+	aPerson addresses: { 
+			anAddressOne.
+			anAddressTwo }.
+
+	self assert: aPerson name equals: 'Adélka'.
+	self assert: aPerson addresses size equals: 2.
+
+	^ aPerson
+]
+
+{ #category : #'examples - person' }
+GtMagritteModelExamples >> personWithExtraActionsObject [
+
+	<gtExample>
+	| aPerson |
+	aPerson := self basicPersonWithExtraActionsObject.
+
+	aPerson name: 'Adélka'.
+
+	self assert: aPerson name equals: 'Adélka'.
+	self assert: aPerson addresses size equals: 0.
+
+	^ aPerson
+]
+
+{ #category : #'examples - person' }
+GtMagritteModelExamples >> personWithExtraActionsObjectWithTwoAddresses [
+
+	<gtExample>
+	| aPerson anAddressOne anAddressTwo |
+	aPerson := self basicPersonWithExtraActionsObject.
 
 	aPerson name: 'Adélka'.
 	anAddressOne := self primaryAddressObject.

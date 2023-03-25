@@ -30,10 +30,12 @@ GtMagritteMemento >> cache [
 
 { #category : #actions }
 GtMagritteMemento >> commit [
-
-	super commit.
+	<return: #TAsyncFuture>
+	super commit.	
 	self push: self cache.
-	self reset
+	self reset.
+	
+	^ self overallStatus observeNext next
 ]
 
 { #category : #private }
@@ -74,6 +76,26 @@ GtMagritteMemento >> debugValidateValue: aValue [
 		stepIntoUntil: [ :currentContext | currentContext method == aCompiledMethod ].
 
 	Smalltalk tools debugger openOn: aDebugSession withFullView: true
+]
+
+{ #category : #'gt - extensions' }
+GtMagritteMemento >> gtActionsFor: aView [
+	<gtView>
+	^ aView columnedList
+		title: 'Actions';
+		priority: 12;
+		items: [ self magritteActions sorted: [ :a :b | a priority < b priority ] ];
+		column: 'Priority'
+			text: #priority
+			width: 50;
+		column: 'Icon'
+			icon: [ :anAction | anAction blocIcon ifNotNil: #asElement ifNil: [ BlElement new size: 0 @ 0 ] ];
+		column: 'Label' text: #label;
+		column: 'Is Toolbar Action'
+			text: [ :anAction | 
+				anAction isToolbarAction
+					ifTrue: [ 'yes' asRopedText ]
+					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
 ]
 
 { #category : #'gt - extensions' }
@@ -224,6 +246,11 @@ GtMagritteMemento >> initialize [
 ]
 
 { #category : #accessing }
+GtMagritteMemento >> magritteActions [
+	^ self model magritteActions
+]
+
+{ #category : #accessing }
 GtMagritteMemento >> overallStatus [
 
 	<return: #AsyncObservableValue of: #GtMagritteOverallStatus>
@@ -288,8 +315,11 @@ GtMagritteMemento >> readUsing: aDescription [
 
 { #category : #actions }
 GtMagritteMemento >> reset [
+	<return: #TAsyncFuture>
 	super reset.
 	self setCache: self pull.
+
+	^ self overallStatus observeNext next
 ]
 
 { #category : #private }
@@ -402,6 +432,7 @@ GtMagritteMemento >> validators [
 GtMagritteMemento >> write: anObject using: aDescription [
 	"must only be called in UI thread"
 
+	<return: #TAsyncFuture>
 	| anObservable aNewValue |
 	anObservable := self readObservableValueUsing: aDescription.
 	aNewValue := anObservable valueOrNil copyWithCurrentValue: anObject.

@@ -128,6 +128,7 @@ GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento us
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newCancelButton [
 	^ GtMagritteButtonWithIconAction new
+		priority: 2;
 		icon: BrGlamorousVectorIcons cancel;
 		tooltip: 'Cancel';
 		installOn: [ :aModel :aButton :aMemento | 
@@ -143,21 +144,7 @@ GtMagritteBuilderUtility class >> newCancelButton [
 		action: [ :aModel :aButton :aMemento | 
 			aButton
 				enqueueTask: (BlPromiseTask new
-						promise: [ [ aMemento reset.
-							(aModel magritteActions select: #isResetAction)
-								do: [ :anAction | 
-									anAction action
-										cull: aModel
-										cull: aButton
-										cull: aMemento ] ]
-								on: Error
-								do: [ :anError | 
-									(aModel magritteActions select: #isResetAction)
-										do: [ :anAction | 
-											anAction onErrorAction
-												cull: aModel
-												cull: aButton
-												cull: aMemento ] ] ] asAsyncFuture await) ]
+						promise: [ aMemento reset ] asAsyncFuture await) ]
 ]
 
 { #category : #'api - ui' }
@@ -455,6 +442,7 @@ GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newSaveButton [
 	^ GtMagritteButtonWithIconAction new
+		priority: 1;
 		icon: BrGlamorousVectorIcons accept;
 		tooltip: 'Save';
 		installOn: [ :aModel :aButton :aMemento | 
@@ -472,21 +460,7 @@ GtMagritteBuilderUtility class >> newSaveButton [
 		action: [ :aModel :aButton :aMemento | 
 			aButton
 				enqueueTask: (BlPromiseTask new
-						promise: [ [ aMemento commit.
-							(aModel magritteActions select: #isCommitAction)
-								do: [ :anAction | 
-									anAction action
-										cull: aModel
-										cull: aButton
-										cull: aMemento ] ]
-								on: Error
-								do: [ :anError | 
-									(aModel magritteActions select: #isCommitAction)
-										do: [ :anAction | 
-											anAction onErrorAction
-												cull: aModel
-												cull: aButton
-												cull: aMemento ] ] ] asAsyncFuture await) ]
+						promise: [ aMemento commit ] asAsyncFuture await) ]
 ]
 
 { #category : #'private - building' }
