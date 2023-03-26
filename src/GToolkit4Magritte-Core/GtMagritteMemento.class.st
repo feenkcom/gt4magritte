@@ -238,7 +238,7 @@ GtMagritteMemento >> initialize [
 	cache := Dictionary new.
 	validators := Dictionary new.
 	subscriptions := Dictionary new.
-	internalStatus := AsyncObservableValue new.
+	internalStatus := self newObservable.
 	overallStatus := (internalStatus observe map: [ :aValidationResult | 
 		                  self computeOverallStatus ]) asAsyncObservable
 ]
@@ -246,6 +246,13 @@ GtMagritteMemento >> initialize [
 { #category : #accessing }
 GtMagritteMemento >> magritteActions [
 	^ self model magritteActions
+]
+
+{ #category : #private }
+GtMagritteMemento >> newObservable [
+	^ AsyncObservableValue executionConfiguration:
+		(AsyncFutureExecutionConfiguration new 
+			customGroup: #Magritte)
 ]
 
 { #category : #accessing }
@@ -330,7 +337,7 @@ GtMagritteMemento >> setCache: aDictionary [
 			ifPresent: [ :anObservable | anObservable value: aValue ]
 			ifAbsentPut: [ 
 				| anObservable |
-				anObservable := AsyncObservableValue new value: aValue.
+				anObservable := self newObservable value: aValue.
 				self subscribeToModelUsing: aDescription observable: anObservable.
 				anObservable ] ].
 
