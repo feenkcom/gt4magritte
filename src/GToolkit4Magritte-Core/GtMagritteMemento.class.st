@@ -33,9 +33,7 @@ GtMagritteMemento >> commit [
 	<return: #TAsyncFuture>
 	super commit.	
 	self push: self cache.
-	self reset.
-	
-	^ self overallStatus observeNext next
+	^ self reset
 ]
 
 { #category : #private }
@@ -293,9 +291,9 @@ GtMagritteMemento >> push: aDictionary [
 		(aDescription isVisible and: [ 
 			 aDescription isReadOnly not and: [ 
 				 anObservable valueOrNil isChanged ] ]) ifTrue: [ 
-			self model
-				write: anObservable valueOrNil currentValue
-				using: aDescription ] ]
+					self model
+						write: anObservable valueOrNil currentValue
+						using: aDescription ] ]
 ]
 
 { #category : #actions }

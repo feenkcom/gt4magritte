@@ -114,6 +114,8 @@ GtMagritteViewModel >> asElement [
 						build.
 					self onElementCreated cull: theFrame ] ].
 
+	aFrame asyncFuture
+		executionConfiguration: (AsyncFutureExecutionConfiguration new customGroup: #Magritte).
 	aFrame asyncFuture future: self mementoFuture.
 
 	^ aFrame

@@ -158,12 +158,18 @@ GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescripti
 				sink: AsyncPeekSink new;
 				whenUpdate: [ :theCheckbox :aSink | theCheckbox checked: aSink value currentValue ].
 			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ];
-		whenCheckedDo: [ aCheckbox
-				enqueueTask: (BlPromiseTask new
-						promise: (aMemento write: true using: aDescription) asAsyncPromise) ];
-		whenUncheckedDo: [ aCheckbox
-				enqueueTask: (BlPromiseTask new
-						promise: (aMemento write: false using: aDescription) asAsyncPromise) ];
+		whenCheckedDo: [ 
+			self 
+				write: true 
+				using: aDescription 
+				memento: aMemento 
+				element: aCheckbox ];
+		whenUncheckedDo: [ 
+			self 
+				write: false 
+				using: aDescription 
+				memento: aMemento 
+				element: aCheckbox ];
 		margin: (BlInsets
 				top: 0
 				right: 0
@@ -188,9 +194,11 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento
 
 	aFileBrowser
 		okAction: [ :aFileReference | 
-			aDropdown
-				enqueueTask: (BlPromiseTask new
-						promise: (aMemento write: aFileReference using: aDescription) asAsyncPromise).
+			self 
+				write: aFileReference 
+				using: aDescription 
+				memento: aMemento 
+				element: aDropdown.
 
 			aDropdown
 				enqueueTask: (BlTaskAction new
@@ -265,11 +273,11 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 	anEditor editor
 		when: BrTextEditorModifiedEvent
 		do: [ :anEvent | 
-			anEditor enqueueTask: (BlPromiseTask new promise: (aMemento
-				write: ((aDescription isKindOf: GtMATextDescription)
-						ifTrue: [ anEvent text copy ]
-						ifFalse: [ anEvent text asString ])
-				using: aDescription) asAsyncPromise) ].
+			self 
+				writeText: anEvent text 
+				using: aDescription 
+				memento: aMemento 
+				element: anEditor ].
 
 	^ anEditor
 ]
@@ -409,13 +417,11 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 	anEditor editor
 		when: BrTextEditorModifiedEvent
 		do: [ :anEvent | 
-			anEditor
-				enqueueTask: (BlPromiseTask new
-						promise: (aMemento
-								write: ((aDescription isKindOf: GtMATextDescription)
-										ifTrue: [ anEvent text ]
-										ifFalse: [ anEvent text asString ])
-								using: aDescription) asAsyncPromise) ].
+			self 
+				writeText: anEvent text 
+				using: aDescription 
+				memento: aMemento 
+				element: anEditor ].
 
 	^ anEditor
 ]
@@ -480,10 +486,15 @@ GtMagritteBuilderUtility class >> newSingleOptionDropdownContent: aLabel memento
 				anEvent
 					selectedDo: [ :anInterval | 
 						| selectedObject |
-						selectedObject := aWidgetElement viewModel itemAt: anInterval first.
-						aLabel
-							enqueueTask: (BlPromiseTask new
-									promise: (aMemento write: selectedObject using: aDescription) asAsyncPromise).
+						selectedObject := aWidgetElement viewModel 
+							itemAt: anInterval first.
+						
+						self 
+							write: selectedObject 
+							using: aDescription 
+							memento: aMemento 
+							element: aLabel.
+						
 						aLabel fireEvent: BrDropdownHideWish new ] ]
 ]
 
@@ -684,4 +695,31 @@ GtMagritteBuilderUtility class >> removeItem: anItem memento: aMemento descripti
 	aNewCollection := aValue currentValue copyWithout: anItem.
 	aNewCollection = aValue currentValue ifFalse: [ 
 		anObservable value: (aValue copyWithCurrentValue: aNewCollection) ]
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> write: aValue using: aDescription memento: aMemento element: anElement [
+	| aFuture aPromise |
+	aFuture := aMemento write: aValue using: aDescription.
+	aPromise := aFuture await: (
+		AsyncFutureExecutionConfiguration new 
+			customGroup: #Magritte).
+
+	anElement enqueueTask: (BlPromiseTask new promise: aPromise).
+
+	^ aPromise
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> writeText: aText using: aDescription memento: aMemento element: anElement [
+	| aValue |
+	aValue := (aDescription isKindOf: GtMATextDescription)
+			ifTrue: [ aText copy ]
+			ifFalse: [ aText asString ].
+
+	^ self
+		write: aValue
+		using: aDescription
+		memento: aMemento
+		element: anElement
 ]

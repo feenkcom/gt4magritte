@@ -97,6 +97,20 @@ GtMagritteValue >> originalValue: anObject [
 ]
 
 { #category : #accessing }
+GtMagritteValue >> printOn: aStream [
+	super printOn: aStream.
+
+	self description ifNil: [ ^ self ].
+
+	aStream
+		nextPut: $(;
+		nextPutAll: self description label asString;
+		nextPutAll: '=';
+		nextPutAll: self currentValue asString;
+		nextPut: $)
+]
+
+{ #category : #accessing }
 GtMagritteValue >> validation [
 
 	^ validation

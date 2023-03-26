@@ -57,18 +57,22 @@ GtMagritteAddItemViewModel >> memento: anObject [
 
 { #category : #'private - event handling' }
 GtMagritteAddItemViewModel >> onClick: anEvent [
-
 	| aNewItem anExistingItems aNewItems |
 	self memento ifNil: [ ^ self ].
 	self description ifNil: [ ^ self ].
 	self stencil ifNil: [ ^ self ].
 
-	aNewItem := self stencil create.
-
+	aNewItem := self stencil create.	
+	
 	"Update memento"
 	anExistingItems := self memento readUsing: self description.
 	aNewItems := anExistingItems copyWith: aNewItem.
-	self memento write: aNewItems using: self description
+
+	GtMagritteBuilderUtility
+		write: aNewItems
+		using: self description
+		memento: self memento
+		element: anEvent currentTarget
 ]
 
 { #category : #accessing }

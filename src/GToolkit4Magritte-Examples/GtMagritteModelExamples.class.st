@@ -305,23 +305,27 @@ GtMagritteModelExamples >> simpleBaselinesDescription [
 						aTagger
 							when: BrTaggerAddTagRequest
 							do: [ :aRequest | 
-								aTagger
-									enqueueTask: (BlPromiseTask new
-											promise: (aMemento
-													write: ((aTagger tags collect: #name)
-															add: aRequest tag name;
-															yourself)
-													using: aDescription) asAsyncPromise) ].
+								| aValue |
+								aValue := (aTagger tags collect: #name)
+											add: aRequest tag name;
+											yourself.
+								GtMagritteBuilderUtility
+									write: aValue 
+									using: aDescription 
+									memento: aMemento 
+									element: aTagger ].
 						aTagger
 							when: BrTaggerRemoveTagRequest
 							do: [ :aRequest | 
-								aTagger
-									enqueueTask: (BlPromiseTask new
-											promise: (aMemento
-													write: ((aTagger tags collect: #name)
-															remove: aRequest tag name;
-															yourself)
-													using: aDescription) asAsyncPromise) ].
+								| aValue |
+								aValue := (aTagger tags collect: #name)
+											remove: aRequest tag name;
+											yourself.
+								GtMagritteBuilderUtility
+									write: aValue 
+									using: aDescription 
+									memento: aMemento 
+									element: aTagger ].
 						aTagger
 							withAsyncSinkDo: [ :anElementSink | 
 								anElementSink

@@ -2,7 +2,6 @@ Class {
 	#name : #GtMagritteActionExecutor,
 	#superclass : #Object,
 	#instVars : [
-		'isInUIProcess',
 		'element',
 		'action',
 		'memento',
@@ -10,7 +9,8 @@ Class {
 		'isWithFutureResponse',
 		'object',
 		'isWithCallbacks',
-		'isWithReset'
+		'isWithReset',
+		'usedProcess'
 	],
 	#category : #'GToolkit4Magritte-Core-Support'
 }
@@ -35,7 +35,7 @@ GtMagritteActionExecutor >> attachFutureTask: anAsyncFuture [
 
 { #category : #accessing }
 GtMagritteActionExecutor >> beInUIProcess [
-	^ isInUIProcess := true
+	usedProcess := GtMagritteActionExecutorUsedProcess uiProcess
 ]
 
 { #category : #accessing }
@@ -86,9 +86,7 @@ GtMagritteActionExecutor >> element: anObject [
 
 { #category : #'api - execution' }
 GtMagritteActionExecutor >> execute [
-	self isInUIProcess
-		ifTrue: [ self executeInUIProcess ]
-		ifFalse: [ self executeInActiveProcess ]
+	self usedProcess executeAction: self.
 ]
 
 { #category : #'private - execution' }
@@ -163,11 +161,6 @@ GtMagritteActionExecutor >> executeSuccessCallbacks: aResult [
 ]
 
 { #category : #testing }
-GtMagritteActionExecutor >> isInUIProcess [
-	^ isInUIProcess ifNil: [ true ]
-]
-
-{ #category : #testing }
 GtMagritteActionExecutor >> isWithCallbacks [
 	^ isWithCallbacks ifNil: [ false ]
 ]
@@ -207,4 +200,9 @@ GtMagritteActionExecutor >> reset [
 	element := nil.
 	memento := nil.
 	description := nil
+]
+
+{ #category : #accessing }
+GtMagritteActionExecutor >> usedProcess [
+	^ usedProcess ifNil: [ GtMagritteActionExecutorUsedProcess default  ]
 ]
