@@ -54,10 +54,15 @@ MAActionDescription >> beAlwaysEnabled [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MAActionDescription >> beDisabledOnExecution [
+MAActionDescription >> beDisabledOnActive [
 	self onOverallStatusChanged: (GtMagritteBasicAction new
 			action: [ :aStatus :aButton :aMemento :aDescription | 
-				aButton enabled: aStatus isExecuting not ])
+				aButton enabled: aStatus isActive not ])
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> beDisabledOnExecution [
+	self beDisabledOnActive
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
