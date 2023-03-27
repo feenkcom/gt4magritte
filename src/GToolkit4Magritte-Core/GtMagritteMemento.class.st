@@ -223,53 +223,6 @@ GtMagritteMemento >> gtCacheFor: aView [
 ]
 
 { #category : #'gt - extensions' }
-GtMagritteMemento >> gtExecutionStatusFor: aView [
-	<gtView>
-	self cache ifNil: [ ^ aView empty ].
-
-	^ aView columnedList
-		title: 'Execution Status';
-		priority: 12;
-		items: [ { self executionStatus } ];
-		column: 'Name'
-			stencil: [ :anObservable | 
-				| aLabel |
-				aLabel := BrLabel new aptitude: BrGlamorousLabelAptitude.
-
-				aLabel
-					withAsyncSinkDo: [ :anElementSink | 
-						anElementSink
-							sink: AsyncPeekSink new;
-							whenUpdate: [ :theLabel :aSink | 
-								| aValue |
-								aValue := aSink value.
-
-								theLabel text: (aValue ifNotNil: #label ifNil: [ '?' ]) ].
-						anObservable observe: anElementSink ].
-
-				aLabel ];
-		column: 'Type'
-			stencil: [ :anObservable | 
-				| aLabel |
-				aLabel := BrLabel new aptitude: BrGlamorousLabelAptitude.
-
-				aLabel
-					withAsyncSinkDo: [ :anElementSink | 
-						anElementSink
-							sink: AsyncPeekSink new;
-							whenUpdate: [ :theLabel :aSink | 
-								| aValue |
-								aValue := aSink value.
-
-								theLabel text: (aValue ifNotNil: #className ifNil: [ '?' ]) ].
-						anObservable observe: anElementSink ].
-
-				aLabel ];
-		send: #valueOrNil;
-		actionUpdateButton
-]
-
-{ #category : #'gt - extensions' }
 GtMagritteMemento >> gtOverallStatusFor: aView [
 	<gtView>
 	self cache ifNil: [ ^ aView empty ].
