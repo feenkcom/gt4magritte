@@ -55,7 +55,8 @@ GtMagritteMemento >> computeOverallStatus [
 
 { #category : #private }
 GtMagritteMemento >> computeOverallStatus: anInternalStatus [
-	self computeOverallStatus
+	<return: #GtMagritteOverallStatus>
+	^ self computeOverallStatus
 ]
 
 { #category : #private }
@@ -222,13 +223,13 @@ GtMagritteMemento >> gtCacheFor: aView [
 ]
 
 { #category : #'gt - extensions' }
-GtMagritteMemento >> gtOverallStatusFor: aView [
+GtMagritteMemento >> gtExecutionStatusFor: aView [
 	<gtView>
 	self cache ifNil: [ ^ aView empty ].
 
 	^ aView columnedList
 		title: 'Execution Status';
-		priority: 11;
+		priority: 12;
 		items: [ { self executionStatus } ];
 		column: 'Name'
 			stencil: [ :anObservable | 
@@ -269,6 +270,19 @@ GtMagritteMemento >> gtOverallStatusFor: aView [
 ]
 
 { #category : #'gt - extensions' }
+GtMagritteMemento >> gtOverallStatusFor: aView [
+	<gtView>
+	self cache ifNil: [ ^ aView empty ].
+
+	^ aView explicit
+		title: 'Status Overview';
+		priority: 11;
+		stencil: [ GtMagritteOverviewElement new
+				memento: self;
+				margin: (BlInsets all: 10) ]
+]
+
+{ #category : #'gt - extensions' }
 GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 	<gtView>
@@ -277,7 +291,7 @@ GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 	^ aView tree
 		  title: 'Subscriptions';
-		  priority: 12;
+		  priority: 13;
 		  items: [ subscriptions keys ];
 		  children: [ :anItem | 
 			  (anItem isKindOf: MADescription)
