@@ -54,6 +54,11 @@ GtMagritteMemento >> computeOverallStatus [
 ]
 
 { #category : #private }
+GtMagritteMemento >> computeOverallStatus: anInternalStatus [
+	self computeOverallStatus
+]
+
+{ #category : #private }
 GtMagritteMemento >> createValueUsing: aDescription [
 
 	^ GtMagritteBuilderUtility
@@ -294,7 +299,6 @@ GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 { #category : #initialization }
 GtMagritteMemento >> initialize [
-
 	super initialize.
 
 	cache := Dictionary new.
@@ -304,8 +308,11 @@ GtMagritteMemento >> initialize [
 	executionStatus value: GtMagritteExecutionStatus inactive.
 	internalStatus := self newObservable.
 	executionStatus observe: internalStatus.
-	overallStatus := (internalStatus observe map: [ :aValidationResult | 
-		                  self computeOverallStatus ]) asAsyncObservable
+	overallStatus := (internalStatus observe
+			map: (MessageSend 
+				receiver: self 
+				selector: #computeOverallStatus:))
+			asAsyncObservable
 ]
 
 { #category : #accessing }
