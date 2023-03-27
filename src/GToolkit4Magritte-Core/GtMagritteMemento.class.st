@@ -425,8 +425,10 @@ GtMagritteMemento >> setCache: aDictionary [
 			ifPresent: [ :theObservable | "ignore" ]
 			ifAbsentPut: [ 
 				| aValidator |
-				aValidator := (anObservable observe map: [ :aValue | 
-					               self validateValue: aValue ]) asAsyncObservable.
+				aValidator := (anObservable observe 
+					map: (MessageSend 
+						receiver: self 
+						selector: #validateValue:)) asAsyncObservable.
 				aValidator observe: internalStatus.
 				aValidator ] ].
 
