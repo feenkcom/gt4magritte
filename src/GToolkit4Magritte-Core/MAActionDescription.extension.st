@@ -48,38 +48,48 @@ MAActionDescription >> asBlockButtonWithMemento: aMemento [
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> beAlwaysEnabled [
-	self onOverallStatusChanged: (GtMagritteActionExecutor new
-			beInUIProcess;
+	self onOverallStatusChanged: (GtMagritteBasicAction new
 			action: [ :aStatus :aButton :aMemento :aDescription | 
 				aButton enabled: true ])
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MAActionDescription >> beEnabledOnChangedAndValidOverallStatus [
-	self
-		onOverallStatusChanged: (GtMagritteActionExecutor new
-				beInUIProcess;
-				action: [ :aStatus :aButton :aMemento :aDescription | 
-					aStatus isChanged
-						ifTrue: [ aButton enabled: aStatus isValid ]
-						ifFalse: [ aButton enabled: false ] ])
+MAActionDescription >> beDisabledOnExecution [
+	self onOverallStatusChanged: (GtMagritteBasicAction new
+			action: [ :aStatus :aButton :aMemento :aDescription | 
+				aButton enabled: aStatus isExecuting not ])
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> beEnabledAndChangedAndInactiveOverallStatus [
+	self onOverallStatusChanged: (GtMagritteBasicAction new
+			action: [ :aStatus :aButton :aMemento :aDescription | 
+				aStatus isChanged
+					ifTrue: [ aButton enabled: aStatus isInactive ]
+					ifFalse: [ aButton enabled: false ] ])
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> beEnabledAndChangedAndValidAndInactiveOverallStatus [
+	self onOverallStatusChanged: (GtMagritteBasicAction new
+			action: [ :aStatus :aButton :aMemento :aDescription | 
+				aStatus isChanged
+					ifTrue: [ aButton enabled: aStatus isValidAndInactive ]
+					ifFalse: [ aButton enabled: false ] ])
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> beEnabledOnChangedOverallStatus [
-	self
-		onOverallStatusChanged: (GtMagritteActionExecutor new
-				beInUIProcess;
-				action: [ :aStatus :aButton :aMemento :aDescription | 
-					aStatus isChanged
-						ifTrue: [ aButton enabled: true ]
-						ifFalse: [ aButton enabled: false ] ])
+	self onOverallStatusChanged: (GtMagritteBasicAction new
+			action: [ :aStatus :aButton :aMemento :aDescription | 
+				aStatus isChanged
+					ifTrue: [ aButton enabled: true ]
+					ifFalse: [ aButton enabled: false ] ])
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> beEnabledOnValidOverallStatus [
-	self onOverallStatusChanged: (GtMagritteActionExecutor new
-			beInUIProcess;
+	self onOverallStatusChanged: (GtMagritteBasicAction new
 			action: [ :aStatus :aButton :aMemento :aDescription | 
 				aButton enabled: aStatus isValid ])
 ]

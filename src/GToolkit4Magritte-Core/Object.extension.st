@@ -49,12 +49,11 @@ Object >> magritteAcceptAction [
 		label: 'Accept';
 		isLabelVisible: false;
 		blocIcon: BrGlamorousVectorIcons accept;
-		action: (GtMagritteActionExecutor new
-				beInUIProcess;
+		action: (GtMagritteAction new
+				beInFutureProcess;
 				beWithFutureResponse;
-				beWithCallbacks;
 				action: [ :aModel :aButton :aMemento :aDescription | aMemento commit ]);
-		beEnabledOnChangedAndValidOverallStatus;
+		beEnabledAndChangedAndValidAndInactiveOverallStatus;
 		beToolbarAction
 ]
 
@@ -66,11 +65,10 @@ Object >> magritteCancelAction [
 		label: 'Cancel';
 		isLabelVisible: false;
 		blocIcon: BrGlamorousVectorIcons cancel;
-		action: (GtMagritteActionExecutor new
-				beInUIProcess;
+		action: (GtMagritteAction new
+				beInFutureProcess;
 				beWithFutureResponse;
-				beWithCallbacks;
 				action: [ :aModel :aButton :aMemento :aDescription | aMemento reset ]);
-		beEnabledOnChangedOverallStatus;
+		beEnabledAndChangedAndInactiveOverallStatus;
 		beToolbarAction
 ]

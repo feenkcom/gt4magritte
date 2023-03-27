@@ -6,7 +6,8 @@ Class {
 		'validators',
 		'overallStatus',
 		'internalStatus',
-		'subscriptions'
+		'subscriptions',
+		'executionStatus'
 	],
 	#category : #'GToolkit4Magritte-Core-Models'
 }
@@ -48,7 +49,8 @@ GtMagritteMemento >> computeOverallStatus [
 
 	^ GtMagritteOverallStatus new
 		  isValid: isValid;
-		  isChanged: isUnchanged not
+		  isChanged: isUnchanged not;
+		  executionStatus: executionStatus valueOrNil
 ]
 
 { #category : #private }
@@ -76,12 +78,25 @@ GtMagritteMemento >> debugValidateValue: aValue [
 	Smalltalk tools debugger openOn: aDebugSession withFullView: true
 ]
 
+{ #category : #actions }
+GtMagritteMemento >> executionStatus [
+	<return: #AsyncObservableValue of: #GtMagritteExecutionStatus>
+	^ executionStatus
+]
+
+{ #category : #actions }
+GtMagritteMemento >> executionStatus: aGtMagritteExecutionStatus [
+	executionStatus valueOrNil = aGtMagritteExecutionStatus ifTrue: [ ^ self ].
+
+	executionStatus value: aGtMagritteExecutionStatus
+]
+
 { #category : #'gt - extensions' }
 GtMagritteMemento >> gtActionsFor: aView [
 	<gtView>
 	^ aView columnedList
 		title: 'Actions';
-		priority: 12;
+		priority: 13;
 		items: [ self magritteActions sorted: [ :a :b | a priority < b priority ] ];
 		column: 'Priority'
 			text: #priority
@@ -202,6 +217,53 @@ GtMagritteMemento >> gtCacheFor: aView [
 ]
 
 { #category : #'gt - extensions' }
+GtMagritteMemento >> gtOverallStatusFor: aView [
+	<gtView>
+	self cache ifNil: [ ^ aView empty ].
+
+	^ aView columnedList
+		title: 'Execution Status';
+		priority: 11;
+		items: [ { self executionStatus } ];
+		column: 'Name'
+			stencil: [ :anObservable | 
+				| aLabel |
+				aLabel := BrLabel new aptitude: BrGlamorousLabelAptitude.
+
+				aLabel
+					withAsyncSinkDo: [ :anElementSink | 
+						anElementSink
+							sink: AsyncPeekSink new;
+							whenUpdate: [ :theLabel :aSink | 
+								| aValue |
+								aValue := aSink value.
+
+								theLabel text: (aValue ifNotNil: #label ifNil: [ '?' ]) ].
+						anObservable observe: anElementSink ].
+
+				aLabel ];
+		column: 'Type'
+			stencil: [ :anObservable | 
+				| aLabel |
+				aLabel := BrLabel new aptitude: BrGlamorousLabelAptitude.
+
+				aLabel
+					withAsyncSinkDo: [ :anElementSink | 
+						anElementSink
+							sink: AsyncPeekSink new;
+							whenUpdate: [ :theLabel :aSink | 
+								| aValue |
+								aValue := aSink value.
+
+								theLabel text: (aValue ifNotNil: #className ifNil: [ '?' ]) ].
+						anObservable observe: anElementSink ].
+
+				aLabel ];
+		send: #valueOrNil;
+		actionUpdateButton
+]
+
+{ #category : #'gt - extensions' }
 GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 	<gtView>
@@ -210,7 +272,7 @@ GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 	^ aView tree
 		  title: 'Subscriptions';
-		  priority: 11;
+		  priority: 12;
 		  items: [ subscriptions keys ];
 		  children: [ :anItem | 
 			  (anItem isKindOf: MADescription)
@@ -238,7 +300,10 @@ GtMagritteMemento >> initialize [
 	cache := Dictionary new.
 	validators := Dictionary new.
 	subscriptions := Dictionary new.
+	executionStatus := self newObservable.
+	executionStatus value: GtMagritteExecutionStatus inactive.
 	internalStatus := self newObservable.
+	executionStatus observe: internalStatus.
 	overallStatus := (internalStatus observe map: [ :aValidationResult | 
 		                  self computeOverallStatus ]) asAsyncObservable
 ]
@@ -250,9 +315,8 @@ GtMagritteMemento >> magritteActions [
 
 { #category : #private }
 GtMagritteMemento >> newObservable [
-	^ AsyncObservableValue executionConfiguration:
-		(AsyncFutureExecutionConfiguration new 
-			customGroup: #Magritte)
+	^ AsyncObservableValue executionConfiguration: 
+		GtMagritteBuilderUtility executionConfigutation
 ]
 
 { #category : #accessing }

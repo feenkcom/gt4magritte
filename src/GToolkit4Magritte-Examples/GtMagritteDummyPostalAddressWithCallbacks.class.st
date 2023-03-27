@@ -34,16 +34,49 @@ GtMagritteDummyPostalAddressWithCallbacks >> initialize [
 GtMagritteDummyPostalAddressWithCallbacks >> magritteAcceptAction [
 	<magritteActionDescription>
 	^ super magritteAcceptAction
-		onSuccessCallback: [ :aMemento | successAcceptCallbacks add: aMemento ];
-		onErrorCallback: [ :aMemento | errorAcceptCallbacks add: aMemento ]
+		onSuccessCallback: (GtMagritteCallback new
+			action: [ :aModel :aButton :aMemento :aDescription | successAcceptCallbacks add: aMemento ]);
+		onErrorCallback: (GtMagritteCallback new
+			action: [ :aModel :aButton :aMemento :aDescription | errorAcceptCallbacks add: aMemento ])
 ]
 
 { #category : #'magritte-accessing' }
 GtMagritteDummyPostalAddressWithCallbacks >> magritteCancelAction [
 	<magritteActionDescription>
 	^ super magritteCancelAction
-		onSuccessCallback: [ :aMemento | successCancelCallbacks add: aMemento ];
-		onErrorCallback: [ :aMemento | errorCancelCallbacks add: aMemento ]
+		onSuccessCallback: (GtMagritteCallback new
+			action: [ :aModel :aButton :aMemento :aDescription | successCancelCallbacks add: aMemento ]);
+		onErrorCallback: (GtMagritteCallback new
+			action: [ :aModel :aButton :aMemento :aDescription | errorCancelCallbacks add: aMemento ])
+]
+
+{ #category : #'magritte-accessing' }
+GtMagritteDummyPostalAddressWithCallbacks >> magritteDelayedAcceptAction [
+	<magritteActionDescription>
+	^ self magritteAcceptAction
+		priority: 15;
+		label: 'Delayed Accept';
+		isLabelVisible: true;
+		action: (GtMagritteAction new
+				beInFutureProcess;
+				beWithFutureResponse;
+				action: [ :aModel :aButton :aMemento :aDescription | 
+					aMemento commit.
+					3 seconds wait ])
+]
+
+{ #category : #'magritte-accessing' }
+GtMagritteDummyPostalAddressWithCallbacks >> magritteErrorAcceptAction [
+	<magritteActionDescription>
+	^ MAActionDescription new
+		priority: 16;
+		label: 'Error Action';
+		blocIcon: BrGlamorousVectorIcons debug;
+		action: (GtMagritteAction new
+				beInUIProcess;
+				action: [ :aModel :aButton :aMemento :aDescription | 
+					3 / 0 ]);
+		beToolbarAction
 ]
 
 { #category : #'magritte-accessing' }
@@ -51,10 +84,12 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteInspectAction [
 	<magritteActionDescription>
 	^ MAActionDescription new
 		priority: 20;
-		label: 'New Inspect';
+		label: 'Inspect';
 		blocIcon: BrGlamorousVectorIcons inspect;
-		action: [ :aModel :aButton :aMemento :aDescription | 
-			aButton inUIProcessDo: [ aButton phlow spawnObject: aMemento  ] ];
+		action: (GtMagritteAction new
+				beInUIProcess;
+				action: [ :aModel :aButton :aMemento :aDescription | 
+					aButton phlow spawnObject: aMemento ]);
 		beToolbarAction
 ]
 

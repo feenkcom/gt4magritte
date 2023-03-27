@@ -94,6 +94,11 @@ GtMagritteBuilderUtility class >> defaultThickness [
 	^ 3
 ]
 
+{ #category : #'api - memento' }
+GtMagritteBuilderUtility class >> executionConfigutation [
+	^ AsyncFutureExecutionConfiguration new customGroup: #Magritte
+]
+
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
@@ -280,6 +285,27 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 				element: anEditor ].
 
 	^ anEditor
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newExecutionStatusWithMemento: aMemento [
+	| anElement |
+	anElement := BrLabel new
+			aptitude: (BrGlamorousLabelAptitude new glamorousCodeTinySize);
+			text: '';
+			hFitContentLimited;
+			vFitContent;
+			visibility: BlVisibility gone.
+
+	anElement
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeekSink new;
+				whenUpdate: [ :aLabel :aSink | 
+					aSink value updateToolbarExecutionStatus: aLabel ].
+			aMemento executionStatus observe: anElementSink ].
+
+	^ anElement
 ]
 
 { #category : #'api - ui' }
@@ -514,7 +540,7 @@ GtMagritteBuilderUtility class >> newSingleOptionDropdownMemento: aMemento using
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
-	| aToolbar |
+	| aToolbar anExecutionStatus |
 	aToolbar := BrToolbar new
 			aptitude: BrGlamorousToolbarAptitude new;
 			fitContent;
@@ -529,6 +555,9 @@ GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aM
 			| aButton |
 			aButton := eachAction asBlockButtonWithMemento: aMemento.
 			aToolbar addItem: aButton ].
+			
+	anExecutionStatus := self newExecutionStatusWithMemento: aMemento.
+	aToolbar addChild: anExecutionStatus as: GtMagritteExecutionStatusElementId.
 
 	^ aToolbar
 ]
@@ -702,8 +731,7 @@ GtMagritteBuilderUtility class >> write: aValue using: aDescription memento: aMe
 	| aFuture aPromise |
 	aFuture := aMemento write: aValue using: aDescription.
 	aPromise := aFuture await: (
-		AsyncFutureExecutionConfiguration new 
-			customGroup: #Magritte).
+		GtMagritteBuilderUtility executionConfigutation).
 
 	anElement enqueueTask: (BlPromiseTask new promise: aPromise).
 

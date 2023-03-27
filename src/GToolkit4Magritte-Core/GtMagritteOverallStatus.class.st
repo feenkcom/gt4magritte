@@ -3,10 +3,27 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'isChanged',
-		'isValid'
+		'isValid',
+		'executionStatus'
 	],
 	#category : #'GToolkit4Magritte-Core-Models'
 }
+
+{ #category : #accessing }
+GtMagritteOverallStatus >> executionStatus [
+	<return: #GtMagritteExecutionStatus>
+	^ executionStatus
+]
+
+{ #category : #accessing }
+GtMagritteOverallStatus >> executionStatus: aGtMagritteExecutionStatus [
+	executionStatus := aGtMagritteExecutionStatus
+]
+
+{ #category : #accessing }
+GtMagritteOverallStatus >> isActive [
+	^ self executionStatus isActive
+]
 
 { #category : #accessing }
 GtMagritteOverallStatus >> isChanged [
@@ -27,6 +44,16 @@ GtMagritteOverallStatus >> isChangedAndValid [
 ]
 
 { #category : #accessing }
+GtMagritteOverallStatus >> isExecuting [
+	^ self executionStatus isExecuting
+]
+
+{ #category : #accessing }
+GtMagritteOverallStatus >> isInactive [
+	^ self isActive not
+]
+
+{ #category : #accessing }
 GtMagritteOverallStatus >> isValid [
 
 	^ isValid
@@ -36,6 +63,11 @@ GtMagritteOverallStatus >> isValid [
 GtMagritteOverallStatus >> isValid: anObject [
 
 	isValid := anObject
+]
+
+{ #category : #accessing }
+GtMagritteOverallStatus >> isValidAndInactive [
+	^ self isValid and: [ self isInactive ]
 ]
 
 { #category : #printing }
@@ -51,5 +83,7 @@ GtMagritteOverallStatus >> printOn: aStream [
 		print: self isChanged;
 		nextPutAll: ', valid=';
 		print: self isValid;
+		nextPutAll: ', executing=';
+		print: (self executionStatus ifNotNil: #label);
 		nextPut: $)
 ]
