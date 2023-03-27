@@ -11,6 +11,21 @@ Class {
 }
 
 { #category : #accessing }
+GtMagritteDummyPostalAddressWithCallbacks >> descriptionIsFavorite [
+	<magritteDescription>
+	^ MABooleanDescription new
+		label: 'Favorite';
+		comment: 'A buggy description, please do not add #isFavorite:';
+		accessor: #isFavorite;
+		default: false;
+		priority: 15;
+		trueString: 'favorite';
+		falseString: '';
+		blocActionString: 'set as favorite';
+		blocUseDropdown: true
+]
+
+{ #category : #accessing }
 GtMagritteDummyPostalAddressWithCallbacks >> errorAcceptCallbacks [
 	^ errorAcceptCallbacks
 ]
@@ -28,6 +43,13 @@ GtMagritteDummyPostalAddressWithCallbacks >> initialize [
 	errorAcceptCallbacks := OrderedCollection new.
 	successCancelCallbacks := OrderedCollection new.
 	errorCancelCallbacks := OrderedCollection new
+]
+
+{ #category : #accessing }
+GtMagritteDummyPostalAddressWithCallbacks >> isFavorite [
+	"A buggy implementation, please do not add #isFavorite:"
+
+	^ false
 ]
 
 { #category : #'magritte-accessing' }
@@ -61,8 +83,9 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteDelayedAcceptAction [
 				beInFutureProcess;
 				beWithFutureResponse;
 				action: [ :aModel :aButton :aMemento :aDescription | 
+					2 seconds wait.
 					aMemento commit.
-					3 seconds wait ])
+					2 seconds wait ])
 ]
 
 { #category : #'magritte-accessing' }
