@@ -85,10 +85,10 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteAcceptActionWithDefectiveCa
 		isLabelVisible: true;
 		onSuccessCallback: (GtMagritteCallback new
 				action: [ :aModel :aButton :aMemento :aDescription | 
-					self error: 'This success callback failed' ]);
+					self error: 'Success callback failed' ]);
 		onErrorCallback: (GtMagritteCallback new
 				action: [ :aModel :aButton :aMemento :aDescription | 
-					self error: 'This error callback failed' ])
+					self error: 'Error callback failed' ])
 ]
 
 { #category : #'magritte-accessing' }
