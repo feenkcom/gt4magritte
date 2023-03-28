@@ -66,7 +66,8 @@ GtMagritteViewModel >> asElement [
 	aFrame := BrFrame new.
 
 	aFrame
-		fitContent;
+		hFitContentLimited;
+		vFitContent;
 		withAsyncFutureDo: [ :anElementFuture | 
 			anElementFuture
 				whenPending: [ :theContainer | 

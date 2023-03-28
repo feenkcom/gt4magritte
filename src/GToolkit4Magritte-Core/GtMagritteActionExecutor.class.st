@@ -97,21 +97,25 @@ GtMagritteActionExecutor >> executeSuccessCallbacks: aResult [
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> executionAboutToStart [
+	self isWithStatusUpdates ifFalse: [ ^ self ].
 	self memento executionStatus: GtMagritteExecutionStatus executing
 ]
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> executionError: anException [
+	self isWithStatusUpdates ifFalse: [ ^ self ].
 	self memento executionStatus: (GtMagritteExecutionStatus exception: anException)
 ]
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> executionFinished [
+	self isWithStatusUpdates ifFalse: [ ^ self ].
 	self memento executionStatus: GtMagritteExecutionStatus inactive
 ]
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> executionStarted [
+	self isWithStatusUpdates ifFalse: [ ^ self ].
 	self memento executionStatus: GtMagritteExecutionStatus executing
 ]
 

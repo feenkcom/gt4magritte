@@ -167,6 +167,42 @@ GtMagritteByScripterExamples >> addressObjectWithCallbacks [
 ]
 
 { #category : #'examples - address' }
+GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptActionWithDefectiveCallbacks [
+	<gtExample>
+	| aScripter |
+	aScripter := self addressWithCallbacksAndChangedStreet.
+
+	aScripter
+		substeps: 'Unsuccessful cancel of changed street values'
+		do: [ :aStep | 
+			| aStreetId anAcceptId |
+			aStreetId := GtMagritteFieldElementId new
+					description: aScripter model descriptionStreet.
+
+			anAcceptId := GtMagritteActionElementId new
+					description: aScripter model magritteAcceptActionWithDefectiveCallbacks.
+
+			aStep click
+				// anAcceptId;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: false
+				cancelEnabled: false.
+
+			self
+				assert: aStep
+				successAcceptCount: 1
+				errorAcceptCount: 0
+				successCancelCount: 0
+				errorCancelCount: 0 ].
+
+	^ aScripter
+]
+
+{ #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptChangedStreet [
 	<gtExample>
 	| aScripter |
