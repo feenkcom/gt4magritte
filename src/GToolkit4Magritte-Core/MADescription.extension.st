@@ -42,18 +42,6 @@ MADescription >> blocStencil: aStencil [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MADescription >> definingMethod [
-
-	^ self propertyAt: #definingMethod ifAbsent: [ nil ]
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
-MADescription >> definingMethod: aDefiningMethod [
-
-	self propertyAt: #definingMethod put: aDefiningMethod
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
 MADescription >> gtConditionsFor: aView [
 
 	<gtView>
@@ -69,12 +57,6 @@ MADescription >> gtConditionsFor: aView [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MADescription >> hasDefiningMethod [
-
-	^ self hasProperty: #definingMethod
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
 MADescription >> isAlwaysEditable [
 
 	^ self propertyAt: #alwaysEditable ifAbsent: [ false ]
@@ -84,20 +66,6 @@ MADescription >> isAlwaysEditable [
 MADescription >> isWithChangeIndicator [
 
 	^ self propertyAt: #changeIndicator ifAbsent: [ true ]
-]
-
-{ #category : #'*GToolkit4Magritte-Core' }
-MADescription class >> new [
-
-	| anInstance aDefiningMethod |
-	anInstance := super new.
-
-	aDefiningMethod := GtMagritteDefiningMethod fromStack:
-		                   thisContext stack.
-	aDefiningMethod ifNotNil: [ 
-		anInstance definingMethod: aDefiningMethod ].
-
-	^ anInstance
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
