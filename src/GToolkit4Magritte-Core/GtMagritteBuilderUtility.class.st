@@ -370,7 +370,8 @@ GtMagritteBuilderUtility class >> newHorizontalGridContainer [
 	aContainer
 		cellSpacing: 0;
 		columnCount: 2;
-		fitContent.
+		hFitContentLimited;
+		vFitContent.
 
 	^ aContainer
 ]
@@ -543,7 +544,8 @@ GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aM
 	| aToolbar anExecutionStatus |
 	aToolbar := BrToolbar new
 			aptitude: BrGlamorousToolbarAptitude new;
-			fitContent;
+			hFitContentLimited;
+			vFitContent;
 			padding: (BlInsets top: 5 left: -3);
 			constraintsDo: [ :c | 
 				c grid horizontal alignLeft.
