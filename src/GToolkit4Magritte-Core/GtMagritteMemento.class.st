@@ -125,7 +125,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 	^ aView columnedList
 		title: 'Cached Values';
 		priority: 10;
-		items: [ self cache associations ];
+		items: [ self cache associations sorted: [ :a :b | a key priority < b key priority ] ];
 		column: 'Name' text: [ :anAssoc | anAssoc key label ];
 		column: 'Value'
 			stencil: [ :anAssoc | 
