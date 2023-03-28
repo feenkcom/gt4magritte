@@ -98,6 +98,10 @@ GtMagritteActionExecutor >> onExecutionFinished: aResult [
 				self memento executionStatus: 
 					GtMagritteExecutionStatus inactive ]
 			ifNotEmpty: [ :anArray | 
+				"If we execute callbacks asynchronously,
+				the action executor may not be notified on time.
+				As a consequence users will obtain a visual notification
+				of an async callback error."
 				self memento executionStatus: (
 					GtMagritteExecutionStatus callbackExceptions: anArray) ] ]
 ]
