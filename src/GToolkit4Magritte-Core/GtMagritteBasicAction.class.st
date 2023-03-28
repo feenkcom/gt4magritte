@@ -32,3 +32,16 @@ GtMagritteBasicAction >> cull: anObject cull: anElement cull: aMemento cull: aDe
 		description: aDescription;
 		execute
 ]
+
+{ #category : #'gt - extensions' }
+GtMagritteBasicAction >> gtSourceCodeFor: aView [
+	<gtView>
+	
+	(self action respondsTo: #gtSourceCodeFor:) ifFalse: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Source code';
+		priority: 1;
+		object: [ self action ];
+		view: #gtSourceCodeFor:
+]

@@ -59,7 +59,36 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteAcceptAction [
 		onSuccessCallback: (GtMagritteCallback new
 			action: [ :aModel :aButton :aMemento :aDescription | successAcceptCallbacks add: aMemento ]);
 		onErrorCallback: (GtMagritteCallback new
-			action: [ :aModel :aButton :aMemento :aDescription | errorAcceptCallbacks add: aMemento ])
+			action: [ :aModel :aButton :aMemento :aDescription |
+			errorAcceptCallbacks add: aMemento ])
+]
+
+{ #category : #'magritte-accessing' }
+GtMagritteDummyPostalAddressWithCallbacks >> magritteAcceptActionWithBlockCallbacks [
+	<magritteActionDescription>
+	^ self magritteAcceptAction
+		priority: 18;
+		label: 'Block Callbacks';
+		isLabelVisible: true;
+		onSuccessCallback: [ :aModel :aButton :aMemento :aDescription |
+			successAcceptCallbacks add: aMemento ];
+		onErrorCallback: [ :aModel :aButton :aMemento :aDescription |
+			errorAcceptCallbacks add: aMemento ]
+]
+
+{ #category : #'magritte-accessing' }
+GtMagritteDummyPostalAddressWithCallbacks >> magritteAcceptActionWithDefectiveCallbacks [
+	<magritteActionDescription>
+	^ self magritteAcceptAction
+		priority: 20;
+		label: 'Defective Callbacks';
+		isLabelVisible: true;
+		onSuccessCallback: (GtMagritteCallback new
+				action: [ :aModel :aButton :aMemento :aDescription | 
+					self error: 'Success callback failed' ]);
+		onErrorCallback: (GtMagritteCallback new
+				action: [ :aModel :aButton :aMemento :aDescription | 
+					self error: 'Error callback failed' ])
 ]
 
 { #category : #'magritte-accessing' }
@@ -73,11 +102,39 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteCancelAction [
 ]
 
 { #category : #'magritte-accessing' }
+GtMagritteDummyPostalAddressWithCallbacks >> magritteDefectiveAcceptAction [
+	<magritteActionDescription>
+	^ self magritteAcceptAction
+		priority: 16;
+		label: 'Defective Accept';
+		isLabelVisible: true;
+		action: (GtMagritteAction new
+				beInFutureProcess;
+				action: [ :aModel :aButton :aMemento :aDescription | 
+					3 / 0 ]);
+		beToolbarAction
+]
+
+{ #category : #'magritte-accessing' }
+GtMagritteDummyPostalAddressWithCallbacks >> magritteDefectiveCancelAction [
+	<magritteActionDescription>
+	^ self magritteCancelAction
+		priority: 17;
+		label: 'Defective Cancel';
+		isLabelVisible: true;
+		action: (GtMagritteAction new
+				beInFutureProcess;
+				action: [ :aModel :aButton :aMemento :aDescription | 
+					3 / 0 ]);
+		beToolbarAction
+]
+
+{ #category : #'magritte-accessing' }
 GtMagritteDummyPostalAddressWithCallbacks >> magritteDelayedAcceptAction [
 	<magritteActionDescription>
 	^ self magritteAcceptAction
 		priority: 15;
-		label: 'Delayed Accept';
+		label: 'Delayed';
 		isLabelVisible: true;
 		action: (GtMagritteAction new
 				beInFutureProcess;
@@ -89,24 +146,10 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteDelayedAcceptAction [
 ]
 
 { #category : #'magritte-accessing' }
-GtMagritteDummyPostalAddressWithCallbacks >> magritteErrorAcceptAction [
-	<magritteActionDescription>
-	^ MAActionDescription new
-		priority: 16;
-		label: 'Error Action';
-		blocIcon: BrGlamorousVectorIcons debug;
-		action: (GtMagritteAction new
-				beInUIProcess;
-				action: [ :aModel :aButton :aMemento :aDescription | 
-					3 / 0 ]);
-		beToolbarAction
-]
-
-{ #category : #'magritte-accessing' }
 GtMagritteDummyPostalAddressWithCallbacks >> magritteInspectAction [
 	<magritteActionDescription>
 	^ MAActionDescription new
-		priority: 20;
+		priority: 30;
 		label: 'Inspect';
 		blocIcon: BrGlamorousVectorIcons inspect;
 		action: (GtMagritteAction new

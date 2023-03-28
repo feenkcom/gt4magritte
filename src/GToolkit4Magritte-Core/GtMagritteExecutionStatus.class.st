@@ -10,6 +10,11 @@ GtMagritteExecutionStatus class >> aboutToStart [
 ]
 
 { #category : #'api - factory' }
+GtMagritteExecutionStatus class >> callbackExceptions: aCollection [
+	^ GtMagritteExecutionCallbackExceptionStatus new exceptions: aCollection
+]
+
+{ #category : #'api - factory' }
 GtMagritteExecutionStatus class >> exception: anException [
 	^ GtMagritteExecutionExceptionStatus new exception: anException
 ]

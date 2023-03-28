@@ -71,6 +71,19 @@ GtMagritteBasicActionExecutor >> executeActionWithCallbacks [
 			self onExecutionError: anException ]
 ]
 
+{ #category : #'gt - extensions' }
+GtMagritteBasicActionExecutor >> gtSourceCodeFor: aView [
+	<gtView>
+	
+	(self action respondsTo: #gtSourceCodeFor:) ifFalse: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Source code';
+		priority: 1;
+		object: [ self action ];
+		view: #gtSourceCodeFor:
+]
+
 { #category : #accessing }
 GtMagritteBasicActionExecutor >> memento [
 	^ memento

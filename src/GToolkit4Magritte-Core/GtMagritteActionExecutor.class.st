@@ -1,9 +1,10 @@
 Class {
 	#name : #GtMagritteActionExecutor,
-	#superclass : #GtMagritteBasicActionExecutor,
+	#superclass : #GtMagritteAsyncActionExecutor,
 	#instVars : [
 		'isWithCallbacks',
-		'isWithStatusUpdates'
+		'isWithStatusUpdates',
+		'callbackErrors'
 	],
 	#category : #'GToolkit4Magritte-Core-Actions'
 }
@@ -18,17 +19,20 @@ GtMagritteActionExecutor >> attachFutureTask: anAsyncFuture [
 
 { #category : #execution }
 GtMagritteActionExecutor >> execute [
-	self executionAboutToStart.
-	self usedProcess executeAction: self
+	self isWithStatusUpdates ifTrue: [ 
+		self memento executionStatus: GtMagritteExecutionStatus executing ].
+	super execute
 ]
 
 { #category : #'private - execution' }
-GtMagritteActionExecutor >> executeErrorCallback: aCallback exception: anException [
-	aCallback
-		cull: anException
-		cull: self element
-		cull: self memento
-		cull: self description
+GtMagritteActionExecutor >> executeCallback: aCallback object: anException [
+	GtMagritteCallbackExecutor new 
+		action: aCallback asGtMagritteCallback;
+		object: anException;
+		memento: self memento;
+		description: self description;
+		actionExecutor: self;
+		execute
 ]
 
 { #category : #'private - execution' }
@@ -39,52 +43,8 @@ GtMagritteActionExecutor >> executeErrorCallbacks: anException [
 
 	self description onErrorCallbacks do: [ :aCallback | 
 		self 
-			executeErrorCallback: aCallback 
-			exception: anException ]
-]
-
-{ #category : #execution }
-GtMagritteActionExecutor >> executeInActiveProcess [
-	self executeActionWithCallbacks
-]
-
-{ #category : #execution }
-GtMagritteActionExecutor >> executeInFutureProcess [
-	<return: #TAsyncPromise>
-	| aFuture aPromise |
-	self element
-		ifNil: [ self executeInActiveProcess.
-			^ nil ].
-
-	aFuture := (MessageSend 
-		receiver: self 
-		selector: #executeActionWithCallbacks)
-			asAsyncFuture.
-	aPromise := aFuture
-			await: (GtMagritteBuilderUtility executionConfigutation
-				errorHandler: AsyncPassExceptionHandler new).
-
-	self element enqueueTask: (BlPromiseTask new promise: aPromise).
-
-	^ aPromise
-]
-
-{ #category : #execution }
-GtMagritteActionExecutor >> executeInUIProcess [
-	self element ifNil: [ 
-		self executeInActiveProcess.
-		^ self ].
-
-	self element inUIProcessDo: [ self executeActionWithCallbacks ]
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executeSuccessCallback: aCallback result: aResult [
-	aCallback
-		cull: aResult
-		cull: self element
-		cull: self memento
-		cull: self description
+			executeCallback: aCallback 
+			object: anException ]
 ]
 
 { #category : #'private - execution' }
@@ -92,40 +52,13 @@ GtMagritteActionExecutor >> executeSuccessCallbacks: aResult [
 	self isWithCallbacks ifFalse: [ ^ self ].
 
 	self description onSuccessCallbacks
-		do: [ :aCallback | self executeSuccessCallback: aCallback result: aResult ]
+		do: [ :aCallback | self executeCallback: aCallback object: aResult ]
 ]
 
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executionAboutToStart [
-	self memento executionStatus: GtMagritteExecutionStatus executing
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executionError: anException [
-	self memento executionStatus: (GtMagritteExecutionStatus exception: anException)
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executionFinished [
-	self memento executionStatus: GtMagritteExecutionStatus inactive
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executionStarted [
-	self memento executionStatus: GtMagritteExecutionStatus executing
-]
-
-{ #category : #'gt - extensions' }
-GtMagritteActionExecutor >> gtSourceCodeFor: aView [
-	<gtView>
-	
-	(self action respondsTo: #gtSourceCodeFor:) ifFalse: [ ^ aView empty ].
-	
-	^ aView forward
-		title: 'Source code';
-		priority: 1;
-		object: [ self action ];
-		view: #gtSourceCodeFor:
+{ #category : #initialization }
+GtMagritteActionExecutor >> initialize [
+	super initialize.
+	callbackErrors := AsyncSharedOrderedCollection new
 ]
 
 { #category : #accessing }
@@ -136,11 +69,6 @@ GtMagritteActionExecutor >> isWithCallbacks [
 { #category : #accessing }
 GtMagritteActionExecutor >> isWithCallbacks: aBoolean [
 	isWithCallbacks := aBoolean
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> isWithFutureResponse [
-	^ self action isWithFutureResponse
 ]
 
 { #category : #accessing }
@@ -165,7 +93,17 @@ GtMagritteActionExecutor >> onExecutionError: anException [
 GtMagritteActionExecutor >> onExecutionFinished: aResult [
 	super onExecutionFinished: aResult.
 	self isWithStatusUpdates ifTrue: [ 
-		self memento executionStatus: GtMagritteExecutionStatus inactive ]
+		callbackErrors asArray
+			ifEmpty: [
+				self memento executionStatus: 
+					GtMagritteExecutionStatus inactive ]
+			ifNotEmpty: [ :anArray | 
+				"If we execute callbacks asynchronously,
+				the action executor may not be notified on time.
+				As a consequence users will obtain a visual notification
+				of an async callback error."
+				self memento executionStatus: (
+					GtMagritteExecutionStatus callbackExceptions: anArray) ] ]
 ]
 
 { #category : #'private - hooks' }
@@ -182,7 +120,10 @@ GtMagritteActionExecutor >> onMainActionFinished: aResult [
 	self isWithCallbacks ifTrue: [ self executeSuccessCallbacks: aResult ]
 ]
 
-{ #category : #accessing }
-GtMagritteActionExecutor >> usedProcess [
-	^ self action usedProcess
+{ #category : #execution }
+GtMagritteActionExecutor >> registerCallback: aCallback error: anException [
+	callbackErrors
+		add: (GtMagritteCallbackError new
+				callback: aCallback;
+				exception: anException)
 ]

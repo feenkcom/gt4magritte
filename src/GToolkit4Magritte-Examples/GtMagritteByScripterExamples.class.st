@@ -167,6 +167,42 @@ GtMagritteByScripterExamples >> addressObjectWithCallbacks [
 ]
 
 { #category : #'examples - address' }
+GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptActionWithDefectiveCallbacks [
+	<gtExample>
+	| aScripter |
+	aScripter := self addressWithCallbacksAndChangedStreet.
+
+	aScripter
+		substeps: 'Unsuccessful cancel of changed street values'
+		do: [ :aStep | 
+			| aStreetId anAcceptId |
+			aStreetId := GtMagritteFieldElementId new
+					description: aScripter model descriptionStreet.
+
+			anAcceptId := GtMagritteActionElementId new
+					description: aScripter model magritteAcceptActionWithDefectiveCallbacks.
+
+			aStep click
+				// anAcceptId;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: false
+				cancelEnabled: false.
+
+			self
+				assert: aStep
+				successAcceptCount: 1
+				errorAcceptCount: 0
+				successCancelCount: 0
+				errorCancelCount: 0 ].
+
+	^ aScripter
+]
+
+{ #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptChangedStreet [
 	<gtExample>
 	| aScripter |
@@ -245,6 +281,40 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndCanceledChangedStreet [
 ]
 
 { #category : #'examples - address with callbacks' }
+GtMagritteByScripterExamples >> addressWithCallbacksAndChangedFavorite [
+	<gtExample>
+	| aScripter |
+	aScripter := self addressObjectWithCallbacks.
+
+	aScripter
+		substeps: 'Change favorite widget value'
+		do: [ :aStep | 
+			| anId |
+			anId := GtMagritteFieldElementId new
+					description: aScripter model descriptionIsFavorite.
+
+			aStep click
+				// anId;
+				// BrCheckbox;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: true
+				cancelEnabled: true.
+
+			self
+				assert: aStep
+				successAcceptCount: 0
+				errorAcceptCount: 0
+				successCancelCount: 0
+				errorCancelCount: 0 ].
+
+	^ aScripter
+]
+
+{ #category : #'examples - address with callbacks' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndChangedStreet [
 	<gtExample>
 	| aScripter |
@@ -276,6 +346,114 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndChangedStreet [
 				assert: aStep
 				successAcceptCount: 0
 				errorAcceptCount: 0
+				successCancelCount: 0
+				errorCancelCount: 0 ].
+
+	^ aScripter
+]
+
+{ #category : #'examples - address' }
+GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveAcceptAction [
+	<gtExample>
+	| aScripter |
+	aScripter := self addressWithCallbacksAndChangedStreet.
+
+	aScripter
+		substeps: 'Unsuccessful cancel of changed street values'
+		do: [ :aStep | 
+			| aStreetId anAcceptId |
+			aStreetId := GtMagritteFieldElementId new
+					description: aScripter model descriptionStreet.
+
+			anAcceptId := GtMagritteActionElementId new
+					description: aScripter model magritteDefectiveAcceptAction.
+
+			aStep click
+				// anAcceptId;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: true
+				cancelEnabled: true.
+
+			self
+				assert: aStep
+				successAcceptCount: 0
+				errorAcceptCount: 1
+				successCancelCount: 0
+				errorCancelCount: 0 ].
+
+	^ aScripter
+]
+
+{ #category : #'examples - address' }
+GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveCancelAction [
+	<gtExample>
+	| aScripter |
+	aScripter := self addressWithCallbacksAndChangedStreet.
+
+	aScripter
+		substeps: 'Unsuccessful cancel of changed street values'
+		do: [ :aStep | 
+			| aStreetId aCancelId |
+			aStreetId := GtMagritteFieldElementId new
+					description: aScripter model descriptionStreet.
+
+			aCancelId := GtMagritteActionElementId new
+					description: aScripter model magritteDefectiveCancelAction.
+
+			aStep click
+				// aCancelId;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: true
+				cancelEnabled: true.
+
+			self
+				assert: aStep
+				successAcceptCount: 0
+				errorAcceptCount: 0
+				successCancelCount: 0
+				errorCancelCount: 1 ].
+
+	^ aScripter
+]
+
+{ #category : #'examples - address' }
+GtMagritteByScripterExamples >> addressWithErrorAcceptCallbacks [
+	<gtExample>
+	| aScripter |
+	aScripter := self addressWithCallbacksAndChangedFavorite.
+
+	aScripter
+		substeps: 'Accept changed favorite value'
+		do: [ :aStep | 
+			| aFavoriteId anAcceptId |
+			aFavoriteId := GtMagritteFieldElementId new
+					description: aScripter model descriptionIsFavorite.
+
+			anAcceptId := GtMagritteActionElementId new
+					description: aScripter model magritteAcceptAction.
+
+			aStep click
+				// anAcceptId;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: true
+				cancelEnabled: true.
+
+			self
+				assert: aStep
+				successAcceptCount: 0
+				errorAcceptCount: 1
 				successCancelCount: 0
 				errorCancelCount: 0 ].
 

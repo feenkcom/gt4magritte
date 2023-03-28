@@ -50,12 +50,6 @@ GtMagritteButtonWithIconAction >> asBlockButtonWithMemento: aMemento [
 	^ aButton
 ]
 
-{ #category : #'api - converting' }
-GtMagritteButtonWithIconAction >> asGtMagritteAction [
-
-	^ self
-]
-
 { #category : #accessing }
 GtMagritteButtonWithIconAction >> icon [
 

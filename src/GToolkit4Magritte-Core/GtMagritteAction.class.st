@@ -36,19 +36,6 @@ GtMagritteAction >> beWithFutureResponse [
 	^ isWithFutureResponse := true
 ]
 
-{ #category : #'gt - extensions' }
-GtMagritteAction >> gtSourceCodeFor: aView [
-	<gtView>
-	
-	(self action respondsTo: #gtSourceCodeFor:) ifFalse: [ ^ aView empty ].
-	
-	^ aView forward
-		title: 'Source code';
-		priority: 1;
-		object: [ self action ];
-		view: #gtSourceCodeFor:
-]
-
 { #category : #testing }
 GtMagritteAction >> isWithFutureResponse [
 	^ isWithFutureResponse ifNil: [ false ]
