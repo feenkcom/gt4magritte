@@ -18,7 +18,8 @@ GtMagritteActionExecutor >> attachFutureTask: anAsyncFuture [
 
 { #category : #execution }
 GtMagritteActionExecutor >> execute [
-	self executionAboutToStart.
+	self isWithStatusUpdates ifTrue: [ 
+		self memento executionStatus: GtMagritteExecutionStatus executing ].
 	self usedProcess executeAction: self
 ]
 
@@ -93,30 +94,6 @@ GtMagritteActionExecutor >> executeSuccessCallbacks: aResult [
 
 	self description onSuccessCallbacks
 		do: [ :aCallback | self executeSuccessCallback: aCallback result: aResult ]
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executionAboutToStart [
-	self isWithStatusUpdates ifFalse: [ ^ self ].
-	self memento executionStatus: GtMagritteExecutionStatus executing
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executionError: anException [
-	self isWithStatusUpdates ifFalse: [ ^ self ].
-	self memento executionStatus: (GtMagritteExecutionStatus exception: anException)
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executionFinished [
-	self isWithStatusUpdates ifFalse: [ ^ self ].
-	self memento executionStatus: GtMagritteExecutionStatus inactive
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executionStarted [
-	self isWithStatusUpdates ifFalse: [ ^ self ].
-	self memento executionStatus: GtMagritteExecutionStatus executing
 ]
 
 { #category : #'gt - extensions' }
