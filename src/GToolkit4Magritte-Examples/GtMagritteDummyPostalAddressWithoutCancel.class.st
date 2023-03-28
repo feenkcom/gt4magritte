@@ -34,8 +34,10 @@ GtMagritteDummyPostalAddressWithoutCancel >> initialize [
 GtMagritteDummyPostalAddressWithoutCancel >> magritteAcceptAction [
 	<magritteActionDescription>
 	^ super magritteAcceptAction
-		onSuccessCallback: [ :aMemento | successAcceptCallbacks add: aMemento ];
-		onErrorCallback: [ :aMemento | errorAcceptCallbacks add: aMemento ]
+		onSuccessCallback: (GtMagritteCallback new
+			action: [ :aModel :aButton :aMemento :aDescription | successAcceptCallbacks add: aMemento ]);
+		onErrorCallback: (GtMagritteCallback new
+			action: [ :aModel :aButton :aMemento :aDescription | errorAcceptCallbacks add: aMemento ])
 ]
 
 { #category : #'magritte-accessing' }

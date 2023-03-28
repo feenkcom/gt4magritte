@@ -9,7 +9,7 @@ GtMagritteDummyPersonWithExtraActions >> magritteInspectAction [
 	<magritteActionDescription>
 	^ MAActionDescription new
 		priority: 20;
-		label: 'New Inspect';
+		label: 'Inspect';
 		blocIcon: BrGlamorousVectorIcons inspect;
 		action: [ :aModel :aButton :aMemento :aDescription | 
 			aButton inUIProcessDo: [ aButton phlow spawnObject: aMemento  ] ];

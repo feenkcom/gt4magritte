@@ -1,29 +1,12 @@
 Class {
 	#name : #GtMagritteActionExecutor,
-	#superclass : #Object,
+	#superclass : #GtMagritteBasicActionExecutor,
 	#instVars : [
-		'isInUIProcess',
-		'element',
-		'action',
-		'memento',
-		'description',
-		'isWithFutureResponse',
-		'object',
 		'isWithCallbacks',
-		'isWithReset'
+		'isWithStatusUpdates'
 	],
-	#category : #'GToolkit4Magritte-Core-Support'
+	#category : #'GToolkit4Magritte-Core-Actions'
 }
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> action [
-	^ action
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> action: anObject [
-	action := anObject
-]
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> attachFutureTask: anAsyncFuture [
@@ -33,81 +16,10 @@ GtMagritteActionExecutor >> attachFutureTask: anAsyncFuture [
 		enqueueTask: (BlPromiseTask new promise: anAsyncFuture asAsyncPromise)
 ]
 
-{ #category : #accessing }
-GtMagritteActionExecutor >> beInUIProcess [
-	^ isInUIProcess := true
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> beWithCallbacks [
-	^ isWithCallbacks := true
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> beWithFutureResponse [
-	^ isWithFutureResponse := true
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> beWithReset [
-	isWithReset := true
-]
-
-{ #category : #'api - execution' }
-GtMagritteActionExecutor >> cull: anObject cull: anElement cull: aMemento cull: aDescription [
-	self
-		beWithReset;
-		object: anObject;
-		element: anElement;
-		memento: aMemento;
-		description: aDescription;
-		execute
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> description [
-	^ description
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> description: anObject [
-	description := anObject
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> element [
-	^ element
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> element: anObject [
-	element := anObject
-]
-
-{ #category : #'api - execution' }
+{ #category : #execution }
 GtMagritteActionExecutor >> execute [
-	self isInUIProcess
-		ifTrue: [ self executeInUIProcess ]
-		ifFalse: [ self executeInActiveProcess ]
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executeActionWithCallbacks [
-	[ [ | aResult |
-	aResult := self action
-			cull: self object
-			cull: self element
-			cull: self memento
-			cull: self description.
-
-	self isWithFutureResponse ifTrue: [ self attachFutureTask: aResult ].
-
-	self executeSuccessCallbacks: aResult ]
-		on: Error
-		do: [ :anException | 
-			anException emit.
-			self executeErrorCallbacks: anException ] ]
-		ensure: [ self isWithReset ifTrue: [ self reset ] ]
+	self executionAboutToStart.
+	self usedProcess executeAction: self
 ]
 
 { #category : #'private - execution' }
@@ -121,26 +33,47 @@ GtMagritteActionExecutor >> executeErrorCallback: aCallback exception: anExcepti
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> executeErrorCallbacks: anException [
-	self isWithCallbacks
-		ifFalse: [ anException pass.
-			^ self ].
+	self isWithCallbacks ifFalse: [ 
+		anException pass.
+		^ self ].
 
-	self description onErrorCallbacks ifEmpty: [ anException pass ].
-
-	self description onErrorCallbacks
-		do: [ :aCallback | self executeErrorCallback: aCallback exception: anException ]
+	self description onErrorCallbacks do: [ :aCallback | 
+		self 
+			executeErrorCallback: aCallback 
+			exception: anException ]
 ]
 
-{ #category : #'private - execution' }
+{ #category : #execution }
 GtMagritteActionExecutor >> executeInActiveProcess [
 	self executeActionWithCallbacks
 ]
 
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> executeInUIProcess [
+{ #category : #execution }
+GtMagritteActionExecutor >> executeInFutureProcess [
+	<return: #TAsyncPromise>
+	| aFuture aPromise |
 	self element
 		ifNil: [ self executeInActiveProcess.
-			^ self ].
+			^ nil ].
+
+	aFuture := (MessageSend 
+		receiver: self 
+		selector: #executeActionWithCallbacks)
+			asAsyncFuture.
+	aPromise := aFuture
+			await: (GtMagritteBuilderUtility executionConfigutation
+				errorHandler: AsyncPassExceptionHandler new).
+
+	self element enqueueTask: (BlPromiseTask new promise: aPromise).
+
+	^ aPromise
+]
+
+{ #category : #execution }
+GtMagritteActionExecutor >> executeInUIProcess [
+	self element ifNil: [ 
+		self executeInActiveProcess.
+		^ self ].
 
 	self element inUIProcessDo: [ self executeActionWithCallbacks ]
 ]
@@ -162,49 +95,94 @@ GtMagritteActionExecutor >> executeSuccessCallbacks: aResult [
 		do: [ :aCallback | self executeSuccessCallback: aCallback result: aResult ]
 ]
 
-{ #category : #testing }
-GtMagritteActionExecutor >> isInUIProcess [
-	^ isInUIProcess ifNil: [ true ]
+{ #category : #'private - execution' }
+GtMagritteActionExecutor >> executionAboutToStart [
+	self memento executionStatus: GtMagritteExecutionStatus executing
 ]
 
-{ #category : #testing }
+{ #category : #'private - execution' }
+GtMagritteActionExecutor >> executionError: anException [
+	self memento executionStatus: (GtMagritteExecutionStatus exception: anException)
+]
+
+{ #category : #'private - execution' }
+GtMagritteActionExecutor >> executionFinished [
+	self memento executionStatus: GtMagritteExecutionStatus inactive
+]
+
+{ #category : #'private - execution' }
+GtMagritteActionExecutor >> executionStarted [
+	self memento executionStatus: GtMagritteExecutionStatus executing
+]
+
+{ #category : #'gt - extensions' }
+GtMagritteActionExecutor >> gtSourceCodeFor: aView [
+	<gtView>
+	
+	(self action respondsTo: #gtSourceCodeFor:) ifFalse: [ ^ aView empty ].
+	
+	^ aView forward
+		title: 'Source code';
+		priority: 1;
+		object: [ self action ];
+		view: #gtSourceCodeFor:
+]
+
+{ #category : #accessing }
 GtMagritteActionExecutor >> isWithCallbacks [
 	^ isWithCallbacks ifNil: [ false ]
 ]
 
-{ #category : #testing }
+{ #category : #accessing }
+GtMagritteActionExecutor >> isWithCallbacks: aBoolean [
+	isWithCallbacks := aBoolean
+]
+
+{ #category : #accessing }
 GtMagritteActionExecutor >> isWithFutureResponse [
-	^ isWithFutureResponse ifNil: [ false ]
-]
-
-{ #category : #testing }
-GtMagritteActionExecutor >> isWithReset [
-	^ isWithReset ifNil: [ false ]
+	^ self action isWithFutureResponse
 ]
 
 { #category : #accessing }
-GtMagritteActionExecutor >> memento [
-	^ memento
+GtMagritteActionExecutor >> isWithStatusUpdates [
+	^ isWithStatusUpdates ifNil: [ false ]
 ]
 
 { #category : #accessing }
-GtMagritteActionExecutor >> memento: anObject [
-	memento := anObject
+GtMagritteActionExecutor >> isWithStatusUpdates: anObject [
+	isWithStatusUpdates := anObject
+]
+
+{ #category : #'private - hooks' }
+GtMagritteActionExecutor >> onExecutionError: anException [
+	super onExecutionError: anException.
+	self isWithCallbacks ifTrue: [ self executeErrorCallbacks: anException ].
+	self isWithStatusUpdates ifTrue: [ 
+		self memento executionStatus: (GtMagritteExecutionStatus exception: anException)  ]
+]
+
+{ #category : #'private - hooks' }
+GtMagritteActionExecutor >> onExecutionFinished: aResult [
+	super onExecutionFinished: aResult.
+	self isWithStatusUpdates ifTrue: [ 
+		self memento executionStatus: GtMagritteExecutionStatus inactive ]
+]
+
+{ #category : #'private - hooks' }
+GtMagritteActionExecutor >> onExecutionStarted [
+	super onExecutionStarted.
+	self isWithStatusUpdates ifTrue: [ 
+		self memento executionStatus: GtMagritteExecutionStatus executing ]
+]
+
+{ #category : #'private - hooks' }
+GtMagritteActionExecutor >> onMainActionFinished: aResult [
+	super onMainActionFinished: aResult.
+	self isWithFutureResponse ifTrue: [ self attachFutureTask: aResult ].
+	self isWithCallbacks ifTrue: [ self executeSuccessCallbacks: aResult ]
 ]
 
 { #category : #accessing }
-GtMagritteActionExecutor >> object [
-	^ object
-]
-
-{ #category : #accessing }
-GtMagritteActionExecutor >> object: anObject [
-	object := anObject
-]
-
-{ #category : #'private - execution' }
-GtMagritteActionExecutor >> reset [
-	element := nil.
-	memento := nil.
-	description := nil
+GtMagritteActionExecutor >> usedProcess [
+	^ self action usedProcess
 ]

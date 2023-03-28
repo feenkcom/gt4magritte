@@ -94,6 +94,11 @@ GtMagritteBuilderUtility class >> defaultThickness [
 	^ 3
 ]
 
+{ #category : #'api - memento' }
+GtMagritteBuilderUtility class >> executionConfigutation [
+	^ AsyncFutureExecutionConfiguration new customGroup: #Magritte
+]
+
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
@@ -158,12 +163,18 @@ GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescripti
 				sink: AsyncPeekSink new;
 				whenUpdate: [ :theCheckbox :aSink | theCheckbox checked: aSink value currentValue ].
 			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ];
-		whenCheckedDo: [ aCheckbox
-				enqueueTask: (BlPromiseTask new
-						promise: (aMemento write: true using: aDescription) asAsyncPromise) ];
-		whenUncheckedDo: [ aCheckbox
-				enqueueTask: (BlPromiseTask new
-						promise: (aMemento write: false using: aDescription) asAsyncPromise) ];
+		whenCheckedDo: [ 
+			self 
+				write: true 
+				using: aDescription 
+				memento: aMemento 
+				element: aCheckbox ];
+		whenUncheckedDo: [ 
+			self 
+				write: false 
+				using: aDescription 
+				memento: aMemento 
+				element: aCheckbox ];
 		margin: (BlInsets
 				top: 0
 				right: 0
@@ -188,9 +199,11 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownContent: aDropdown memento
 
 	aFileBrowser
 		okAction: [ :aFileReference | 
-			aDropdown
-				enqueueTask: (BlPromiseTask new
-						promise: (aMemento write: aFileReference using: aDescription) asAsyncPromise).
+			self 
+				write: aFileReference 
+				using: aDescription 
+				memento: aMemento 
+				element: aDropdown.
 
 			aDropdown
 				enqueueTask: (BlTaskAction new
@@ -265,13 +278,34 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 	anEditor editor
 		when: BrTextEditorModifiedEvent
 		do: [ :anEvent | 
-			anEditor enqueueTask: (BlPromiseTask new promise: (aMemento
-				write: ((aDescription isKindOf: GtMATextDescription)
-						ifTrue: [ anEvent text copy ]
-						ifFalse: [ anEvent text asString ])
-				using: aDescription) asAsyncPromise) ].
+			self 
+				writeText: anEvent text 
+				using: aDescription 
+				memento: aMemento 
+				element: anEditor ].
 
 	^ anEditor
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newExecutionStatusWithMemento: aMemento [
+	| anElement |
+	anElement := BrLabel new
+			aptitude: (BrGlamorousLabelAptitude new glamorousCodeTinySize);
+			text: '';
+			hFitContentLimited;
+			vFitContent;
+			visibility: BlVisibility gone.
+
+	anElement
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeekSink new;
+				whenUpdate: [ :aLabel :aSink | 
+					aSink value updateToolbarExecutionStatus: aLabel ].
+			aMemento executionStatus observe: anElementSink ].
+
+	^ anElement
 ]
 
 { #category : #'api - ui' }
@@ -409,13 +443,11 @@ GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: a
 	anEditor editor
 		when: BrTextEditorModifiedEvent
 		do: [ :anEvent | 
-			anEditor
-				enqueueTask: (BlPromiseTask new
-						promise: (aMemento
-								write: ((aDescription isKindOf: GtMATextDescription)
-										ifTrue: [ anEvent text ]
-										ifFalse: [ anEvent text asString ])
-								using: aDescription) asAsyncPromise) ].
+			self 
+				writeText: anEvent text 
+				using: aDescription 
+				memento: aMemento 
+				element: anEditor ].
 
 	^ anEditor
 ]
@@ -480,10 +512,15 @@ GtMagritteBuilderUtility class >> newSingleOptionDropdownContent: aLabel memento
 				anEvent
 					selectedDo: [ :anInterval | 
 						| selectedObject |
-						selectedObject := aWidgetElement viewModel itemAt: anInterval first.
-						aLabel
-							enqueueTask: (BlPromiseTask new
-									promise: (aMemento write: selectedObject using: aDescription) asAsyncPromise).
+						selectedObject := aWidgetElement viewModel 
+							itemAt: anInterval first.
+						
+						self 
+							write: selectedObject 
+							using: aDescription 
+							memento: aMemento 
+							element: aLabel.
+						
 						aLabel fireEvent: BrDropdownHideWish new ] ]
 ]
 
@@ -503,7 +540,7 @@ GtMagritteBuilderUtility class >> newSingleOptionDropdownMemento: aMemento using
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aMemento [
-	| aToolbar |
+	| aToolbar anExecutionStatus |
 	aToolbar := BrToolbar new
 			aptitude: BrGlamorousToolbarAptitude new;
 			fitContent;
@@ -518,6 +555,9 @@ GtMagritteBuilderUtility class >> newToolbarWithActions: aCollection memento: aM
 			| aButton |
 			aButton := eachAction asBlockButtonWithMemento: aMemento.
 			aToolbar addItem: aButton ].
+			
+	anExecutionStatus := self newExecutionStatusWithMemento: aMemento.
+	aToolbar addChild: anExecutionStatus as: GtMagritteExecutionStatusElementId.
 
 	^ aToolbar
 ]
@@ -684,4 +724,30 @@ GtMagritteBuilderUtility class >> removeItem: anItem memento: aMemento descripti
 	aNewCollection := aValue currentValue copyWithout: anItem.
 	aNewCollection = aValue currentValue ifFalse: [ 
 		anObservable value: (aValue copyWithCurrentValue: aNewCollection) ]
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> write: aValue using: aDescription memento: aMemento element: anElement [
+	| aFuture aPromise |
+	aFuture := aMemento write: aValue using: aDescription.
+	aPromise := aFuture await: (
+		GtMagritteBuilderUtility executionConfigutation).
+
+	anElement enqueueTask: (BlPromiseTask new promise: aPromise).
+
+	^ aPromise
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> writeText: aText using: aDescription memento: aMemento element: anElement [
+	| aValue |
+	aValue := (aDescription isKindOf: GtMATextDescription)
+			ifTrue: [ aText copy ]
+			ifFalse: [ aText asString ].
+
+	^ self
+		write: aValue
+		using: aDescription
+		memento: aMemento
+		element: anElement
 ]

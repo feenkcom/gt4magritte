@@ -6,7 +6,8 @@ Class {
 		'validators',
 		'overallStatus',
 		'internalStatus',
-		'subscriptions'
+		'subscriptions',
+		'executionStatus'
 	],
 	#category : #'GToolkit4Magritte-Core-Models'
 }
@@ -33,9 +34,7 @@ GtMagritteMemento >> commit [
 	<return: #TAsyncFuture>
 	super commit.	
 	self push: self cache.
-	self reset.
-	
-	^ self overallStatus observeNext next
+	^ self reset
 ]
 
 { #category : #private }
@@ -50,7 +49,14 @@ GtMagritteMemento >> computeOverallStatus [
 
 	^ GtMagritteOverallStatus new
 		  isValid: isValid;
-		  isChanged: isUnchanged not
+		  isChanged: isUnchanged not;
+		  executionStatus: executionStatus valueOrNil
+]
+
+{ #category : #private }
+GtMagritteMemento >> computeOverallStatus: anInternalStatus [
+	<return: #GtMagritteOverallStatus>
+	^ self computeOverallStatus
 ]
 
 { #category : #private }
@@ -78,12 +84,25 @@ GtMagritteMemento >> debugValidateValue: aValue [
 	Smalltalk tools debugger openOn: aDebugSession withFullView: true
 ]
 
+{ #category : #actions }
+GtMagritteMemento >> executionStatus [
+	<return: #AsyncObservableValue of: #GtMagritteExecutionStatus>
+	^ executionStatus
+]
+
+{ #category : #actions }
+GtMagritteMemento >> executionStatus: aGtMagritteExecutionStatus [
+	executionStatus valueOrNil = aGtMagritteExecutionStatus ifTrue: [ ^ self ].
+
+	executionStatus value: aGtMagritteExecutionStatus
+]
+
 { #category : #'gt - extensions' }
 GtMagritteMemento >> gtActionsFor: aView [
 	<gtView>
 	^ aView columnedList
 		title: 'Actions';
-		priority: 12;
+		priority: 13;
 		items: [ self magritteActions sorted: [ :a :b | a priority < b priority ] ];
 		column: 'Priority'
 			text: #priority
@@ -204,6 +223,19 @@ GtMagritteMemento >> gtCacheFor: aView [
 ]
 
 { #category : #'gt - extensions' }
+GtMagritteMemento >> gtOverallStatusFor: aView [
+	<gtView>
+	self cache ifNil: [ ^ aView empty ].
+
+	^ aView explicit
+		title: 'Status Overview';
+		priority: 11;
+		stencil: [ GtMagritteOverviewElement new
+				memento: self;
+				margin: (BlInsets all: 10) ]
+]
+
+{ #category : #'gt - extensions' }
 GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 	<gtView>
@@ -212,7 +244,7 @@ GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 	^ aView tree
 		  title: 'Subscriptions';
-		  priority: 11;
+		  priority: 13;
 		  items: [ subscriptions keys ];
 		  children: [ :anItem | 
 			  (anItem isKindOf: MADescription)
@@ -234,20 +266,31 @@ GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 { #category : #initialization }
 GtMagritteMemento >> initialize [
-
 	super initialize.
 
 	cache := Dictionary new.
 	validators := Dictionary new.
 	subscriptions := Dictionary new.
-	internalStatus := AsyncObservableValue new.
-	overallStatus := (internalStatus observe map: [ :aValidationResult | 
-		                  self computeOverallStatus ]) asAsyncObservable
+	executionStatus := self newObservable.
+	executionStatus value: GtMagritteExecutionStatus inactive.
+	internalStatus := self newObservable.
+	executionStatus observe: internalStatus.
+	overallStatus := (internalStatus observe
+			map: (MessageSend 
+				receiver: self 
+				selector: #computeOverallStatus:))
+					asAsyncObservable: GtMagritteBuilderUtility executionConfigutation
 ]
 
 { #category : #accessing }
 GtMagritteMemento >> magritteActions [
 	^ self model magritteActions
+]
+
+{ #category : #private }
+GtMagritteMemento >> newObservable [
+	^ AsyncObservableValue executionConfiguration: 
+		GtMagritteBuilderUtility executionConfigutation
 ]
 
 { #category : #accessing }
@@ -293,9 +336,9 @@ GtMagritteMemento >> push: aDictionary [
 		(aDescription isVisible and: [ 
 			 aDescription isReadOnly not and: [ 
 				 anObservable valueOrNil isChanged ] ]) ifTrue: [ 
-			self model
-				write: anObservable valueOrNil currentValue
-				using: aDescription ] ]
+					self model
+						write: anObservable valueOrNil currentValue
+						using: aDescription ] ]
 ]
 
 { #category : #actions }
@@ -332,7 +375,7 @@ GtMagritteMemento >> setCache: aDictionary [
 			ifPresent: [ :anObservable | anObservable value: aValue ]
 			ifAbsentPut: [ 
 				| anObservable |
-				anObservable := AsyncObservableValue new value: aValue.
+				anObservable := self newObservable value: aValue.
 				self subscribeToModelUsing: aDescription observable: anObservable.
 				anObservable ] ].
 
@@ -349,8 +392,11 @@ GtMagritteMemento >> setCache: aDictionary [
 			ifPresent: [ :theObservable | "ignore" ]
 			ifAbsentPut: [ 
 				| aValidator |
-				aValidator := (anObservable observe map: [ :aValue | 
-					               self validateValue: aValue ]) asAsyncObservable.
+				aValidator := (anObservable observe 
+					map: (MessageSend 
+						receiver: self 
+						selector: #validateValue:)) 
+							asAsyncObservable: GtMagritteBuilderUtility executionConfigutation.
 				aValidator observe: internalStatus.
 				aValidator ] ].
 
