@@ -106,7 +106,7 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteDefectiveAcceptAction [
 	<magritteActionDescription>
 	^ self magritteAcceptAction
 		priority: 16;
-		label: 'Defective';
+		label: 'Defective Accept';
 		isLabelVisible: true;
 		action: (GtMagritteAction new
 				beInFutureProcess;
@@ -120,7 +120,7 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteDefectiveCancelAction [
 	<magritteActionDescription>
 	^ self magritteCancelAction
 		priority: 17;
-		label: 'Defective';
+		label: 'Defective Cancel';
 		isLabelVisible: true;
 		action: (GtMagritteAction new
 				beInFutureProcess;
