@@ -12,7 +12,7 @@ BaselineOfGToolkit4Magritte >> baseline: spec [
 		spec
 			baseline: 'MagritteForGToolkit'
 			with: [ 
-			spec repository: 'github://feenkcom/magritte:feenk01/source' ].
+			spec repository: 'github://feenkcom/magritte:feenk/source' ].
 
 		spec
 			baseline: 'Brick'
