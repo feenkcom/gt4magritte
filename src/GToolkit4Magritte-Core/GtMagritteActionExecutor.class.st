@@ -32,6 +32,7 @@ GtMagritteActionExecutor >> executeCallback: aCallback object: anException [
 		memento: self memento;
 		description: self description;
 		actionExecutor: self;
+		element: element;
 		execute
 ]
 
