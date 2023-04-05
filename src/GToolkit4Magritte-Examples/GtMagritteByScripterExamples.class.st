@@ -540,5 +540,46 @@ GtMagritteByScripterExamples >> assert: aParentStep successAcceptCount: successA
 				value: [ :aModel | aModel errorCancelCallbacks size ]
 					equals: [ errorCancelCount ];
 				onModel;
-				play ]
+				play.
+			
+			successAcceptCount > 0 ifTrue: [
+				aStep assert
+					label: 'Assert success accept callbacks have all parameters';
+					satisfies: [ :aModel | 
+						aModel successAcceptCallbacks 
+							allSatisfy: [ :anArray | anArray size = 4 
+								and: [ anArray allSatisfy: #isNotNil ] ] ];
+					onModel;
+					play ].
+					
+			errorAcceptCount > 0 ifTrue: [
+				aStep assert
+					label: 'Assert error accept callbacks have all parameters';
+					satisfies: [ :aModel | 
+						aModel errorAcceptCallbacks 
+							allSatisfy: [ :anArray | anArray size = 4 
+								and: [ anArray allSatisfy: #isNotNil ] ] ];
+					onModel;
+					play ].
+					
+			successCancelCount > 0 ifTrue: [
+				aStep assert
+					label: 'Assert success cancel callbacks have all parameters';
+					satisfies: [ :aModel | 
+						aModel successCancelCallbacks 
+							allSatisfy: [ :anArray | anArray size = 4 
+								and: [ anArray allSatisfy: #isNotNil ] ] ];
+					onModel;
+					play ].
+					
+			errorCancelCount > 0 ifTrue: [
+				aStep assert
+					label: 'Assert error cancel callbacks have all parameters';
+					satisfies: [ :aModel | 
+						aModel errorCancelCallbacks 
+							allSatisfy: [ :anArray | anArray size = 4 
+								and: [ anArray allSatisfy: #isNotNil ] ] ];
+					onModel;
+					play ].
+		]
 ]

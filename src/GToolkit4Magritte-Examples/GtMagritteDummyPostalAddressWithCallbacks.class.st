@@ -57,10 +57,11 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteAcceptAction [
 	<magritteActionDescription>
 	^ super magritteAcceptAction
 		onSuccessCallback: (GtMagritteCallback new
-			action: [ :aModel :aButton :aMemento :aDescription | successAcceptCallbacks add: aMemento ]);
+			action: [ :aModel :aButton :aMemento :aDescription |
+				successAcceptCallbacks add: { aModel. aButton. aMemento. aDescription } ]);
 		onErrorCallback: (GtMagritteCallback new
 			action: [ :aModel :aButton :aMemento :aDescription |
-			errorAcceptCallbacks add: aMemento ])
+				errorAcceptCallbacks add: { aModel. aButton. aMemento. aDescription } ])
 ]
 
 { #category : #'magritte-accessing' }
@@ -71,9 +72,9 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteAcceptActionWithBlockCallba
 		label: 'Block Callbacks';
 		isLabelVisible: true;
 		onSuccessCallback: [ :aModel :aButton :aMemento :aDescription |
-			successAcceptCallbacks add: aMemento ];
+			successAcceptCallbacks add: { aModel. aButton. aMemento. aDescription } ];
 		onErrorCallback: [ :aModel :aButton :aMemento :aDescription |
-			errorAcceptCallbacks add: aMemento ]
+			errorAcceptCallbacks add: { aModel. aButton. aMemento. aDescription } ]
 ]
 
 { #category : #'magritte-accessing' }
@@ -96,9 +97,11 @@ GtMagritteDummyPostalAddressWithCallbacks >> magritteCancelAction [
 	<magritteActionDescription>
 	^ super magritteCancelAction
 		onSuccessCallback: (GtMagritteCallback new
-			action: [ :aModel :aButton :aMemento :aDescription | successCancelCallbacks add: aMemento ]);
+			action: [ :aModel :aButton :aMemento :aDescription |
+				successCancelCallbacks add: { aModel. aButton. aMemento. aDescription } ]);
 		onErrorCallback: (GtMagritteCallback new
-			action: [ :aModel :aButton :aMemento :aDescription | errorCancelCallbacks add: aMemento ])
+			action: [ :aModel :aButton :aMemento :aDescription | 
+				errorCancelCallbacks add: { aModel. aButton. aMemento. aDescription } ])
 ]
 
 { #category : #'magritte-accessing' }
