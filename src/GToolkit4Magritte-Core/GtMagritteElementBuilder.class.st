@@ -299,7 +299,9 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 		          addFieldElement: aValidationElement
 		          using: aDescription.
 
-	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing)
+	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing).
+	
+	^ anInputElement
 ]
 
 { #category : #accessing }
@@ -457,6 +459,12 @@ GtMagritteElementBuilder >> visitIconDescription: aDescription [
 { #category : #accessing }
 GtMagritteElementBuilder >> visitNumberDescription: aDescription [
 	self visitStringDescription: aDescription
+]
+
+{ #category : #'visiting-description' }
+GtMagritteElementBuilder >> visitPasswordDescription: aDescription [
+
+	(self addStringFieldUsing: aDescription) editor styler: GtMagrittePasswordStyler new
 ]
 
 { #category : #'visiting-description' }
