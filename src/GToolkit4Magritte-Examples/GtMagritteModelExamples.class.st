@@ -379,3 +379,29 @@ GtMagritteModelExamples >> simpleInvalidAddressObject [
 		  (#street -> 'Werkstrasse').
 		  (#city -> '345 01 Chamoille') } asDictionary
 ]
+
+{ #category : #'examples - simple password' }
+GtMagritteModelExamples >> simplePasswordDescription [
+	<gtExample>
+	^ MAPriorityContainer
+		withAll: {MAStringDescription new
+					label: 'ID';
+					beReadOnly;
+					accessor: (MADictionaryAccessor key: #id).
+				MAStringDescription new
+					label: 'Login';
+					accessor: (MADictionaryAccessor key: #login).
+				MAPasswordDescription new
+					label: 'Password';
+					accessor: (MADictionaryAccessor key: #password)}
+]
+
+{ #category : #'examples - simple password' }
+GtMagritteModelExamples >> simplePasswordObject [
+	<gtExample>
+	^ Dictionary new
+		at: 'id' put: '1233232';
+		at: 'login' put: 'juraj';
+		at: 'password' put: 'secret password';
+		yourself
+]
