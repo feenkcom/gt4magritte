@@ -401,7 +401,7 @@ GtMagritteModelExamples >> simplePasswordObject [
 	<gtExample>
 	^ Dictionary new
 		at: 'id' put: '1233232';
-		at: 'login' put: 'juraj';
+		at: 'login' put: 'joe';
 		at: 'password' put: 'secret password';
 		yourself
 ]
