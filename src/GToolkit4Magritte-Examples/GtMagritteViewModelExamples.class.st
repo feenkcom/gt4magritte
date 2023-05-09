@@ -249,7 +249,7 @@ GtMagritteViewModelExamples >> viewModelWithDirectory [
 	^ aViewModel
 ]
 
-{ #category : #'examples - simple baselines' }
+{ #category : #'examples - simple password' }
 GtMagritteViewModelExamples >> viewModelWithPassword [
 
 	<gtExample>
