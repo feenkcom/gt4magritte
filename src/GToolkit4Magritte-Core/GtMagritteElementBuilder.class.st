@@ -256,7 +256,10 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 
 	aDescription blocStencil
 		ifNotNil: [ :stencil | 
-			anInputElement := stencil value: aMemento value: aDescription ]
+			anInputElement := stencil 
+				memento: aMemento; 
+				description: aDescription;
+				asElement ]
 		ifNil: [ 
 			aDescription isReadOnly
 				ifTrue: [ 
@@ -459,12 +462,6 @@ GtMagritteElementBuilder >> visitIconDescription: aDescription [
 { #category : #accessing }
 GtMagritteElementBuilder >> visitNumberDescription: aDescription [
 	self visitStringDescription: aDescription
-]
-
-{ #category : #'visiting-description' }
-GtMagritteElementBuilder >> visitPasswordDescription: aDescription [
-
-	(self addStringFieldUsing: aDescription) editor styler: GtMagrittePasswordStyler new
 ]
 
 { #category : #'visiting-description' }

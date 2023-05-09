@@ -244,47 +244,13 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: a
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
-	| anEditor aptitude |
-	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
-	aptitude := aDescription editorAptitude
-			ifNil: [ BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize ]
-			ifNotNil: #value.
+	"Currently, it is not an editable label ({{gtClass:BrEditableLabel}}).
+	We should reintroduce it if/when required."
 
-	anEditor
-		aptitude: aptitude;
-		addAptitude: (BrStyleCommonAptitude new
-				default: [ :aStyle | aStyle border: BlBorder empty ];
-				hovered: [ :aStyle | 
-					aStyle
-						border: (BlBorder paint: BrGlamorousColors disabledButtonBorderColor width: 1) ];
-				focused: [ :aStyle | 
-					aStyle
-						border: (BlBorder paint: BrGlamorousColors focusedEditorBorderColor width: 1) ]);
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		vFitContent;
-		hFitContentLimited;
-		withAsyncSinkDo: [ :anElementSink | 
-			anElementSink
-				sink: AsyncPeekSink new;
-				whenUpdate: [ :theEditor :aSink | theEditor text: aSink value currentValue ].
-			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ];
-		margin: (BlInsets top: 2 bottom: self defaultSpaceNumber);
-		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
-		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
-		constraintsDo: [ :c | 
-			c grid vertical alignCenter.
-			c minWidth: 42 ].
-
-	anEditor editor
-		when: BrTextEditorModifiedEvent
-		do: [ :anEvent | 
-			self 
-				writeText: anEvent text 
-				using: aDescription 
-				memento: aMemento 
-				element: anEditor ].
-
-	^ anEditor
+	^ GtMagritteOneLineEditorElement new
+		fieldViewModel: (GtMagritteFieldViewModel new
+				memento: aMemento;
+				description: aDescription)
 ]
 
 { #category : #'api - ui' }
@@ -410,66 +376,18 @@ GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescripti
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
-	| anEditor aptitude |
-	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
-	aptitude := aDescription editorAptitude
-			ifNil: [ BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize ]
-			ifNotNil: #value.
-
-	anEditor
-		aptitude: aptitude;
-		addAptitude: (BrStyleCommonAptitude new
-				default: [ :aStyle | aStyle border: BlBorder empty ];
-				hovered: [ :aStyle | 
-					aStyle
-						border: (BlBorder paint: BrGlamorousColors disabledButtonBorderColor width: 1) ];
-				focused: [ :aStyle | 
-					aStyle
-						border: (BlBorder paint: BrGlamorousColors focusedEditorBorderColor width: 1) ]);
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		vFitContent;
-		hFitContentLimited;
-		margin: (BlInsets bottom: self defaultSpaceNumber);
-		constraintsDo: [ :c | 
-			c grid vertical alignCenter.
-			c minWidth: 20 ];
-		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
-		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
-		withAsyncSinkDo: [ :anElementSink | 
-			anElementSink
-				sink: AsyncPeekSink new;
-				whenUpdate: [ :theEditor :aSink | theEditor text: aSink value currentValue ].
-			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ].
-
-	anEditor editor
-		when: BrTextEditorModifiedEvent
-		do: [ :anEvent | 
-			self 
-				writeText: anEvent text 
-				using: aDescription 
-				memento: aMemento 
-				element: anEditor ].
-
-	^ anEditor
+	^ GtMagritteOneLineEditorElement new
+		fieldViewModel: (GtMagritteFieldViewModel new
+				memento: aMemento;
+				description: aDescription)
 ]
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: aDescription [
-
-	| anEditor |
-	anEditor := self
-		            newBasicReadOnlyEditorWithMemento: aMemento
-		            using: aDescription.
-
-	anEditor withAsyncSinkDo: [ :anElementSink | 
-		anElementSink
-			sink: AsyncPeekSink new;
-			whenUpdate: [ :theEditor :aSink | 
-				theEditor text: aSink value currentValue ].
-		(aMemento readObservableValueUsing: aDescription) observe:
-			anElementSink ].
-
-	^ anEditor
+	^ GtMagritteOneLineEditorElement new
+		fieldViewModel: (GtMagritteFieldViewModel new
+				memento: aMemento;
+				description: aDescription)
 ]
 
 { #category : #'api - ui' }

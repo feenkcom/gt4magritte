@@ -33,6 +33,7 @@ MADescription >> beWithoutChangeIndicator [
 
 { #category : #'*GToolkit4Magritte-Core' }
 MADescription >> blocStencil [
+	<return: #GtMagritteDescriptionElementStencilBuilder or: nil>
 	^ self propertyAt: #blocStencil ifAbsent: [ nil ]
 ]
 
