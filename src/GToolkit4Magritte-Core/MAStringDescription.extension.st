@@ -5,5 +5,5 @@ MAStringDescription >> blocStencil [
 	<return: #GtMagritteDescriptionElementStencilBuilder or: nil>
 	^ self
 		propertyAt: #blocStencil
-		ifAbsentPut: [ ^ GtMagritteStringEditorElementStencilBuilder new ]
+		ifAbsentPut: [ GtMagritteStringEditorElementStencilBuilder new ]
 ]
