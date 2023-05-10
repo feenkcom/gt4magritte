@@ -39,7 +39,9 @@ MADescription >> blocStencil [
 
 { #category : #'*GToolkit4Magritte-Core' }
 MADescription >> blocStencil: aStencil [
-	self propertyAt: #blocStencil put: aStencil
+	self
+		propertyAt: #blocStencil
+		put: (aStencil asStencilBuilder: GtMagritteDescriptionElementStencilBuilder)
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
