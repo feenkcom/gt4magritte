@@ -21,7 +21,7 @@ Object >> gtMagritteFor: aView [
 	self hasMagritteDescription ifFalse: [ ^ aView empty ].
 
 	^ aView explicit
-		title: 'GT Magritte';
+		title: 'Magritte';
 		priority: 49;
 		stencil: [ self asGtMagritteViewModel asElement margin: (BlInsets all: 10) ];
 		actionButtonIcon: BrGlamorousVectorIcons inspect
