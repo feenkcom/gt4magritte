@@ -248,3 +248,20 @@ GtMagritteViewModelExamples >> viewModelWithDirectory [
 
 	^ aViewModel
 ]
+
+{ #category : #'examples - simple password' }
+GtMagritteViewModelExamples >> viewModelWithPassword [
+
+	<gtExample>
+	| aViewModel anObject aDescription |
+	anObject := GtMagritteModelExamples new simplePasswordObject.
+	aDescription := GtMagritteModelExamples new
+		                simplePasswordDescription.
+	aViewModel := GtMagritteViewModel
+		              forObject: anObject
+		              description: aDescription.
+
+	self assert: aViewModel mementoFuture isAsyncFuture.
+
+	^ aViewModel
+]

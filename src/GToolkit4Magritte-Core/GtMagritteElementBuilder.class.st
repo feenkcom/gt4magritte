@@ -256,7 +256,10 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 
 	aDescription blocStencil
 		ifNotNil: [ :stencil | 
-			anInputElement := stencil value: aMemento value: aDescription ]
+			anInputElement := stencil 
+				memento: aMemento; 
+				description: aDescription;
+				asElement ]
 		ifNil: [ 
 			aDescription isReadOnly
 				ifTrue: [ 
@@ -299,7 +302,9 @@ GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
 		          addFieldElement: aValidationElement
 		          using: aDescription.
 
-	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing)
+	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing).
+	
+	^ anInputElement
 ]
 
 { #category : #accessing }
