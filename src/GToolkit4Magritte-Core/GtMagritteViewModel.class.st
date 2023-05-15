@@ -104,7 +104,7 @@ GtMagritteViewModel >> asElement [
 							memento: aMemento;
 							asElement.
 
-					theFrame addAptitude: (BrLayoutResizerAptitude inherit inherit: aContainer).
+					theFrame addAptitude: (BrLayoutResizerAptitude new inherit: aContainer).
 
 					theFrame addChild: aContainer.
 
