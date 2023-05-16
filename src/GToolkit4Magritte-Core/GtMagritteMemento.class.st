@@ -123,7 +123,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 	self cache ifNil: [ ^ aView empty ].
 
 	^ aView columnedList
-		title: 'Cached Values';
+		title: 'Cached values';
 		priority: 10;
 		items: [ self cache associations sorted: [ :a :b | a key priority < b key priority ] ];
 		column: 'Name' text: [ :anAssoc | anAssoc key label ];
@@ -228,7 +228,7 @@ GtMagritteMemento >> gtOverallStatusFor: aView [
 	self cache ifNil: [ ^ aView empty ].
 
 	^ aView explicit
-		title: 'Status Overview';
+		title: 'Status overview';
 		priority: 11;
 		stencil: [ GtMagritteOverviewElement new
 				memento: self;

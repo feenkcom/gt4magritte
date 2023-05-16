@@ -27,7 +27,7 @@ GtMagritteValidationFailure >> gtIssuesDescriptionFor: aView [
 	self exception ifNil: [ ^ aView empty ].
 
 	^ aView textEditor
-		  title: 'Issues Description';
+		  title: 'Issues description';
 		  priority: 3;
 		  glamorousRegularFontAndSize;
 		  text: [ self issuesDescription ]
