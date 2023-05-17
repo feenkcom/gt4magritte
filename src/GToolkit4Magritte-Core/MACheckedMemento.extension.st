@@ -8,7 +8,7 @@ MACheckedMemento >> gtCachedAndOriginalValuesFor: aView [
 	self cache ifNil: [ ^ aView empty ].
 
 	^ aView columnedList
-		  title: 'Cached Values';
+		  title: 'Cached values';
 		  priority: 10;
 		  items: [ self cache associations ];
 		  column: 'Name' text: [ :anAssoc | anAssoc key label ];

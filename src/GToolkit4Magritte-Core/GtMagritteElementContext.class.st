@@ -101,7 +101,7 @@ GtMagritteElementContext >> gtContainerElementsFor: aView [
 	containerElements ifNil: [ ^ aView empty ].
 
 	^ aView columnedList
-		  title: 'Container Elements';
+		  title: 'Container elements';
 		  priority: 2;
 		  items: [ 
 			  containerElements ifNotNil: #associations ifNil: [ #(  ) ] ];
@@ -121,7 +121,7 @@ GtMagritteElementContext >> gtContainerTypesFor: aView [
 	containerTypes ifNil: [ ^ aView empty ].
 
 	^ aView columnedList
-		  title: 'Container Types';
+		  title: 'Container types';
 		  priority: 1;
 		  items: [ containerTypes ifNotNil: #associations ifNil: [ #(  ) ] ];
 		  column: 'Container Type' text: #key;

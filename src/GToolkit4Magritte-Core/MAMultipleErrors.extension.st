@@ -7,7 +7,7 @@ MAMultipleErrors >> gtErrorsFor: aView [
 	self collection ifNil: [ ^ aView empty ].
 
 	^ aView tree
-		  title: 'Magritte Errors';
+		  title: 'Magritte errors';
 		  priority: 1;
 		  items: [ self collection ];
 		  children: #gtMagritteErrorsViewChildren;
