@@ -17,8 +17,7 @@ GtMagritteOverviewElement >> initialize [
 	super initialize.
 	overviews := BrHorizontalGrid new
 			columnCount: 2;
-			fitContent;
-			alignCenter.
+			fitContent.
 			
 	self initializeOverallStatus.
 	self initializeExecutionStatus.
