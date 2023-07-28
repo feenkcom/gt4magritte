@@ -663,7 +663,12 @@ GtMagritteBuilderUtility class >> writeText: aText using: aDescription memento: 
 	| aValue |
 	aValue := (aDescription isKindOf: GtMATextDescription)
 			ifTrue: [ aText copy ]
-			ifFalse: [ aText asString ].
+			ifFalse: [ 
+				| aString |
+				aString := aText asString.
+				[ (aDescription fromString: aString) ifNil: [ aDescription default ] ] 
+					on: MAReadError 
+					do: [ :anError | aString ] ].
 
 	^ self
 		write: aValue

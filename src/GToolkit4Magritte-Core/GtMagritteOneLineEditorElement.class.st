@@ -43,6 +43,17 @@ GtMagritteOneLineEditorElement >> initialize [
 					self updateEditorText: aSink value ] ]
 ]
 
+{ #category : #'private - announcement handling' }
+GtMagritteOneLineEditorElement >> onDescriptionChanged: anAnnouncement [
+	self onDescriptionPropertyChanged: anAnnouncement
+]
+
+{ #category : #'private - announcement handling' }
+GtMagritteOneLineEditorElement >> onDescriptionPropertyChanged: anAnnouncement [
+	anAnnouncement key = #readOnly 
+		ifTrue: [ self updateEditorMode ]
+]
+
 { #category : #'api - field view model' }
 GtMagritteOneLineEditorElement >> onFieldViewModelChanged [
 	"Is sent when a new fieldViewModel is assigned to the receiver.
@@ -64,6 +75,25 @@ GtMagritteOneLineEditorElement >> onPostFieldViewModelChanged [
 
 	self withAsyncSinkDo: [ :anElementSink | 
 		self observableValue observe: anElementSink ]
+]
+
+{ #category : #'api - field view model' }
+GtMagritteOneLineEditorElement >> subscribeToFieldViewModel [
+	"Is sent after a new fieldViewModel is assigned to the receiver.
+	It is required to unsubscribe from the previously subscribed objects by implementing
+	#unsubscribeFromFieldViewModel if the receiver subscribes to them"
+	
+	self fieldViewModel description 
+		whenPropertyChangedSend: #onDescriptionPropertyChanged: 
+		to: self
+]
+
+{ #category : #'api - field view model' }
+GtMagritteOneLineEditorElement >> unsubscribeFromFieldViewModel [
+	"Is sent before a new fieldViewModel is assigned to the receiver.
+	Objects that subscribe to fieldViewModel are required to implement this method."
+	
+	self fieldViewModel description unsubscribe: self
 ]
 
 { #category : #'private - updating' }
@@ -90,7 +120,7 @@ GtMagritteOneLineEditorElement >> updateAsEditable [
 { #category : #'private - updating' }
 GtMagritteOneLineEditorElement >> updateAsReadyOnly [
 	self beReadOnlyWithSelection.
-
+	
 	editorEventHandler ifNil: [ ^ self ].
 
 	(self editor hasEventHandler: editorEventHandler)
