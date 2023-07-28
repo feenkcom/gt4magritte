@@ -2,14 +2,12 @@ Extension { #name : #MADescription }
 
 { #category : #'*GToolkit4Magritte-Core' }
 MADescription >> announcerSubscriptionsDo: aBlock [
-
-	"Iterates over all subscriptions: anAnnouncementClass -> anAnnouncerBlock"
+	"Iterates over all subscriptions"
 
 	self
 		propertyAt: #announcerSubscriptions
 		ifPresent: [ :aCollection | 
-			aCollection do: [ :anAssoc | 
-				aBlock value: anAssoc key value: anAssoc value ] ]
+			aCollection do: aBlock ]
 		ifAbsent: [ "ignore" ]
 ]
 
@@ -72,12 +70,35 @@ MADescription >> isWithChangeIndicator [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
-MADescription >> updateOn: anAnnouncementClass from: anAnnouncerBlock [
+MADescription >> updateDescription: aDescriptionSetterSelector as: aModelValueSelector on: anAnnouncementClass from: anAnnouncerBlock [
+
+	| aSpecification |
+	aSpecification := GtMagritteDescriptionFromModelUpdateSpecification new
+		descriptionSetterSelector: aDescriptionSetterSelector;
+		modelValueSelector: aModelValueSelector;
+		announcementClass: anAnnouncementClass;
+		announcerBlock: anAnnouncerBlock.
 
 	self
 		propertyAt: #announcerSubscriptions
 		ifPresent: [ :aCollection | 
-			aCollection add: anAnnouncementClass -> anAnnouncerBlock ]
+			aCollection add: aSpecification ]
 		ifAbsentPut: [ 
-			OrderedCollection with: anAnnouncementClass -> anAnnouncerBlock ]
+			OrderedCollection with: aSpecification ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MADescription >> updateOn: anAnnouncementClass from: anAnnouncerBlock [
+
+	| aSpecification |
+	aSpecification := GtMagritteDescriptionValueFromModelUpdateSpecification new
+		announcementClass: anAnnouncementClass;
+		announcerBlock: anAnnouncerBlock.
+
+	self
+		propertyAt: #announcerSubscriptions
+		ifPresent: [ :aCollection | 
+			aCollection add: aSpecification ]
+		ifAbsentPut: [ 
+			OrderedCollection with: aSpecification ]
 ]

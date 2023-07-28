@@ -6,8 +6,10 @@ Class {
 		'validators',
 		'overallStatus',
 		'internalStatus',
-		'subscriptions',
-		'executionStatus'
+		'executionStatus',
+		'subscribers',
+		'allActions',
+		'subscriptionHandlers'
 	],
 	#category : #'GToolkit4Magritte-Core-Models'
 }
@@ -197,7 +199,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 			text: [ :anAssoc | 
 				| isSubscribed |
 				isSubscribed := false.
-				subscriptions
+				subscriptionHandlers
 					ifNotNil: [ :aDictionary | (aDictionary includesKey: anAssoc key) ifTrue: [ isSubscribed := true ] ].
 				isSubscribed
 					ifTrue: [ 'yes' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
@@ -239,29 +241,30 @@ GtMagritteMemento >> gtOverallStatusFor: aView [
 GtMagritteMemento >> gtSubscriptionsFor: aView [
 
 	<gtView>
-	subscriptions ifNil: [ ^ aView empty ].
-	subscriptions ifEmpty: [ ^ aView empty ].
+	subscriptionHandlers ifNil: [ ^ aView empty ].
+	subscriptionHandlers ifEmpty: [ ^ aView empty ].
 
 	^ aView tree
 		  title: 'Subscriptions';
 		  priority: 13;
-		  items: [ subscriptions keys ];
+		  items: [ subscriptionHandlers keys sorted: [ :a :b | a priority < b priority ] ];
 		  children: [ :anItem | 
-			  (anItem isKindOf: MADescription)
-				  ifTrue: [ subscriptions at: anItem ifAbsent: [ #(  ) ] ]
+			  (anItem isKindOf: MAObject)
+				  ifTrue: [ subscriptionHandlers at: anItem ifAbsent: [ #(  ) ] ]
 				  ifFalse: [ #(  ) ] ];
 		  itemText: [ :anItem | 
-			  (anItem isKindOf: MADescription)
+			  (anItem isKindOf: MAObject)
 				  ifTrue: [ 
-					  'Change ' asRopedText
+					  '' asRopedText
 						  foreground: BrGlamorousColors disabledButtonTextColor;
 						  append: anItem label asRopedText;
 						  append:
-							  (' original values on the following announcements:'
+							  (' description handlers:'
 								   asRopedText foreground:
 									   BrGlamorousColors disabledButtonTextColor) ]
-				  ifFalse: [ anItem announcementClass ] ];
-		  expandAll
+				  ifFalse: [ anItem label asRopedText ] ];
+		  expandAll;
+		  actionUpdateButton
 ]
 
 { #category : #initialization }
@@ -270,7 +273,7 @@ GtMagritteMemento >> initialize [
 
 	cache := Dictionary new.
 	validators := Dictionary new.
-	subscriptions := Dictionary new.
+	subscriptionHandlers := Dictionary new.
 	executionStatus := self newObservable.
 	executionStatus value: GtMagritteExecutionStatus inactive.
 	internalStatus := self newObservable.
@@ -284,7 +287,15 @@ GtMagritteMemento >> initialize [
 
 { #category : #accessing }
 GtMagritteMemento >> magritteActions [
-	^ self model magritteActions
+	allActions ifNotNil: [ :aCollection | ^ aCollection ].
+	
+	"Initialize Magritte actions"
+	allActions := self model magritteActions.
+	allActions do: [ :aDescription | 
+		aDescription announcerSubscriptionsDo: [ :aSpecification |
+			self subscribeToModelUsing: aDescription specification: aSpecification ] ].
+			
+	^ allActions
 ]
 
 { #category : #private }
@@ -408,40 +419,52 @@ GtMagritteMemento >> setCache: aDictionary [
 
 { #category : #private }
 GtMagritteMemento >> subscribeToModelUsing: aDescription observable: anObservable [
-	| aHandler |
 	aDescription
-		announcerSubscriptionsDo: [ :anAnnouncementClass :anAnnouncerValuable | 
-			anAnnouncerValuable value
-				ifNotNil: [ :anAnnouncer | 
-					| aSubscriptionBuilder |
-					aSubscriptionBuilder := [ anAnnouncer weak ]
-							onDNU: #weak
-							do: [ :ex | anAnnouncer ].
+		announcerSubscriptionsDo: [ :aSpecification | 
+			| aContext aSubscriber |
+			aContext := GtMagritteUpdateSpecificationContext new
+				model: self model;
+				description: aDescription;
+				observable: anObservable.
+		
+			aSubscriber := aSpecification subscribeInContext: aContext.
 
-					aSubscriptionBuilder
-						when: anAnnouncementClass
-						send: #onAnnouncement:
-						to: (aHandler := GtMagritteMementoAnnouncementHandler new
-									model: self model;
-									memento: self;
-									description: aDescription;
-									observable: anObservable;
-									announcementClass: anAnnouncementClass).
+			aSubscriber ifNotNil: [ 
+				subscriptionHandlers
+					at: aDescription
+					ifPresent: [ :aCollection | aCollection add: aSubscriber ]
+					ifAbsentPut: [ OrderedCollection with: aSubscriber ] ] ]
+]
 
-					subscriptions
-						at: aDescription
-						ifPresent: [ :aCollection | aCollection add: aHandler ]
-						ifAbsentPut: [ OrderedCollection with: aHandler ] ] ]
+{ #category : #private }
+GtMagritteMemento >> subscribeToModelUsing: aDescription specification: aSpecification [ 
+
+	| aContext aSubscriber |
+	aContext := GtMagritteUpdateSpecificationContext new
+		model: self model;
+		description: aDescription.
+
+	aSubscriber := aSpecification subscribeInContext: aContext.
+
+	aSubscriber ifNotNil: [ 
+		subscriptionHandlers
+			at: aDescription
+			ifPresent: [ :aCollection | aCollection add: aSubscriber ]
+			ifAbsentPut: [ OrderedCollection with: aSubscriber ] ]
 ]
 
 { #category : #private }
 GtMagritteMemento >> unsubscribeFromModelUsing: aDescription [
 
-	subscriptions removeKey: aDescription ifAbsent: [ "ignore" ].
+	| removedSubscribers |
+	removedSubscribers := subscriptionHandlers 
+		removeKey: aDescription 
+		ifAbsent: [ ^ self ].
 
-	aDescription announcerSubscriptionsDo: [ :eachAssoc | 
-		eachAssoc value value ifNotNil: [ :anAnnouncer | 
-			anAnnouncer unsubscribe: self ] ]
+	aDescription announcerSubscriptionsDo: [ :aSpecification | 
+		aSpecification announcerDo: [ :anAnnouncer | 
+			removedSubscribers do: [ :aSubscriber |
+				anAnnouncer unsubscribe: aSubscriber ] ] ]
 ]
 
 { #category : #private }

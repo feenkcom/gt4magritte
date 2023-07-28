@@ -1,6 +1,17 @@
 Extension { #name : #MAActionDescription }
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> announcerSubscriptionsDo: aBlock [
+	"Iterates over all subscriptions"
+
+	self
+		propertyAt: #announcerSubscriptions
+		ifPresent: [ :aCollection | 
+			aCollection do: aBlock ]
+		ifAbsent: [ "ignore" ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> asBlockButtonWithMemento: aMemento [
 	| aButton |
 	aButton := BrButton new
@@ -42,6 +53,20 @@ MAActionDescription >> asBlockButtonWithMemento: aMemento [
 								cull: aMemento
 								cull: self ] ].
 			aMemento overallStatus observe: anElementSink ].
+			
+	aButton userData
+		at: #maIconHandler put: (GtMagritteDescriptionPropertyChangedHandler new
+			key: #blocIcon;
+			receiver: aButton;
+			selector: #icon:;
+			subscribeToDescription: self).
+			
+	aButton userData
+		at: #maLabelHandler put: (GtMagritteDescriptionPropertyChangedHandler new
+			key: #label;
+			receiver: aButton;
+			selector: #label:;
+			subscribeToDescription: self).
 
 	^ aButton
 ]
@@ -185,4 +210,22 @@ MAActionDescription >> onSuccessCallbacks [
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> onSuccessCallbacks: aCollection [
 	^ self propertyAt: #onSuccessCallbacks put: aCollection
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> updateDescription: aDescriptionSetterSelector as: aModelValueSelector on: anAnnouncementClass from: anAnnouncerBlock [
+
+	| aSpecification |
+	aSpecification := GtMagritteDescriptionFromModelUpdateSpecification new
+		descriptionSetterSelector: aDescriptionSetterSelector;
+		modelValueSelector: aModelValueSelector;
+		announcementClass: anAnnouncementClass;
+		announcerBlock: anAnnouncerBlock.
+
+	self
+		propertyAt: #announcerSubscriptions
+		ifPresent: [ :aCollection | 
+			aCollection add: aSpecification ]
+		ifAbsentPut: [ 
+			OrderedCollection with: aSpecification ]
 ]

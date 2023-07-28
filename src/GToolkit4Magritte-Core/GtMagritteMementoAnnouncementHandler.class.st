@@ -11,6 +11,11 @@ Class {
 	#category : #'GToolkit4Magritte-Core-Support'
 }
 
+{ #category : #testing }
+GtMagritteMementoAnnouncementHandler class >> isDeprecated [
+	^ true
+]
+
 { #category : #accessing }
 GtMagritteMementoAnnouncementHandler >> announcementClass [
 

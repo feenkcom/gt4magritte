@@ -131,6 +131,15 @@ GtMagritteModelExamples >> basicPersonWithExtraActionsObject [
 	^ aPerson
 ]
 
+{ #category : #'examples - server\t' }
+GtMagritteModelExamples >> basicServerObject [
+	<gtExample>
+	| server |
+	server := GtMagritteDummyServer new.
+
+	^ server
+]
+
 { #category : #'examples - broken object' }
 GtMagritteModelExamples >> brokenObject [
 
