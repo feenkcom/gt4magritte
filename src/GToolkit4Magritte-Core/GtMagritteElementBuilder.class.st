@@ -23,39 +23,24 @@ GtMagritteElementBuilder >> actions: anObject [
 
 { #category : #'private - building' }
 GtMagritteElementBuilder >> addBooleanField: aDescription [
-
-	| aCheckBoxElement aValidationElement aMemento aLabelElement aContainer aLabel |
+	| aCheckBoxElement aValidationElement aMemento aLabel |
+	
 	aMemento := self memento.
-	aCheckBoxElement := GtMagritteBuilderUtility
-		                    newCheckboxMemento: aMemento
-		                    using: aDescription.
-
-	aDescription hasCustomLabels
-		ifFalse: [ aContainer := aCheckBoxElement ]
-		ifTrue: [ 
-			aLabelElement := GtMagritteBuilderUtility
-				                 newBasicReadOnlyEditorWithMemento: aMemento
-				                 using: aDescription.
-
-			aLabelElement withAsyncSinkDo: [ :anElementSink | 
-				anElementSink
-					sink: AsyncPeekSink new;
-					whenUpdate: [ :theEditor :aSink | 
-						theEditor text:
-								(aDescription labelForOption: aSink value currentValue) ].
-				(aMemento readObservableValueUsing: aDescription) observe:
-					anElementSink ].
-
-			aContainer := BrHorizontalPane new
-				              hFitContentLimited;
-				              vFitContent;
-				              alignCenterLeft.
-			aContainer
-				addChild: aCheckBoxElement;
-				addChild: aLabelElement ].
+	
+	aDescription blocStencil
+		ifNotNil: [ :stencil | 
+			aCheckBoxElement := stencil 
+				memento: aMemento; 
+				description: aDescription;
+				asElement ]
+		ifNil: [ 
+			aCheckBoxElement := GtMagritteBooleanElement new
+				fieldViewModel: (GtMagritteFieldViewModel new
+						memento: aMemento;
+						description: aDescription) ].
 
 	aValidationElement := GtMagritteBuilderUtility
-		                      newValidationContainerWith: aContainer
+		                      newValidationContainerWith: aCheckBoxElement
 		                      memento: aMemento
 		                      using: aDescription.
 
@@ -340,8 +325,6 @@ GtMagritteElementBuilder >> buildActions [
 	| aToolbar allActions |
 	allActions := self allActions.
 	allActions ifEmpty: [ ^ self ].
-
-	self isReadOnlyForm ifTrue: [ ^ self ].
 
 	self
 		toolbarContainerDo: [ :aContainer | 

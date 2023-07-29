@@ -14,24 +14,12 @@ Class {
 GtMagritteOneLineEditorElement >> initialize [
 	super initialize.
 
+	GtMagritteBuilderUtility styleEditorWidget: self.
+	
 	self
-		addAptitude: (BrStyleCommonAptitude new
-				default: [ :aStyle | aStyle border: BlBorder empty ];
-				hovered: [ :aStyle | 
-					aStyle
-						border: (BlBorder paint: BrGlamorousColors disabledButtonBorderColor width: 1) ];
-				focused: [ :aStyle | 
-					aStyle
-						border: (BlBorder paint: BrGlamorousColors focusedEditorBorderColor width: 1) ]);
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		vFitContent;
-		hFitContentLimited;
-		margin: (BlInsets top: 2 bottom: GtMagritteBuilderUtility defaultSpaceNumber);
-		constraintsDo: [ :c | 
-			c grid vertical alignCenter.
-			c minWidth: 42 ];
-		when: BlFocusInEvent do: [ :anEvent | self selecter all select ];
-		when: BlFocusOutEvent do: [ :anEvent | self deselecter all deselect ].
+		margin: (BlInsets 
+			top: 2 
+			bottom: GtMagritteBuilderUtility defaultSpaceNumber).
 
 	self inputFilter: BrTextEditorNoLineBreakInputFilter new.
 

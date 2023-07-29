@@ -102,31 +102,19 @@ GtMagritteBuilderUtility class >> executionConfigutation [
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento using: aDescription [
 	| anEditor aptitude |
-	anEditor := BrEditor new inputFilter: BrTextEditorNoLineBreakInputFilter new.
+	anEditor := BrEditor new 
+		inputFilter: BrTextEditorNoLineBreakInputFilter new.
+		
 	aptitude := aDescription editorAptitude
 			ifNil: [ BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize ]
 			ifNotNil: #value.
 
 	anEditor
 		beReadOnlyWithSelection;
-		aptitude: aptitude;
-		addAptitude: (BrStyleCommonAptitude new
-				default: [ :aStyle | aStyle border: BlBorder empty ];
-				hovered: [ :aStyle | 
-					aStyle
-						border: (BlBorder paint: BrGlamorousColors disabledButtonBorderColor width: 1) ];
-				focused: [ :aStyle | 
-					aStyle
-						border: (BlBorder paint: BrGlamorousColors focusedEditorBorderColor width: 1) ]);
-		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		vFitContent;
-		hFitContentLimited;
-		margin: (BlInsets bottom: self defaultSpaceNumber);
-		when: BlFocusInEvent do: [ :anEvent | anEditor selecter all select ];
-		when: BlFocusOutEvent do: [ :anEvent | anEditor deselecter all deselect ];
-		constraintsDo: [ :c | 
-			c grid vertical alignCenter.
-			c minWidth: 20 ].
+		aptitude: aptitude.
+		
+	self styleEditorWidget: anEditor.
+		
 	^ anEditor
 ]
 
@@ -161,7 +149,8 @@ GtMagritteBuilderUtility class >> newCheckboxMemento: aMemento using: aDescripti
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
 				sink: AsyncPeekSink new;
-				whenUpdate: [ :theCheckbox :aSink | theCheckbox checked: aSink value currentValue ].
+				whenUpdate: [ :theCheckbox :aSink | 
+					theCheckbox checked: aSink value currentValue ].
 			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ];
 		whenCheckedDo: [ 
 			self 
@@ -644,6 +633,38 @@ GtMagritteBuilderUtility class >> removeItem: anItem memento: aMemento descripti
 	aNewCollection := aValue currentValue copyWithout: anItem.
 	aNewCollection = aValue currentValue ifFalse: [ 
 		anObservable value: (aValue copyWithCurrentValue: aNewCollection) ]
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> styleEditorWidget: aBrEditor [ 
+	aBrEditor addAptitude: (BrStyleCommonAptitude new
+		default: [ :aStyle | 
+			aStyle border: BlBorder empty ];
+		hovered: [ :aStyle | 
+			aStyle border: (BlBorder 
+				paint: BrGlamorousColors disabledButtonBorderColor 
+				width: 1) ];
+		focused: [ :aStyle | 
+			aStyle border: (BlBorder 
+				paint: BrGlamorousColors focusedEditorBorderColor 
+				width: 1) ]).
+				
+	aBrEditor 
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+		margin: (BlInsets bottom: self defaultSpaceNumber);
+		vFitContent;
+		hFitContentLimited.
+		
+	aBrEditor 
+		when: BlFocusInEvent do: [ :anEvent | 
+			aBrEditor selecter all select ];
+		when: BlFocusOutEvent do: [ :anEvent | 
+			aBrEditor deselecter all deselect ].
+			
+	aBrEditor
+		constraintsDo: [ :c | 
+			c grid vertical alignCenter.
+			c minWidth: 20 ]
 ]
 
 { #category : #'api - ui' }
