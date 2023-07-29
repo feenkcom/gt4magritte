@@ -21,8 +21,38 @@ GtMagritteMemento class >> isAbstract [
 ]
 
 { #category : #private }
-GtMagritteMemento >> basicValidateValue: aValue [
-	aValue description validate: aValue currentValue
+GtMagritteMemento >> autoAcceptValue: aValidationResult [
+	"Descriptions with #autoAccept true values should commit their values immediately"
+
+	aValidationResult isSuccess ifFalse: [ ^ aValidationResult ].
+	aValidationResult value description autoAccept ifFalse: [ ^ aValidationResult ].
+	aValidationResult value isChanged ifFalse: [ ^ aValidationResult ].
+	
+	[ 
+		| aDescription aGtMagritteValue anObservable |
+		aGtMagritteValue := aValidationResult value.
+		aDescription := aGtMagritteValue description.
+		
+		"Write a new model value"
+		self 
+			pushDescription: aDescription 
+			currentValue: aGtMagritteValue.
+
+		"Update the memento value"
+		anObservable := self readObservableValueUsing: aDescription.
+		anObservable value: (aGtMagritteValue copyWithOriginalValue: aGtMagritteValue currentValue).
+	]
+		onErrorDo: [ :anException | 
+			self executionStatus: (
+				GtMagritteExecutionStatus exception: anException)
+		].
+
+	^ aValidationResult
+]
+
+{ #category : #private }
+GtMagritteMemento >> basicValidateValue: aGtMagritteValue [
+	aGtMagritteValue description validate: aGtMagritteValue currentValue
 ]
 
 { #category : #private }
@@ -116,7 +146,17 @@ GtMagritteMemento >> gtActionsFor: aView [
 			text: [ :anAction | 
 				anAction isToolbarAction
 					ifTrue: [ 'yes' asRopedText ]
+					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ];
+		column: 'Subscribed'
+			text: [ :anAction | 
+				| isSubscribed |
+				isSubscribed := false.
+				subscriptionHandlers
+					ifNotNil: [ :aDictionary | (aDictionary includesKey: anAction) ifTrue: [ isSubscribed := true ] ].
+				isSubscribed
+					ifTrue: [ 'yes' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
 					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
+			width: 75
 ]
 
 { #category : #'gt - extensions' }
@@ -195,6 +235,11 @@ GtMagritteMemento >> gtCacheFor: aView [
 
 				aLabel ]
 			weight: 2;
+		column: 'Auto-accept'
+			text: [ :anAssoc | anAssoc key autoAccept
+				ifTrue: [ 'yes' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
+				ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
+			width: 80;
 		column: 'Subscribed'
 			text: [ :anAssoc | 
 				| isSubscribed |
@@ -204,7 +249,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 				isSubscribed
 					ifTrue: [ 'yes' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
 					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
-			width: 70;
+			width: 75;
 		contextItemLabel: 'Inspect current value'
 			action: [ :anElement :anAssoc | 
 				anAssoc value valueOrNil
@@ -344,12 +389,20 @@ GtMagritteMemento >> push: aDictionary [
 	"Utility method to push a dictionary mapping descriptions to values into the model."
 
 	aDictionary keysAndValuesDo: [ :aDescription :anObservable | 
-		(aDescription isVisible and: [ 
-			 aDescription isReadOnly not and: [ 
-				 anObservable valueOrNil isChanged ] ]) ifTrue: [ 
-					self model
-						write: anObservable valueOrNil currentValue
-						using: aDescription ] ]
+		self 
+			pushDescription: aDescription 
+			currentValue: anObservable valueOrNil ]
+]
+
+{ #category : #private }
+GtMagritteMemento >> pushDescription: aDescription currentValue: aGtMagritteValue [
+	(aDescription isVisible
+		and: [ aDescription isReadOnly not 
+		and: [ aGtMagritteValue isChanged ] ])
+			ifTrue: [ 
+				self model 
+					write: aGtMagritteValue currentValue 
+					using: aDescription ]
 ]
 
 { #category : #actions }
@@ -403,10 +456,13 @@ GtMagritteMemento >> setCache: aDictionary [
 			ifPresent: [ :theObservable | "ignore" ]
 			ifAbsentPut: [ 
 				| aValidator |
-				aValidator := (anObservable observe 
+				aValidator := ((anObservable observe 
 					map: (MessageSend 
 						receiver: self 
-						selector: #validateValue:)) 
+						selector: #validateValue:))
+					map: (MessageSend 
+						receiver: self 
+						selector: #autoAcceptValue:))
 							asAsyncObservable: GtMagritteBuilderUtility executionConfigutation.
 				aValidator observe: internalStatus.
 				aValidator ] ].
@@ -468,25 +524,24 @@ GtMagritteMemento >> unsubscribeFromModelUsing: aDescription [
 ]
 
 { #category : #private }
-GtMagritteMemento >> validateValue: aValue [
+GtMagritteMemento >> validateValue: aGtMagritteValue [
 	| aResult |
-	[ self basicValidateValue: aValue.
+	[ self basicValidateValue: aGtMagritteValue.
 
-	aResult := GtMagritteValidationSuccess new value: aValue ]
+	aResult := GtMagritteValidationSuccess new value: aGtMagritteValue ]
 		on: MAValidationError
 		do: [ :anError | 
 			aResult := GtMagritteValidationFailure new
-					value: aValue;
+					value: aGtMagritteValue;
 					exception: anError ].
 
-	aValue validation: aResult.
+	aGtMagritteValue validation: aResult.
 
 	^ aResult
 ]
 
 { #category : #actions }
 GtMagritteMemento >> validatorUsing: aDescription [
-
 	<return: #AsyncObservableValue of: #GtMagritteValue>
 	^ validators at: aDescription
 ]

@@ -134,11 +134,14 @@ GtMagritteDummyServer >> readOnlyModeRequestDescription [
 	
 	^ MABooleanDescription new 
 		label: 'Read-only';
-		comment: 'Server accepts or reject update requests (can be changed at any time)';
+		comment: 'Server accepts or reject update requests (can be changed at any time and is auto-accepted)';
+		trueString: 'accept update requests';
+		falseString: 'reject update requests';
 		accessor: #readOnlyMode;
 		default: false;
 		visible: true;
-		priority: 5
+		priority: 5;
+		autoAccept: true
 ]
 
 { #category : #actions }
