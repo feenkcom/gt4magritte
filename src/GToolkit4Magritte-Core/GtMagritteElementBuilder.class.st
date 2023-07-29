@@ -326,8 +326,6 @@ GtMagritteElementBuilder >> buildActions [
 	allActions := self allActions.
 	allActions ifEmpty: [ ^ self ].
 
-	self isReadOnlyForm ifTrue: [ ^ self ].
-
 	self
 		toolbarContainerDo: [ :aContainer | 
 			aToolbar := GtMagritteBuilderUtility
