@@ -71,24 +71,31 @@ MADescription >> isWithChangeIndicator [
 
 { #category : #'*GToolkit4Magritte-Core' }
 MADescription >> updateDescription: aDescriptionSetterSelector as: aModelValueSelector on: anAnnouncementClass from: anAnnouncerBlock [
+	"Update description property (aDescriptionSetterSelector) to a value provided by the memento selector (aModelValueSelector) when the given announcement is propagated.
+	
+	The aModelValueSelector message is used to get a new model value and must be of zero arguments.
+	The aModelValueSelector message is used to update the description property and must be of a one argument.
+	
+	Note that we force to use Symbol instances to omit memory leaks. All memento subscriptions are weak."
 
 	| aSpecification |
 	aSpecification := GtMagritteDescriptionFromModelUpdateSpecification new
-		descriptionSetterSelector: aDescriptionSetterSelector;
-		modelValueSelector: aModelValueSelector;
-		announcementClass: anAnnouncementClass;
-		announcerBlock: anAnnouncerBlock.
+			descriptionSetterSelector: aDescriptionSetterSelector;
+			modelValueSelector: aModelValueSelector;
+			announcementClass: anAnnouncementClass;
+			announcerBlock: anAnnouncerBlock.
 
 	self
 		propertyAt: #announcerSubscriptions
-		ifPresent: [ :aCollection | 
-			aCollection add: aSpecification ]
-		ifAbsentPut: [ 
-			OrderedCollection with: aSpecification ]
+		ifPresent: [ :aCollection | aCollection add: aSpecification ]
+		ifAbsentPut: [ OrderedCollection with: aSpecification ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
 MADescription >> updateOn: anAnnouncementClass from: anAnnouncerBlock [
+	"Update memento original value (provided by a model) when the given announcement is propagated.
+	
+	All memento subscriptions are weak."
 
 	| aSpecification |
 	aSpecification := GtMagritteDescriptionValueFromModelUpdateSpecification new

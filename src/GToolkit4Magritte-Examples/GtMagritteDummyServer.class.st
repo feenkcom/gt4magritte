@@ -53,11 +53,6 @@ GtMagritteDummyServer >> isStopped [
 ]
 
 { #category : #accessing }
-GtMagritteDummyServer >> modelStatus [
-	^ GtMagritteDummyServerStatus new status: self status
-]
-
-{ #category : #accessing }
 GtMagritteDummyServer >> name [
 	^ name
 ]

@@ -136,6 +136,13 @@ GtMagritteModelExamples >> basicServerObject [
 	<gtExample>
 	| server |
 	server := GtMagritteDummyServer new.
+	
+	self assert: server name isNotNil description: 'Name must be non-nil'.
+	self assert: server port isNotNil description: 'Port must be non-nil'.
+	self assert: server port isInteger description: 'Port must be an integer'.
+	self assert: server status isNotNil description: 'Status must be non-nil'.
+	self assert: server readOnlyMode isNotNil description: 'Ready-only mode must be non-nil'.
+	self assert: server readOnlyMode isBoolean description: 'Ready-only mode must be a boolean'.
 
 	^ server
 ]

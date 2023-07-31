@@ -509,6 +509,38 @@ GtMagritteByScripterExamples >> assert: aStep model: aModel acceptEnabled: isAcc
 				play ]
 ]
 
+{ #category : #assertions }
+GtMagritteByScripterExamples >> assert: aStep model: aModel actionDescription: aDescription isEnabled: isButtonEnabled label: aLabelString [
+	| aButtonId |
+	aButtonId := GtMagritteActionElementId new description: aDescription.
+
+	self
+		assert: aStep
+		model: aModel
+		actionId: aButtonId
+		isEnabled: isButtonEnabled
+		label: aLabelString
+]
+
+{ #category : #assertions }
+GtMagritteByScripterExamples >> assert: aStep model: aModel actionId: aButtonId isEnabled: isButtonEnabled label: aLabelString [
+	aStep assert
+		label: ('Assert {1} button is {2}' format: { 
+			aLabelString.
+			isButtonEnabled ifTrue: [ 'enabled' ] ifFalse: [ 'disabled' ] });
+		value: [ :aButton | aButton isEnabled ]
+			equals: [ :aButton | isButtonEnabled ];
+		// aButtonId;
+		play.
+		
+	aStep assert
+		label: ('Assert {1} button label' format: { aLabelString });
+		value: [ :aButton | aButton label asString ]
+			equals: [ :aButton | aLabelString asString ];
+		// aButtonId;
+		play.
+]
+
 { #category : #'examples - support' }
 GtMagritteByScripterExamples >> assert: aParentStep successAcceptCount: successAcceptCount errorAcceptCount: errorAcceptCount successCancelCount: successCancelCount errorCancelCount: errorCancelCount [
 	aParentStep
@@ -582,4 +614,200 @@ GtMagritteByScripterExamples >> assert: aParentStep successAcceptCount: successA
 					onModel;
 					play ].
 		]
+]
+
+{ #category : #'examples - server' }
+GtMagritteByScripterExamples >> serverObject [
+	<gtExample>
+	| aScripter |
+	aScripter := self
+			scripterWithModel: [ GtMagritteModelExamples new basicServerObject ]
+			element: [ :aModel | aModel asGtMagritteViewModel asElement ].
+
+			
+	aScripter substeps: 'Assert default server' do: [ :aStep | 
+		self
+			assert: aStep
+			model: aScripter model
+			acceptEnabled: false
+			cancelEnabled: false.
+			
+		self 
+			assert: aStep
+			model: aScripter model
+			actionDescription: (aScripter model startAndStopActionDescription) 
+			isEnabled: true 
+			label: 'Start'.
+			
+		aStep assert
+				label: 'Server read-only mode value is false';
+				value: [ :aModel | aModel readOnlyMode ] equals: [ false ];
+				onModel;
+				play.
+				
+		aStep assert
+				label: 'Server port value is 0';
+				value: [ :aModel | aModel port ] equals: [ 0 ];
+				onModel;
+				play.
+	].
+
+	^ aScripter
+]
+
+{ #category : #'examples - server' }
+GtMagritteByScripterExamples >> serverObjectInStartedState [
+	<gtExample>
+	| aScripter |
+	aScripter := self serverObject.
+	
+	aScripter 
+		substeps: 'Start server'
+		do: [ :aStep | 
+			| aStartDescription |
+			aStartDescription := aScripter model startAndStopActionDescription.
+			
+			aStep click
+				label: 'Click on the start button';
+				// (GtMagritteActionElementId new description: aStartDescription);
+				play.
+				
+			self 
+				assert: aStep
+				model: aScripter model
+				actionDescription: aScripter model startAndStopActionDescription 
+				isEnabled: true 
+				label: 'Stop'.
+				
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: false
+				cancelEnabled: false.
+				
+			aStep assert
+				label: 'Server port value is NOT 0';
+				satisfies: [ :aModel | aModel port ~= 0 ];
+				onModel;
+				play.
+		].
+				
+	^ aScripter
+]
+
+{ #category : #'examples - server' }
+GtMagritteByScripterExamples >> serverObjectInStartedStateAndAutoAcceptWidget [
+	<gtExample>
+	| aScripter |
+	aScripter := self serverObjectInStartedState.
+	
+	aScripter
+		substeps: 'Change Read-only server mode value to true'
+		do: [ :aStep | 
+			| anId |
+			anId := GtMagritteFieldElementId new
+					description: aScripter model readOnlyModeRequestDescription.
+
+			aStep click
+				label: 'Click on the checkbox';
+				// anId;
+				/ BrCheckbox;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: false
+				cancelEnabled: false.
+				
+			self 
+				assert: aStep
+				model: aScripter model
+				actionDescription: aScripter model startAndStopActionDescription 
+				isEnabled: true 
+				label: 'Stop'.
+				
+			aStep assert
+				label: 'Server read-only mode value is true';
+				value: [ :aModel | aModel readOnlyMode ] equals: [ true ];
+				onModel;
+				play. ].
+				
+	^ aScripter
+]
+
+{ #category : #'examples - server' }
+GtMagritteByScripterExamples >> serverObjectInStartedStateAndReadOnlyPort [
+	<gtExample>
+	| aScripter |
+	aScripter := self serverObjectInStartedState.
+	
+	aScripter
+		substeps: 'Try to change read-only port value'
+		do: [ :aStep | 
+			| anId |
+			anId := GtMagritteFieldElementId new
+					description: aScripter model portDescription.
+
+			aStep requestFocus
+				// anId;
+				play.
+
+			aStep type
+				text: '2023';
+				// anId;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: false
+				cancelEnabled: false.
+				
+			self 
+				assert: aStep
+				model: aScripter model
+				actionDescription: aScripter model startAndStopActionDescription
+				isEnabled: true 
+				label: 'Stop' ].
+				
+	^ aScripter
+]
+
+{ #category : #'examples - server' }
+GtMagritteByScripterExamples >> serverObjectInStoppedStateAndChangedPort [
+	<gtExample>
+	| aScripter |
+	aScripter := self serverObject.
+	
+	aScripter
+		substeps: 'Change port widget value'
+		do: [ :aStep | 
+			| anId |
+			anId := GtMagritteFieldElementId new
+					description: aScripter model portDescription.
+
+			aStep requestFocus
+				// anId;
+				play.
+
+			aStep type
+				text: '2023';
+				// anId;
+				play.
+
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: true
+				cancelEnabled: true.
+				
+			self 
+				assert: aStep
+				model: aScripter model
+				actionDescription: (aScripter model startAndStopActionDescription) 
+				isEnabled: false 
+				label: 'Start' ].
+				
+	^ aScripter
 ]
