@@ -97,7 +97,7 @@ GtMagritteDummyServer >> portDescription [
 	
 	^ MANumberDescription new 
 		label: 'Port';
-		comment: 'Server listening port (can be changed only when server is idle)';
+		comment: 'Server listening port (can be changed only when server is stopped)';
 		accessor: #port;
 		beInteger;
 		default: 0;
