@@ -78,7 +78,6 @@ GtMagritteValue >> description: anObject [
 GtMagritteValue >> gtDescriptionFor: aView [
 	<gtView>
 	self description ifNil: [ ^ aView empty ].
-	self description definingSource ifNil: [ ^ aView empty ].
 
 	^ aView forward
 		title: 'Description';
@@ -91,7 +90,7 @@ GtMagritteValue >> gtDescriptionFor: aView [
 GtMagritteValue >> gtSourceFor: aView [
 	<gtView>
 	self description ifNil: [ ^ aView empty ].
-	self description definingSource ifNil: [ ^ aView empty ].
+	self description definingContext ifNil: [ ^ aView empty ].
 
 	^ aView forward
 		title: 'Source';

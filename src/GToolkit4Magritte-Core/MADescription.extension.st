@@ -58,6 +58,19 @@ MADescription >> gtConditionsFor: aView [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MADescription >> gtSourceFor: aView [
+	<gtView>
+	(self respondsTo: #definingContext) ifFalse: [ ^ aView empty ].
+	self definingContext ifNil: [ ^ aView empty ].
+
+	^ aView forward
+		title: 'Source';
+		priority: 20;
+		object: [ self definingContext ];
+		view: #compiledMethodGtViewFor:
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MADescription >> isAlwaysEditable [
 
 	^ self propertyAt: #alwaysEditable ifAbsent: [ false ]

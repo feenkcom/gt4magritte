@@ -174,8 +174,8 @@ GtMagritteDummyServer >> startAndStopActionDescription [
 		onOverallStatusChanged: (GtMagritteBasicAction new
 			action: [ :aStatus :aButton :aMemento :aDescription |
 				aStatus isChanged
-					ifTrue: [ aButton enabled: false ]
-					ifFalse: [ aButton enabled: aStatus isValidAndInactive ] ])
+					ifTrue: [ aDescription enabled: false ]
+					ifFalse: [ aDescription enabled: aStatus isValidAndInactive ] ])
 ]
 
 { #category : #magritte }
