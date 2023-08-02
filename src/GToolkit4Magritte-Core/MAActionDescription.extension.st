@@ -160,6 +160,18 @@ MAActionDescription >> blocIcon: aStencil [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> gtSourceFor: aView [
+	<gtView>
+	self definingContext ifNil: [ ^ aView empty ].
+
+	^ aView forward
+		title: 'Source';
+		priority: 20;
+		object: [ self definingContext ];
+		view: #compiledMethodGtViewFor:
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> isToolbarAction [
 	^ self propertyAt: #beToolbarAction ifAbsent: [ false ]
 ]
