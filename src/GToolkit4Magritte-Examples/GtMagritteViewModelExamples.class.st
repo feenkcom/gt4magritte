@@ -52,39 +52,6 @@ GtMagritteViewModelExamples >> asyncViewModelWithPrimaryAddress [
 	^ aViewModel
 ]
 
-{ #category : #'examples - simple baseline' }
-GtMagritteViewModelExamples >> asyncViewModelWithSimpleBaseline [
-
-	<gtExample>
-	| aViewModel anObject aDescription |
-	anObject := self simpleBaselineObject.
-	aDescription := self simpleBaselineDescription.
-	aViewModel := GtMagritteViewModel
-		              forObject: anObject
-		              description: aDescription.
-
-	self assert: aViewModel mementoFuture isAsyncFuture.
-
-	^ aViewModel
-]
-
-{ #category : #accessing }
-GtMagritteViewModelExamples >> asyncViewModelWithSimpleBaselines [
-
-	<gtExample>
-	| aViewModel anObject aDescription |
-	anObject := GtMagritteModelExamples new simpleBaselinesObject.
-	aDescription := GtMagritteModelExamples new
-		                simpleBaselinesDescription.
-	aViewModel := GtMagritteViewModel
-		              forObject: anObject
-		              description: aDescription.
-
-	self assert: aViewModel mementoFuture isAsyncFuture.
-
-	^ aViewModel
-]
-
 { #category : #'examples - view model' }
 GtMagritteViewModelExamples >> basicAsyncViewModel [
 
@@ -163,19 +130,6 @@ GtMagritteViewModelExamples >> elementWithPrimaryAddress_TwiceAsElement [
 		  addChild: anElementTwo
 ]
 
-{ #category : #'examples - simple baseline' }
-GtMagritteViewModelExamples >> elementWithSimpleBaseline [
-
-	<gtExample>
-	| aViewModel anElement |
-	aViewModel := self asyncViewModelWithSimpleBaseline.
-	anElement := aViewModel asElement.
-	
-	self assert: anElement isNotNil.
-
-	^ anElement
-]
-
 { #category : #'examples - model' }
 GtMagritteViewModelExamples >> personObjectWithTwoAddresses [
 
@@ -191,45 +145,10 @@ GtMagritteViewModelExamples >> primaryAddressObject [
 ]
 
 { #category : #'examples - model' }
-GtMagritteViewModelExamples >> simpleBaselineDescription [
-
-	<gtExample>
-	^ GtMagritteModelExamples new simpleBaselineDescription
-]
-
-{ #category : #'examples - model' }
 GtMagritteViewModelExamples >> simpleBaselineObject [
 
 	<gtExample>
 	^ GtMagritteModelExamples new simpleBaselineObject
-]
-
-{ #category : #'examples - simple baselines' }
-GtMagritteViewModelExamples >> viewModelWithBaselines [
-
-	<gtExample>
-	| aViewModel anObject aDescription |
-	anObject := GtMagritteModelExamples new simpleBaselinesObject.
-	aDescription := GtMagritteModelExamples new
-		                simpleBaselinesDescription.
-	aViewModel := GtMagritteViewModel
-		              forObject: anObject
-		              description: aDescription.
-
-	self assert: aViewModel mementoFuture isAsyncFuture.
-
-	^ aViewModel
-]
-
-{ #category : #'examples - simple baselines' }
-GtMagritteViewModelExamples >> viewModelWithBaselinesWithoutSaveOrCancelButton [
-	<gtExample>
-	| aViewModel |
-	aViewModel := self viewModelWithBaselines.
-
-	aViewModel actions: #().
-
-	^ aViewModel
 ]
 
 { #category : #'examples - simple directory' }
