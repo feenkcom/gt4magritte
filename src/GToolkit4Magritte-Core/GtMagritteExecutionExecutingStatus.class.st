@@ -20,8 +20,16 @@ GtMagritteExecutionExecutingStatus >> label [
 ]
 
 { #category : #'api - ui' }
-GtMagritteExecutionExecutingStatus >> updateToolbarExecutionStatus: aLabel [
-	super updateToolbarExecutionStatus: aLabel.
+GtMagritteExecutionExecutingStatus >> updateToolbarExceptionExecutionStatus: anExceptionContainer [
+	super updateToolbarExceptionExecutionStatus: anExceptionContainer.
+	anExceptionContainer
+		visibility: BlVisibility gone;
+		removeChildren
+]
+
+{ #category : #'api - ui' }
+GtMagritteExecutionExecutingStatus >> updateToolbarLabelExecutionStatus: aLabel [
+	super updateToolbarLabelExecutionStatus: aLabel.
 	aLabel
 		visibility: BlVisibility visible;
 		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors disabledButtonTextColor ];

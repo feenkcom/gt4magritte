@@ -8,7 +8,7 @@ Class {
 		'object',
 		'onElementCreated'
 	],
-	#category : #'GToolkit4Magritte-Core-Models'
+	#category : #'GToolkit4Magritte-Core-View Models'
 }
 
 { #category : #'api - instance creation' }

@@ -5,7 +5,7 @@ Class {
 		'memento',
 		'description'
 	],
-	#category : #'GToolkit4Magritte-Core-Widgets'
+	#category : #'GToolkit4Magritte-Core-View Models'
 }
 
 { #category : #accessing }

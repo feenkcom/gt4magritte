@@ -83,6 +83,37 @@ GtMagritteBuilderUtility class >> createValueFrom: aModel using: aDescription [
 ]
 
 { #category : #'api - ui' }
+GtMagritteBuilderUtility class >> debugButtonForException: anException [ 
+
+	^ BrButton new
+		beFocusable;
+		beTinySize;
+		hFitContent;
+		vFitContent;
+		aptitude: BrGlamorousButtonWithIconAptitude new;
+		icon: [ BrGlamorousVectorIcons debug asElement 
+			background: BrGlamorousColors errorBackgroundColor ] asStencil;
+		label: 'Open debugger';
+		constraintsDo: [ :c | 
+			c linear vertical alignCenter ];
+		action: (self debugClickActionForException: anException)
+
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> debugClickActionForException: anException [
+	^ [ [ 
+		UIManager default
+			gtDebugProcess: Processor activeProcess
+			context: (anException signalerContext
+					ifNil: [ anException signalContext ])
+			label: anException description
+			fullView: true
+			notification: nil 
+		] forkNamed: 'Debug' ]
+]
+
+{ #category : #'api - ui' }
 GtMagritteBuilderUtility class >> defaultSpaceNumber [
 
 	^ 4
@@ -245,20 +276,10 @@ GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: a
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newExecutionStatusWithMemento: aMemento [
 	| anElement |
-	anElement := BrLabel new
-			aptitude: (BrGlamorousLabelAptitude new glamorousCodeTinySize);
-			text: '';
+	anElement := GtMagritteStatusElement new
 			hFitContentLimited;
 			vFitContent;
-			visibility: BlVisibility gone.
-
-	anElement
-		withAsyncSinkDo: [ :anElementSink | 
-			anElementSink
-				sink: AsyncPeekSink new;
-				whenUpdate: [ :aLabel :aSink | 
-					aSink value updateToolbarExecutionStatus: aLabel ].
-			aMemento executionStatus observe: anElementSink ].
+			mementoViewModel: (GtMagritteMementoViewModel new memento: aMemento).
 
 	^ anElement
 ]
