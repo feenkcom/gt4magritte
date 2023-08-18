@@ -26,13 +26,22 @@ GtMagritteExecutionExceptionStatus >> label [
 GtMagritteExecutionExceptionStatus >> messageText [
 	^ self exception
 		ifNotNil: [ :anException | anException messageText 
-			ifEmpty: [ anException printString ] ]
+			ifEmpty: [ anException printStringLimitedTo: 18 ] ]
 		ifNil: [ 'Unknown error' ]
 ]
 
 { #category : #'api - ui' }
-GtMagritteExecutionExceptionStatus >> updateToolbarExecutionStatus: aLabel [
-	super updateToolbarExecutionStatus: aLabel.
+GtMagritteExecutionExceptionStatus >> updateToolbarExceptionExecutionStatus: anExceptionContainer [
+	super updateToolbarExceptionExecutionStatus: anExceptionContainer.
+	anExceptionContainer
+		visibility: BlVisibility visible;
+		removeChildren;
+		addChild: (GtMagritteBuilderUtility debugButtonForException: self exception)
+]
+
+{ #category : #'api - ui' }
+GtMagritteExecutionExceptionStatus >> updateToolbarLabelExecutionStatus: aLabel [
+	super updateToolbarLabelExecutionStatus: aLabel.
 	aLabel
 		visibility: BlVisibility visible;
 		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors errorBackgroundColor ];

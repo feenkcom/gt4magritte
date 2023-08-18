@@ -87,7 +87,7 @@ GtMagritteActionExecutor >> onExecutionError: anException [
 	super onExecutionError: anException.
 	self isWithCallbacks ifTrue: [ self executeErrorCallbacks: anException ].
 	self isWithStatusUpdates ifTrue: [ 
-		self memento executionStatus: (GtMagritteExecutionStatus exception: anException)  ]
+		self memento executionStatus: (GtMagritteExecutionStatus exception: (GtMagritteActionUtility freeze: anException)) ]
 ]
 
 { #category : #'private - hooks' }
@@ -126,5 +126,5 @@ GtMagritteActionExecutor >> registerCallback: aCallback error: anException [
 	callbackErrors
 		add: (GtMagritteCallbackError new
 				callback: aCallback;
-				exception: anException)
+				exception: (GtMagritteActionUtility freeze: anException))
 ]

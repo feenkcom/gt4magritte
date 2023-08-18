@@ -10,8 +10,16 @@ GtMagritteExecutionInactiveStatus >> label [
 ]
 
 { #category : #'api - ui' }
-GtMagritteExecutionInactiveStatus >> updateToolbarExecutionStatus: aLabel [
-	super updateToolbarExecutionStatus: aLabel.
+GtMagritteExecutionInactiveStatus >> updateToolbarExceptionExecutionStatus: anExceptionContainer [
+	super updateToolbarExceptionExecutionStatus: anExceptionContainer.
+	anExceptionContainer
+		visibility: BlVisibility gone;
+		removeChildren
+]
+
+{ #category : #'api - ui' }
+GtMagritteExecutionInactiveStatus >> updateToolbarLabelExecutionStatus: aLabel [
+	super updateToolbarLabelExecutionStatus: aLabel.
 	aLabel
 		visibility: BlVisibility gone;
 		text: ''

@@ -60,6 +60,11 @@ GtMagritteExecutionStatus >> label [
 ]
 
 { #category : #'api - ui' }
-GtMagritteExecutionStatus >> updateToolbarExecutionStatus: aLabel [
+GtMagritteExecutionStatus >> updateToolbarExceptionExecutionStatus: anExceptionContainer [
+	
+]
+
+{ #category : #'api - ui' }
+GtMagritteExecutionStatus >> updateToolbarLabelExecutionStatus: aLabel [
 	
 ]
