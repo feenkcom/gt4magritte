@@ -56,7 +56,7 @@ GtMagritteAddItemViewModel >> memento: anObject [
 ]
 
 { #category : #'private - event handling' }
-GtMagritteAddItemViewModel >> onClick: anEvent [
+GtMagritteAddItemViewModel >> onClick: anElement [
 	| aNewItem anExistingItems aNewItems |
 	self memento ifNil: [ ^ self ].
 	self description ifNil: [ ^ self ].
@@ -72,7 +72,7 @@ GtMagritteAddItemViewModel >> onClick: anEvent [
 		write: aNewItems
 		using: self description
 		memento: self memento
-		element: anEvent currentTarget
+		element: anElement
 ]
 
 { #category : #accessing }
