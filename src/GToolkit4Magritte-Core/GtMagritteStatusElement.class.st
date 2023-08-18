@@ -23,6 +23,7 @@ GtMagritteStatusElement >> initialize [
 			
 	exceptionContainer := BrFrame new
 			visibility: BlVisibility gone;
+			margin: (BlInsets left: 3);
 			hFitContentLimited;
 			vFitContent.
 			
@@ -33,8 +34,8 @@ GtMagritteStatusElement >> initialize [
 				whenUpdate: [ :aLabel :aSink | 
 					self onExecutionStatusChanged: aSink value ] ].
 
-	self addChild: exceptionContainer.
 	self addChild: labelElement.
+	self addChild: exceptionContainer.
 
 	self
 		hFitContentLimited;

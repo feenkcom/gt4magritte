@@ -27,7 +27,7 @@ GtMagritteExecutionCallbackExceptionStatus >> messageText [
 	^ self exceptions
 		ifNotNil: [ :aCollection | 
 			aCollection size = 1
-				ifTrue: [ aCollection anyOne messageText printStringLimitedTo: 18 ]
+				ifTrue: [ aCollection anyOne messageText ]
 				ifFalse: [ aCollection size asString , ' callbacks failed' ] ]
 		ifNil: [ 'Unknown error' ]
 ]
@@ -52,8 +52,7 @@ GtMagritteExecutionCallbackExceptionStatus >> updateToolbarExceptionExecutionSta
 { #category : #'api - ui' }
 GtMagritteExecutionCallbackExceptionStatus >> updateToolbarLabelExecutionStatus: aLabel [
 	super updateToolbarLabelExecutionStatus: aLabel.
-	aLabel
-		visibility: BlVisibility visible;
-		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors errorBackgroundColor ];
-		text: self messageText
+	GtMagritteBuilderUtility
+		updateToolbarLabelExecutionStatus: aLabel
+		withExceptionText: self messageText.
 ]

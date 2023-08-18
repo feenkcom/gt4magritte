@@ -25,8 +25,7 @@ GtMagritteExecutionAboutToStartStatus >> updateToolbarExceptionExecutionStatus: 
 { #category : #accessing }
 GtMagritteExecutionAboutToStartStatus >> updateToolbarLabelExecutionStatus: aLabel [
 	super updateToolbarLabelExecutionStatus: aLabel.
-	aLabel
-		visibility: BlVisibility visible;
-		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors disabledButtonTextColor ];
-		text: 'Scheduling...'
+	GtMagritteBuilderUtility
+		updateToolbarLabelExecutionStatus: aLabel
+		withText: 'Scheduling...'.
 ]
