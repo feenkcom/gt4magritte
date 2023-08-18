@@ -30,8 +30,7 @@ GtMagritteExecutionExecutingStatus >> updateToolbarExceptionExecutionStatus: anE
 { #category : #'api - ui' }
 GtMagritteExecutionExecutingStatus >> updateToolbarLabelExecutionStatus: aLabel [
 	super updateToolbarLabelExecutionStatus: aLabel.
-	aLabel
-		visibility: BlVisibility visible;
-		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors disabledButtonTextColor ];
-		text: 'Executing...'
+	GtMagritteBuilderUtility
+		updateToolbarLabelExecutionStatus: aLabel
+		withText: 'Executing...'
 ]

@@ -689,6 +689,40 @@ GtMagritteBuilderUtility class >> styleEditorWidget: aBrEditor [
 ]
 
 { #category : #'api - ui' }
+GtMagritteBuilderUtility class >> updateToolbarLabelExecutionStatus: aLabel withExceptionText: aString [
+	| aShortText aTooltip |
+	aString size > 21
+		ifTrue: [ aShortText := (aString first: 21) , '...'.
+			aTooltip := aString ]
+		ifFalse: [ aShortText := aString.
+			aTooltip := nil ].
+
+	aLabel
+		visibility: BlVisibility visible;
+		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors errorBackgroundColor ];
+		text: aShortText.
+
+	aLabel aptitudeDo: [ :anAptitude | 
+		anAptitude - BrGlamorousWithLabelTooltipAptitude ].
+	aTooltip ifNotNil: [ 
+		aLabel aptitudeDo: [ :anAptitude | 
+			anAptitude + (BrGlamorousWithLabelTooltipAptitude new 
+				text: aString) ] ]
+]
+
+{ #category : #accessing }
+GtMagritteBuilderUtility class >> updateToolbarLabelExecutionStatus: aLabel withText: aString [
+	aLabel
+		visibility: BlVisibility visible;
+		aptitudeDo: [ :anAptitude | 
+			anAptitude foreground: BrGlamorousColors disabledButtonTextColor ];
+		text: aString.
+
+	aLabel aptitudeDo: [ :anAptitude | 
+		anAptitude - BrGlamorousWithLabelTooltipAptitude ]
+]
+
+{ #category : #'api - ui' }
 GtMagritteBuilderUtility class >> write: aValue using: aDescription memento: aMemento element: anElement [
 	| aFuture aPromise |
 	aFuture := aMemento write: aValue using: aDescription.

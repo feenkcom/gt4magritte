@@ -26,7 +26,7 @@ GtMagritteExecutionExceptionStatus >> label [
 GtMagritteExecutionExceptionStatus >> messageText [
 	^ self exception
 		ifNotNil: [ :anException | anException messageText 
-			ifEmpty: [ anException printStringLimitedTo: 18 ] ]
+			ifEmpty: [ anException printString ] ]
 		ifNil: [ 'Unknown error' ]
 ]
 
@@ -42,8 +42,7 @@ GtMagritteExecutionExceptionStatus >> updateToolbarExceptionExecutionStatus: anE
 { #category : #'api - ui' }
 GtMagritteExecutionExceptionStatus >> updateToolbarLabelExecutionStatus: aLabel [
 	super updateToolbarLabelExecutionStatus: aLabel.
-	aLabel
-		visibility: BlVisibility visible;
-		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors errorBackgroundColor ];
-		text: self messageText
+	GtMagritteBuilderUtility
+		updateToolbarLabelExecutionStatus: aLabel
+		withExceptionText: self messageText.
 ]

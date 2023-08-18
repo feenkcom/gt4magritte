@@ -20,7 +20,8 @@ GtMagritteExecutionInactiveStatus >> updateToolbarExceptionExecutionStatus: anEx
 { #category : #'api - ui' }
 GtMagritteExecutionInactiveStatus >> updateToolbarLabelExecutionStatus: aLabel [
 	super updateToolbarLabelExecutionStatus: aLabel.
-	aLabel
-		visibility: BlVisibility gone;
-		text: ''
+	GtMagritteBuilderUtility 
+		updateToolbarLabelExecutionStatus: aLabel 
+		withText: ''.
+	aLabel visibility: BlVisibility gone
 ]
