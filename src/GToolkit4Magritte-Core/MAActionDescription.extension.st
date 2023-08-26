@@ -66,6 +66,13 @@ MAActionDescription >> beEnabledOnChangedOverallStatus [
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> beEnabledOnValidAndInactiveOverallStatus [
+	self onOverallStatusChanged: (GtMagritteBasicAction new
+			action: [ :aStatus :aButton :aMemento :aDescription | 
+				aDescription enabled: aStatus isValidAndInactive ])
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> beEnabledOnValidOverallStatus [
 	self onOverallStatusChanged: (GtMagritteBasicAction new
 			action: [ :aStatus :aButton :aMemento :aDescription | 
