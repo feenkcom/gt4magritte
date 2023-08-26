@@ -110,6 +110,7 @@ GtMagritteBuilderUtility class >> debugClickActionForException: anException [
 			label: anException description
 			fullView: true
 			notification: nil 
+			forException: anException
 		] forkNamed: 'Debug' ]
 ]
 
