@@ -39,9 +39,10 @@ GtMagritteByScripterExamples >> addressAcceptChangedStreet [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteAcceptAction.
 
-			aStep click
-				// aCancelId;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// aCancelId ].
 
 			self
 				assert: aStep
@@ -49,11 +50,12 @@ GtMagritteByScripterExamples >> addressAcceptChangedStreet [
 				acceptEnabled: false
 				cancelEnabled: false.
 
-			aStep assert
-				label: 'Assert model street value';
-				value: [ :aModel | aModel street ] equals: [ 'Hodonínova 77/7' ];
-				onModel;
-				play ].
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Assert model street value';
+						value: [ :aModel | aModel street ] equals: [ 'Hodonínova 77/7' ];
+						onModel ] ].
 
 	^ aScripter
 ]
@@ -74,9 +76,10 @@ GtMagritteByScripterExamples >> addressCancelChangedStreet [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteCancelAction.
 
-			aStep click
-				// aCancelId;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// aCancelId ].
 
 			self
 				assert: aStep
@@ -104,10 +107,11 @@ GtMagritteByScripterExamples >> addressChangedStreet [
 				// anId;
 				play.
 
-			aStep type
-				text: 'Hodonínova 77/7';
-				// anId;
-				play.
+			aStep
+				typeStep: [ :s | 
+					s
+						text: 'Hodonínova 77/7';
+						// anId ].
 
 			self
 				assert: aStep
@@ -135,10 +139,11 @@ GtMagritteByScripterExamples >> addressEmptyStreet [
 				// anId;
 				play.
 
-			aStep type
-				text: '';
-				// anId;
-				play.
+			aStep
+				typeStep: [ :s | 
+					s
+						text: '';
+						// anId ].
 
 			self
 				assert: aStep
@@ -182,9 +187,10 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptActionWithDefective
 			anAcceptId := GtMagritteActionElementId new
 					description: aScripter model magritteAcceptActionWithDefectiveCallbacks.
 
-			aStep click
-				// anAcceptId;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// anAcceptId ].
 
 			self
 				assert: aStep
@@ -218,9 +224,10 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptChangedStreet [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteAcceptAction.
 
-			aStep click
-				// aCancelId;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// aCancelId ].
 
 			self
 				assert: aStep
@@ -228,11 +235,12 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptChangedStreet [
 				acceptEnabled: false
 				cancelEnabled: false.
 
-			aStep assert
-				label: 'Assert model street value';
-				value: [ :aModel | aModel street ] equals: [ 'Hodonínova 77/7' ];
-				onModel;
-				play.
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Assert model street value';
+						value: [ :aModel | aModel street ] equals: [ 'Hodonínova 77/7' ];
+						onModel ].
 
 			self
 				assert: aStep
@@ -260,9 +268,10 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndCanceledChangedStreet [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteCancelAction.
 
-			aStep click
-				// aCancelId;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// aCancelId ].
 
 			self
 				assert: aStep
@@ -293,10 +302,11 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndChangedFavorite [
 			anId := GtMagritteFieldElementId new
 					description: aScripter model descriptionIsFavorite.
 
-			aStep click
-				// anId;
-				// BrCheckbox;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// anId;
+						// BrCheckbox ].
 
 			self
 				assert: aStep
@@ -331,10 +341,11 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndChangedStreet [
 				// anId;
 				play.
 
-			aStep type
-				text: 'Hodonínova 77/7';
-				// anId;
-				play.
+			aStep
+				typeStep: [ :s | 
+					s
+						text: 'Hodonínova 77/7';
+						// anId ].
 
 			self
 				assert: aStep
@@ -368,9 +379,10 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveAcceptAction [
 			anAcceptId := GtMagritteActionElementId new
 					description: aScripter model magritteDefectiveAcceptAction.
 
-			aStep click
-				// anAcceptId;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// anAcceptId ].
 
 			self
 				assert: aStep
@@ -404,9 +416,10 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveCancelAction [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteDefectiveCancelAction.
 
-			aStep click
-				// aCancelId;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// aCancelId ].
 
 			self
 				assert: aStep
@@ -440,9 +453,10 @@ GtMagritteByScripterExamples >> addressWithErrorAcceptCallbacks [
 			anAcceptId := GtMagritteActionElementId new
 					description: aScripter model magritteAcceptAction.
 
-			aStep click
-				// anAcceptId;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						// anAcceptId ].
 
 			self
 				assert: aStep
@@ -485,28 +499,31 @@ GtMagritteByScripterExamples >> assert: aStep model: aModel acceptEnabled: isAcc
 	anCancelId := GtMagritteActionElementId new
 			description: aModel magritteCancelAction.
 
-	aStep assert
-		label: 'Assert accept button enablement';
-		value: [ :aButton | aButton isEnabled ]
-			equals: [ :aButton | isAcceptEnabled ];
-		// anAcceptId;
-		play.
+	aStep
+		assertStep: [ :s | 
+			s
+				label: 'Assert accept button enablement';
+				value: [ :aButton | aButton isEnabled ]
+					equals: [ :aButton | isAcceptEnabled ];
+				// anAcceptId ].
 
 	isCancelEnabled
-		ifNotNil: [ aStep assert
-				label: 'Assert cancel button enablement';
-				value: [ :aButton | aButton isEnabled ]
-					equals: [ :aButton | isCancelEnabled ];
-				// anCancelId;
-				play ]
-		ifNil: [ aStep assert
-				label: 'Assert cancel button is missing';
-				value: [ :anElement | 
-						| aQuery |
-						aQuery := anElement query // anCancelId.
-						aQuery result size ]
-					equals: [ 0 ];
-				play ]
+		ifNotNil: [ aStep
+				assertStep: [ :s | 
+					s
+						label: 'Assert cancel button enablement';
+						value: [ :aButton | aButton isEnabled ]
+							equals: [ :aButton | isCancelEnabled ];
+						// anCancelId ] ]
+		ifNil: [ aStep
+				assertStep: [ :s | 
+					s
+						label: 'Assert cancel button is missing';
+						value: [ :anElement | 
+								| aQuery |
+								aQuery := anElement query // anCancelId.
+								aQuery result size ]
+							equals: [ 0 ] ] ]
 ]
 
 { #category : #assertions }
@@ -524,21 +541,23 @@ GtMagritteByScripterExamples >> assert: aStep model: aModel actionDescription: a
 
 { #category : #assertions }
 GtMagritteByScripterExamples >> assert: aStep model: aModel actionId: aButtonId isEnabled: isButtonEnabled label: aLabelString [
-	aStep assert
-		label: ('Assert {1} button is {2}' format: { 
-			aLabelString.
-			isButtonEnabled ifTrue: [ 'enabled' ] ifFalse: [ 'disabled' ] });
-		value: [ :aButton | aButton isEnabled ]
-			equals: [ :aButton | isButtonEnabled ];
-		// aButtonId;
-		play.
-		
-	aStep assert
-		label: ('Assert {1} button label' format: { aLabelString });
-		value: [ :aButton | aButton label asString ]
-			equals: [ :aButton | aLabelString asString ];
-		// aButtonId;
-		play.
+	aStep
+		assertStep: [ :s | 
+			s
+				label: ('Assert {1} button is {2}'
+						format: {aLabelString.
+								isButtonEnabled ifTrue: [ 'enabled' ] ifFalse: [ 'disabled' ]});
+				value: [ :aButton | aButton isEnabled ]
+					equals: [ :aButton | isButtonEnabled ];
+				// aButtonId ].
+
+	aStep
+		assertStep: [ :s | 
+			s
+				label: ('Assert {1} button label' format: {aLabelString});
+				value: [ :aButton | aButton label asString ]
+					equals: [ :aButton | aLabelString asString ];
+				// aButtonId ]
 ]
 
 { #category : #'examples - support' }
@@ -546,74 +565,77 @@ GtMagritteByScripterExamples >> assert: aParentStep successAcceptCount: successA
 	aParentStep
 		substeps: 'Assert action callbacks'
 		do: [ :aStep | 
-			aStep assert
-				label: 'Assert accept success callbacks';
-				value: [ :aModel | aModel successAcceptCallbacks size ]
-					equals: [ successAcceptCount ];
-				onModel;
-				play.
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Assert accept success callbacks';
+						value: [ :aModel | aModel successAcceptCallbacks size ]
+							equals: [ successAcceptCount ];
+						onModel ].
 
-			aStep assert
-				label: 'Assert accept error callbacks';
-				value: [ :aModel | aModel errorAcceptCallbacks size ]
-					equals: [ errorAcceptCount ];
-				onModel;
-				play.
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Assert accept error callbacks';
+						value: [ :aModel | aModel errorAcceptCallbacks size ]
+							equals: [ errorAcceptCount ];
+						onModel ].
 
-			aStep assert
-				label: 'Assert cancel success callbacks';
-				value: [ :aModel | aModel successCancelCallbacks size ]
-					equals: [ successCancelCount ];
-				onModel;
-				play.
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Assert cancel success callbacks';
+						value: [ :aModel | aModel successCancelCallbacks size ]
+							equals: [ successCancelCount ];
+						onModel ].
 
-			aStep assert
-				label: 'Assert cancel error callbacks';
-				value: [ :aModel | aModel errorCancelCallbacks size ]
-					equals: [ errorCancelCount ];
-				onModel;
-				play.
-			
-			successAcceptCount > 0 ifTrue: [
-				aStep assert
-					label: 'Assert success accept callbacks have all parameters';
-					satisfies: [ :aModel | 
-						aModel successAcceptCallbacks 
-							allSatisfy: [ :anArray | anArray size = 4 
-								and: [ anArray allSatisfy: #isNotNil ] ] ];
-					onModel;
-					play ].
-					
-			errorAcceptCount > 0 ifTrue: [
-				aStep assert
-					label: 'Assert error accept callbacks have all parameters';
-					satisfies: [ :aModel | 
-						aModel errorAcceptCallbacks 
-							allSatisfy: [ :anArray | anArray size = 4 
-								and: [ anArray allSatisfy: #isNotNil ] ] ];
-					onModel;
-					play ].
-					
-			successCancelCount > 0 ifTrue: [
-				aStep assert
-					label: 'Assert success cancel callbacks have all parameters';
-					satisfies: [ :aModel | 
-						aModel successCancelCallbacks 
-							allSatisfy: [ :anArray | anArray size = 4 
-								and: [ anArray allSatisfy: #isNotNil ] ] ];
-					onModel;
-					play ].
-					
-			errorCancelCount > 0 ifTrue: [
-				aStep assert
-					label: 'Assert error cancel callbacks have all parameters';
-					satisfies: [ :aModel | 
-						aModel errorCancelCallbacks 
-							allSatisfy: [ :anArray | anArray size = 4 
-								and: [ anArray allSatisfy: #isNotNil ] ] ];
-					onModel;
-					play ].
-		]
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Assert cancel error callbacks';
+						value: [ :aModel | aModel errorCancelCallbacks size ]
+							equals: [ errorCancelCount ];
+						onModel ].
+
+			successAcceptCount > 0
+				ifTrue: [ aStep
+						assertStep: [ :s | 
+							s
+								label: 'Assert success accept callbacks have all parameters';
+								satisfies: [ :aModel | 
+									aModel successAcceptCallbacks
+										allSatisfy: [ :anArray | anArray size = 4 and: [ anArray allSatisfy: #isNotNil ] ] ];
+								onModel ] ].
+
+			errorAcceptCount > 0
+				ifTrue: [ aStep
+						assertStep: [ :s | 
+							s
+								label: 'Assert error accept callbacks have all parameters';
+								satisfies: [ :aModel | 
+									aModel errorAcceptCallbacks
+										allSatisfy: [ :anArray | anArray size = 4 and: [ anArray allSatisfy: #isNotNil ] ] ];
+								onModel ] ].
+
+			successCancelCount > 0
+				ifTrue: [ aStep
+						assertStep: [ :s | 
+							s
+								label: 'Assert success cancel callbacks have all parameters';
+								satisfies: [ :aModel | 
+									aModel successCancelCallbacks
+										allSatisfy: [ :anArray | anArray size = 4 and: [ anArray allSatisfy: #isNotNil ] ] ];
+								onModel ] ].
+
+			errorCancelCount > 0
+				ifTrue: [ aStep
+						assertStep: [ :s | 
+							s
+								label: 'Assert error cancel callbacks have all parameters';
+								satisfies: [ :aModel | 
+									aModel errorCancelCallbacks
+										allSatisfy: [ :anArray | anArray size = 4 and: [ anArray allSatisfy: #isNotNil ] ] ];
+								onModel ] ] ]
 ]
 
 { #category : #'examples - server' }
@@ -624,33 +646,36 @@ GtMagritteByScripterExamples >> serverObject [
 			scripterWithModel: [ GtMagritteModelExamples new basicServerObject ]
 			element: [ :aModel | aModel asGtMagritteViewModel asElement ].
 
-			
-	aScripter substeps: 'Assert default server' do: [ :aStep | 
-		self
-			assert: aStep
-			model: aScripter model
-			acceptEnabled: false
-			cancelEnabled: false.
-			
-		self 
-			assert: aStep
-			model: aScripter model
-			actionDescription: (aScripter model startAndStopActionDescription) 
-			isEnabled: true 
-			label: 'Start'.
-			
-		aStep assert
-				label: 'Server read-only mode value is false';
-				value: [ :aModel | aModel readOnlyMode ] equals: [ false ];
-				onModel;
-				play.
-				
-		aStep assert
-				label: 'Server port value is 0';
-				value: [ :aModel | aModel port ] equals: [ 0 ];
-				onModel;
-				play.
-	].
+
+	aScripter
+		substeps: 'Assert default server'
+		do: [ :aStep | 
+			self
+				assert: aStep
+				model: aScripter model
+				acceptEnabled: false
+				cancelEnabled: false.
+
+			self
+				assert: aStep
+				model: aScripter model
+				actionDescription: aScripter model startAndStopActionDescription
+				isEnabled: true
+				label: 'Start'.
+
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Server read-only mode value is false';
+						value: [ :aModel | aModel readOnlyMode ] equals: [ false ];
+						onModel ].
+
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Server port value is 0';
+						value: [ :aModel | aModel port ] equals: [ 0 ];
+						onModel ] ].
 
 	^ aScripter
 ]
@@ -660,38 +685,39 @@ GtMagritteByScripterExamples >> serverObjectInStartedState [
 	<gtExample>
 	| aScripter |
 	aScripter := self serverObject.
-	
-	aScripter 
+
+	aScripter
 		substeps: 'Start server'
 		do: [ :aStep | 
 			| aStartDescription |
 			aStartDescription := aScripter model startAndStopActionDescription.
-			
-			aStep click
-				label: 'Click on the start button';
-				// (GtMagritteActionElementId new description: aStartDescription);
-				play.
-				
-			self 
+
+			aStep
+				clickStep: [ :s | 
+					s
+						label: 'Click on the start button';
+						// (GtMagritteActionElementId new description: aStartDescription) ].
+
+			self
 				assert: aStep
 				model: aScripter model
-				actionDescription: aScripter model startAndStopActionDescription 
-				isEnabled: true 
+				actionDescription: aScripter model startAndStopActionDescription
+				isEnabled: true
 				label: 'Stop'.
-				
+
 			self
 				assert: aStep
 				model: aScripter model
 				acceptEnabled: false
 				cancelEnabled: false.
-				
-			aStep assert
-				label: 'Server port value is NOT 0';
-				satisfies: [ :aModel | aModel port ~= 0 ];
-				onModel;
-				play.
-		].
-				
+
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Server port value is NOT 0';
+						satisfies: [ :aModel | aModel port ~= 0 ];
+						onModel ] ].
+
 	^ aScripter
 ]
 
@@ -700,7 +726,7 @@ GtMagritteByScripterExamples >> serverObjectInStartedStateAndAutoAcceptWidget [
 	<gtExample>
 	| aScripter |
 	aScripter := self serverObjectInStartedState.
-	
+
 	aScripter
 		substeps: 'Change Read-only server mode value to true'
 		do: [ :aStep | 
@@ -708,31 +734,33 @@ GtMagritteByScripterExamples >> serverObjectInStartedStateAndAutoAcceptWidget [
 			anId := GtMagritteFieldElementId new
 					description: aScripter model readOnlyModeRequestDescription.
 
-			aStep click
-				label: 'Click on the checkbox';
-				// anId;
-				/ BrCheckbox;
-				play.
+			aStep
+				clickStep: [ :s | 
+					s
+						label: 'Click on the checkbox';
+						// anId;
+						/ BrCheckbox ].
 
 			self
 				assert: aStep
 				model: aScripter model
 				acceptEnabled: false
 				cancelEnabled: false.
-				
-			self 
+
+			self
 				assert: aStep
 				model: aScripter model
-				actionDescription: aScripter model startAndStopActionDescription 
-				isEnabled: true 
+				actionDescription: aScripter model startAndStopActionDescription
+				isEnabled: true
 				label: 'Stop'.
-				
-			aStep assert
-				label: 'Server read-only mode value is true';
-				value: [ :aModel | aModel readOnlyMode ] equals: [ true ];
-				onModel;
-				play. ].
-				
+
+			aStep
+				assertStep: [ :s | 
+					s
+						label: 'Server read-only mode value is true';
+						value: [ :aModel | aModel readOnlyMode ] equals: [ true ];
+						onModel ] ].
+
 	^ aScripter
 ]
 
@@ -741,7 +769,7 @@ GtMagritteByScripterExamples >> serverObjectInStartedStateAndReadOnlyPort [
 	<gtExample>
 	| aScripter |
 	aScripter := self serverObjectInStartedState.
-	
+
 	aScripter
 		substeps: 'Try to change read-only port value'
 		do: [ :aStep | 
@@ -753,24 +781,25 @@ GtMagritteByScripterExamples >> serverObjectInStartedStateAndReadOnlyPort [
 				// anId;
 				play.
 
-			aStep type
-				text: '2023';
-				// anId;
-				play.
+			aStep
+				typeStep: [ :s | 
+					s
+						text: '2023';
+						// anId ].
 
 			self
 				assert: aStep
 				model: aScripter model
 				acceptEnabled: false
 				cancelEnabled: false.
-				
-			self 
+
+			self
 				assert: aStep
 				model: aScripter model
 				actionDescription: aScripter model startAndStopActionDescription
-				isEnabled: true 
+				isEnabled: true
 				label: 'Stop' ].
-				
+
 	^ aScripter
 ]
 
@@ -779,7 +808,7 @@ GtMagritteByScripterExamples >> serverObjectInStoppedStateAndChangedPort [
 	<gtExample>
 	| aScripter |
 	aScripter := self serverObject.
-	
+
 	aScripter
 		substeps: 'Change port widget value'
 		do: [ :aStep | 
@@ -791,23 +820,24 @@ GtMagritteByScripterExamples >> serverObjectInStoppedStateAndChangedPort [
 				// anId;
 				play.
 
-			aStep type
-				text: '2023';
-				// anId;
-				play.
+			aStep
+				typeStep: [ :s | 
+					s
+						text: '2023';
+						// anId ].
 
 			self
 				assert: aStep
 				model: aScripter model
 				acceptEnabled: true
 				cancelEnabled: true.
-				
-			self 
+
+			self
 				assert: aStep
 				model: aScripter model
-				actionDescription: (aScripter model startAndStopActionDescription) 
-				isEnabled: false 
+				actionDescription: aScripter model startAndStopActionDescription
+				isEnabled: false
 				label: 'Start' ].
-				
+
 	^ aScripter
 ]
