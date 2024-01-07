@@ -91,29 +91,7 @@ GtMagritteViewModel >> asElement [
 						constraintsDo: [ :c | 
 							c frame horizontal alignCenter.
 							c frame vertical alignCenter ] ];
-				whenSuccess: [ :theFrame :aMemento | 
-					| aStencil aContainer |
-					theFrame userData at: self class gtMementoSymbol put: aMemento.
-
-					theFrame removeChildren.
-
-					aStencil := aMemento magritteDescription blocElementContainerStencil
-							asStencilBuilder: GtMagritteFormStencilBuilder.
-
-					aContainer := aStencil
-							memento: aMemento;
-							asElement.
-
-					theFrame addAptitude: (BrLayoutResizerAptitude new inherit: aContainer).
-
-					theFrame addChild: aContainer.
-
-					GtMagritteElementBuilder new
-						form: theFrame;
-						memento: aMemento;
-						addButtons: self actions;
-						build.
-					self onElementCreated cull: theFrame ] ].
+				whenSuccess: [ :theFrame :aMemento | self initializeForm: theFrame forMemento: aMemento ] ].
 
 	aFrame asyncFuture
 		executionConfiguration: GtMagritteBuilderUtility executionConfigutation.
@@ -158,6 +136,32 @@ GtMagritteViewModel >> initialize [
 	cache := AsyncFutureCache new.
 	onElementCreated := [ :aFrame | ].
 	actions := { }
+]
+
+{ #category : #'api - converting' }
+GtMagritteViewModel >> initializeForm: theFrame forMemento: aMemento [
+	| aContainer aStencil |
+	theFrame userData at: self class gtMementoSymbol put: aMemento.
+
+	theFrame removeChildren.
+
+	aStencil := aMemento magritteDescription blocElementContainerStencil
+			asStencilBuilder: GtMagritteFormStencilBuilder.
+
+	aContainer := aStencil
+			memento: aMemento;
+			asElement.
+
+	theFrame addAptitude: (BrLayoutResizerAptitude new inherit: aContainer).
+
+	theFrame addChild: aContainer.
+
+	GtMagritteElementBuilder new
+		form: theFrame;
+		memento: aMemento;
+		addButtons: self actions;
+		build.
+	^ self onElementCreated cull: theFrame
 ]
 
 { #category : #'api - testing' }
