@@ -27,7 +27,7 @@ GtMagritteAsyncActionExecutor >> executeInFutureProcess [
 		selector: #executeActionWithCallbacks)
 			asAsyncFuture.
 	aPromise := aFuture
-			await: (GtMagritteBuilderUtility executionConfigutation
+			await: (GtMagritteBuilderUtility executionConfiguration
 				errorHandler: AsyncPassExceptionHandler new).
 
 	self element enqueueTask: (BlPromiseTask new promise: aPromise).

@@ -127,7 +127,7 @@ GtMagritteBuilderUtility class >> defaultThickness [
 ]
 
 { #category : #'api - memento' }
-GtMagritteBuilderUtility class >> executionConfigutation [
+GtMagritteBuilderUtility class >> executionConfiguration [
 	^ AsyncFutureExecutionConfiguration new customGroup: #Magritte
 ]
 
@@ -728,7 +728,7 @@ GtMagritteBuilderUtility class >> write: aValue using: aDescription memento: aMe
 	| aFuture aPromise |
 	aFuture := aMemento write: aValue using: aDescription.
 	aPromise := aFuture await: (
-		GtMagritteBuilderUtility executionConfigutation).
+		GtMagritteBuilderUtility executionConfiguration).
 
 	anElement enqueueTask: (BlPromiseTask new promise: aPromise).
 

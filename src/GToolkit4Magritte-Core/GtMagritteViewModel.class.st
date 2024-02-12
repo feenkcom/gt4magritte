@@ -94,7 +94,7 @@ GtMagritteViewModel >> asElement [
 				whenSuccess: [ :theFrame :aMemento | self initializeForm: theFrame forMemento: aMemento ] ].
 
 	aFrame asyncFuture
-		executionConfiguration: GtMagritteBuilderUtility executionConfigutation.
+		executionConfiguration: GtMagritteBuilderUtility executionConfiguration.
 	aFrame asyncFuture future: self mementoFuture.
 
 	^ aFrame
