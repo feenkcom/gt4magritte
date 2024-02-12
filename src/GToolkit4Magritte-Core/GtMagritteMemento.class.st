@@ -327,7 +327,7 @@ GtMagritteMemento >> initialize [
 			map: (MessageSend 
 				receiver: self 
 				selector: #computeOverallStatus:))
-					asAsyncObservable: GtMagritteBuilderUtility executionConfigutation
+					asAsyncObservable: GtMagritteBuilderUtility executionConfiguration
 ]
 
 { #category : #accessing }
@@ -346,7 +346,7 @@ GtMagritteMemento >> magritteActions [
 { #category : #private }
 GtMagritteMemento >> newObservable [
 	^ AsyncObservableValue executionConfiguration: 
-		GtMagritteBuilderUtility executionConfigutation
+		GtMagritteBuilderUtility executionConfiguration
 ]
 
 { #category : #accessing }
@@ -463,7 +463,7 @@ GtMagritteMemento >> setCache: aDictionary [
 					map: (MessageSend 
 						receiver: self 
 						selector: #autoAcceptValue:))
-							asAsyncObservable: GtMagritteBuilderUtility executionConfigutation.
+							asAsyncObservable: GtMagritteBuilderUtility executionConfiguration.
 				aValidator observe: internalStatus.
 				aValidator ] ].
 
