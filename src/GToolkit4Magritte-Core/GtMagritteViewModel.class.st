@@ -106,6 +106,19 @@ GtMagritteViewModel >> asGtMagritteViewModel [
 	^ self
 ]
 
+{ #category : #'api - initialization' }
+GtMagritteViewModel >> focusFirstInputField [
+	"Request focus on the first input field"
+
+	self
+		onElementCreated: [ :aFrame | 
+			BlFocusFinder new
+				direction: BlFocusSearchDirectionForward new;
+				root: aFrame;
+				referenceElement: nil;
+				nextFocusDo: #requestFocus ifNone: [  ] ]
+]
+
 { #category : #'gt - extensions' }
 GtMagritteViewModel >> gtLiveFor: aView [
 
