@@ -50,9 +50,10 @@ GtMagritteOneLineEditorElement >> onFieldViewModelChanged [
 	didn't get a chance to subscribe to any announcement. Override #onPostFieldViewModelChanged if you
 	wish to perform an operation that requires an announcement, but keep in mind that this is not the most efficient way"
 
-	self inUIProcessDo: [ 
-		self updateEditorAptitude.
-		self updateEditorMode. ]
+	self
+		enqueueTask: (BlTaskAction new
+				action: [ self updateEditorAptitude.
+					self updateEditorMode ])
 ]
 
 { #category : #'api - field view model' }
