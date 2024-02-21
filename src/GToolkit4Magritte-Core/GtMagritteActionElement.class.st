@@ -26,20 +26,20 @@ GtMagritteActionElement >> initialize [
 
 { #category : #'private - announcement handling' }
 GtMagritteActionElement >> onDescriptionPropertyChanged: anAnnouncement [
-	anAnnouncement key = #action ifTrue: [ 
-		self inUIProcessDo: [ self updateAction ] ].
-	anAnnouncement key = #label ifTrue: [ 
-		self inUIProcessDo: [ self updateLabel ] ].
-	anAnnouncement key = #blocIcon ifTrue: [ 
-		self inUIProcessDo: [ self updateIcon ] ].
-	anAnnouncement key = #action ifTrue: [ 
-		self inUIProcessDo: [ self updateAction ] ].
-	anAnnouncement key = #isLabelVisible ifTrue: [ 
-		self inUIProcessDo: [ self updateAptitude ] ].
-	anAnnouncement key = #enabled ifTrue: [ 
-		self inUIProcessDo: [ self updateEnabled ] ].
-	anAnnouncement key = #visible ifTrue: [ 
-		self inUIProcessDo: [ self updateVisibility ] ].
+	anAnnouncement key = #action
+		ifTrue: [ self inUIProcessDo: [ self updateAction ] ].
+	anAnnouncement key = #label
+		ifTrue: [ self inUIProcessDo: [ self updateLabel ] ].
+	anAnnouncement key = #blocIcon
+		ifTrue: [ self inUIProcessDo: [ self updateIcon ] ].
+	anAnnouncement key = #action
+		ifTrue: [ self inUIProcessDo: [ self updateAction ] ].
+	anAnnouncement key = #isLabelVisible
+		ifTrue: [ self inUIProcessDo: [ self updateAptitude ] ].
+	anAnnouncement key = #enabled
+		ifTrue: [ self enqueueTask: (BlTaskAction new action: [ self updateEnabled ]) ].
+	anAnnouncement key = #visible
+		ifTrue: [ self inUIProcessDo: [ self updateVisibility ] ]
 ]
 
 { #category : #'api - field view model' }
@@ -50,7 +50,7 @@ GtMagritteActionElement >> onFieldViewModelChanged [
 	didn't get a chance to subscribe to any announcement. Override #onPostFieldViewModelChanged if you
 	wish to perform an operation that requires an announcement, but keep in mind that this is not the most efficient way"
 
-	self inUIProcessDo: [ self updateActionElement ]
+	self enqueueTask: (BlTaskAction new action: [ self updateActionElement ])
 ]
 
 { #category : #'private - event handling' }
