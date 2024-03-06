@@ -68,6 +68,9 @@ GtMagritteViewModel >> asElement [
 	aFrame
 		hFitContentLimited;
 		vFitContent;
+		constraintsDo: [ :c | 
+			c frame horizontal alignCenter.
+			c frame vertical alignCenter ];
 		withAsyncFutureDo: [ :anElementFuture | 
 			anElementFuture
 				whenPending: [ :theContainer | 
@@ -76,10 +79,10 @@ GtMagritteViewModel >> asElement [
 								fitContent;
 								aptitude: (BrGlamorousLabelAptitude new
 										foreground: BrGlamorousColors disabledButtonTextColor);
-								text: 'Preparing...');
-						constraintsDo: [ :c | 
-							c frame horizontal alignCenter.
-							c frame vertical alignCenter ] ];
+								text: 'Preparing...';
+								constraintsDo: [ :c | 
+									c frame horizontal alignCenter.
+									c frame vertical alignCenter ]) ];
 				whenError: [ :theContainer :anError | 
 					theContainer userData at: self class gtMementoSymbol put: anError.
 
@@ -87,10 +90,10 @@ GtMagritteViewModel >> asElement [
 						removeChildren;
 						addChild: (anError asDebuggableElement
 								hFitContentLimited;
-								vFitContent);
-						constraintsDo: [ :c | 
-							c frame horizontal alignCenter.
-							c frame vertical alignCenter ] ];
+								vFitContent;
+								constraintsDo: [ :c | 
+									c frame horizontal alignCenter.
+									c frame vertical alignCenter ]) ];
 				whenSuccess: [ :theFrame :aMemento | self initializeForm: theFrame forMemento: aMemento ] ].
 
 	aFrame asyncFuture
