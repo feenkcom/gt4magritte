@@ -103,6 +103,25 @@ GtMagritteElementBuilder >> addFieldElement: aFieldElement using: aDescription [
 	^ aLabel
 ]
 
+{ #category : #'visiting-description' }
+GtMagritteElementBuilder >> addFileDropdown: aDescription [ 
+
+	| aMemento aButton aValidationElement |
+	aMemento := self memento.
+
+
+	aButton := GtMagritteBuilderUtility
+		           newFileDropdownMemento: aMemento
+		           using: aDescription.
+
+	aValidationElement := GtMagritteBuilderUtility
+		                      newValidationContainerWith: aButton
+		                      memento: aMemento
+		                      using: aDescription.
+
+	self addFieldElement: aValidationElement using: aDescription
+]
+
 { #category : #'private - building' }
 GtMagritteElementBuilder >> addFlowListUsing: aDescription [
 
@@ -434,6 +453,12 @@ GtMagritteElementBuilder >> visitContainer: aDescription [
 GtMagritteElementBuilder >> visitDirectoryDescription: aDescription [
 
 	self addDirectoryDropdown: aDescription
+]
+
+{ #category : #'visiting-description' }
+GtMagritteElementBuilder >> visitFileDescription: aDescription [
+
+	self addFileDropdown: aDescription
 ]
 
 { #category : #'visiting-description' }

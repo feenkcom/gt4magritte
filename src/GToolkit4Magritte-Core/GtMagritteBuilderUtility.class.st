@@ -311,6 +311,64 @@ GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aD
 ]
 
 { #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newFileDropdownContent: aDropdown memento: aMemento description: aDescription [
+	| aFileBrowser |
+	aFileBrowser := BrFileSelector new.
+	aFileBrowser
+		vExact: 250;
+		hExact: 400;
+		buttonLabel: 'Set';
+		padding: (BlInsets all: 10);
+		addAptitude: BrGlamorousWithVerticalResizerAptitude
+				+ BrGlamorousWithHorizontalResizerAptitude
+				+ BrGlamorousWithHorizontalResizerAptitude new beLeft.
+
+	aFileBrowser
+		okAction: [ :aFileReference | 
+			self
+				write: aFileReference
+				using: aDescription
+				memento: aMemento
+				element: aDropdown.
+
+			aDropdown
+				enqueueTask: (BlTaskAction new
+						action: [ aDropdown dispatchEvent: (BrDropdownHideWish new anchor: aDropdown) ]) ].
+
+	aFileBrowser
+		fileFilterBlock: [ :aFileReference | (FileSystemDirectoryEntry reference: aFileReference) isHidden not ].
+
+	aFileBrowser
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeekSink new;
+				whenUpdate: [ :theFileBrowser :aSink | 
+					| aFileModel aFileReference |
+					aFileModel := aSink value currentValue.
+					aFileReference := aDescription pharoFileReferenceFor: aFileModel.
+					aFileReference isDirectory
+						ifTrue: [ theFileBrowser folder: aFileReference ]
+						ifFalse: [ theFileBrowser file: aFileReference ] ].
+			(aMemento readObservableValueUsing: aDescription) observe: anElementSink ].
+
+	^ aFileBrowser
+]
+
+{ #category : #'api - ui' }
+GtMagritteBuilderUtility class >> newFileDropdownMemento: aMemento using: aDescription [
+
+	^ self
+		  addDropdownMemento: aMemento
+		  using: aDescription
+		  withContent: [ :aLabel | 
+			  [ 
+			  self
+				  newFileDropdownContent: aLabel
+				  memento: aMemento
+				  description: aDescription ] ]
+]
+
+{ #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newFlowListMemento: aMemento using: aDescription [
 
 	| aFlowElement |
@@ -729,8 +787,7 @@ GtMagritteBuilderUtility class >> updateToolbarLabelExecutionStatus: aLabel with
 GtMagritteBuilderUtility class >> write: aValue using: aDescription memento: aMemento element: anElement [
 	| aFuture aPromise |
 	aFuture := aMemento write: aValue using: aDescription.
-	aPromise := aFuture await: (
-		GtMagritteBuilderUtility executionConfiguration).
+	aPromise := aFuture await: GtMagritteBuilderUtility executionConfiguration.
 
 	anElement enqueueTask: (BlPromiseTask new promise: aPromise).
 
