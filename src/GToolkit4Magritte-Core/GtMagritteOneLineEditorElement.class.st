@@ -107,7 +107,7 @@ GtMagritteOneLineEditorElement >> updateAsEditable [
 ]
 
 { #category : #'private - updating' }
-GtMagritteOneLineEditorElement >> updateAsReadyOnly [
+GtMagritteOneLineEditorElement >> updateAsReadOnly [
 	self beReadOnlyWithSelection.
 	
 	editorEventHandler ifNil: [ ^ self ].
@@ -134,7 +134,7 @@ GtMagritteOneLineEditorElement >> updateEditorAptitude [
 { #category : #'private - updating' }
 GtMagritteOneLineEditorElement >> updateEditorMode [
 	self description isReadOnly
-		ifTrue: [ self updateAsReadyOnly ]
+		ifTrue: [ self updateAsReadOnly ]
 		ifFalse: [ self updateAsEditable ]
 ]
 
