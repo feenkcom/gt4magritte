@@ -6,7 +6,8 @@ Class {
 		'mementoBlock',
 		'actions',
 		'object',
-		'onElementCreated'
+		'onElementCreated',
+		'includeImplicitActions'
 	],
 	#category : #'GToolkit4Magritte-Core-View Models'
 }
@@ -49,15 +50,27 @@ GtMagritteViewModel >> actions: anObject [
 ]
 
 { #category : #'api - initialization' }
-GtMagritteViewModel >> addButton: aButtonDefinition [
+GtMagritteViewModel >> addAction: aButtonDefinition [
 
 	self actions: (self actions copyWith: aButtonDefinition)
 ]
 
 { #category : #'api - initialization' }
-GtMagritteViewModel >> addButtons: aCollection [
+GtMagritteViewModel >> addActions: aCollection [
 
 	self actions: (self actions copyWithAll: aCollection)
+]
+
+{ #category : #'api - initialization' }
+GtMagritteViewModel >> addButton: aButtonDefinition [
+
+	self addAction: aButtonDefinition
+]
+
+{ #category : #'api - initialization' }
+GtMagritteViewModel >> addButtons: aCollection [
+
+	self addActions: aCollection
 ]
 
 { #category : #'api - converting' }
@@ -145,10 +158,21 @@ GtMagritteViewModel >> gtLiveFor: aView [
 							  (anElement userData at: GtMagritteViewModel gtMementoSymbol) ] ]
 ]
 
+{ #category : #'api - initialization' }
+GtMagritteViewModel >> ignoreImplicitActions [
+	includeImplicitActions := false
+]
+
+{ #category : #'api - initialization' }
+GtMagritteViewModel >> includeImplicitActions [
+	includeImplicitActions := true
+]
+
 { #category : #initialization }
 GtMagritteViewModel >> initialize [
 	super initialize.
 
+	includeImplicitActions := true.
 	cache := AsyncFutureCache new.
 	onElementCreated := [ :aFrame | ].
 	actions := { }
@@ -173,6 +197,7 @@ GtMagritteViewModel >> initializeForm: theFrame forMemento: aMemento [
 	theFrame addChild: aContainer.
 
 	GtMagritteElementBuilder new
+		includeImplicitActions: includeImplicitActions;
 		form: theFrame;
 		memento: aMemento;
 		addButtons: self actions;

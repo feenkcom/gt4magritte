@@ -13,10 +13,16 @@ MAActionDescription >> announcerSubscriptionsDo: aBlock [
 
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> asBlockButtonWithMemento: aMemento [
-	^ GtMagritteActionElement new
-		fieldViewModel: (GtMagritteFieldViewModel new
+	^ self blocStencil
+		ifNotNil: [ :aStencil | 
+			aStencil
 				memento: aMemento;
-				description: self)
+				description: self;
+				build ]
+		ifNil: [ GtMagritteActionElement new
+				fieldViewModel: (GtMagritteFieldViewModel new
+						memento: aMemento;
+						description: self) ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
@@ -95,6 +101,19 @@ MAActionDescription >> blocIcon [
 { #category : #'*GToolkit4Magritte-Core' }
 MAActionDescription >> blocIcon: aStencil [
 	self propertyAt: #blocIcon put: aStencil
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> blocStencil [
+	<return: #GtMagritteDescriptionElementStencilBuilder or: nil>
+	^ self propertyAt: #blocStencil ifAbsent: [ nil ]
+]
+
+{ #category : #'*GToolkit4Magritte-Core' }
+MAActionDescription >> blocStencil: aStencil [
+	self
+		propertyAt: #blocStencil
+		put: (aStencil asStencilBuilder: GtMagritteDescriptionElementStencilBuilder)
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }

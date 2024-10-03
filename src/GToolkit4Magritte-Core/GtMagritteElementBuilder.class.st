@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'memento',
 		'form',
-		'explicitActions'
+		'explicitActions',
+		'includeImplicitActions'
 	],
 	#category : #'GToolkit4Magritte-Core-Builders'
 }
@@ -384,9 +385,25 @@ GtMagritteElementBuilder >> hasActions [
 	^ self actions isNotEmpty
 ]
 
+{ #category : #'api - initialization' }
+GtMagritteElementBuilder >> ignoreImplicitActions [
+	includeImplicitActions := false
+]
+
 { #category : #accessing }
 GtMagritteElementBuilder >> implicitActions [
+	includeImplicitActions ifFalse: [ ^ #() ].
 	^ self memento magritteActions select: #isToolbarAction
+]
+
+{ #category : #'api - initialization' }
+GtMagritteElementBuilder >> includeImplicitActions [
+	includeImplicitActions := true
+]
+
+{ #category : #'api - initialization' }
+GtMagritteElementBuilder >> includeImplicitActions: aBoolean [
+	includeImplicitActions := aBoolean ifNil: [ true ]
 ]
 
 { #category : #initialization }
@@ -394,7 +411,8 @@ GtMagritteElementBuilder >> initialize [
 
 	super initialize.
 
-	explicitActions := #(  )
+	explicitActions := #(  ).
+	includeImplicitActions := true.
 ]
 
 { #category : #'private - building' }
