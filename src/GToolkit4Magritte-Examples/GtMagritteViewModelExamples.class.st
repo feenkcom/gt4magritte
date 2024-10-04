@@ -65,6 +65,52 @@ GtMagritteViewModelExamples >> basicAsyncViewModel [
 	^ aViewModel
 ]
 
+{ #category : #'examples - dynamic' }
+GtMagritteViewModelExamples >> dynamicPersonViewModel [
+	<gtExample>
+
+	| model description viewModel |
+
+	(model := Dictionary new) 
+		at: #firstName put: 'John'; 
+		at: #lastName put: 'Doe'.
+
+	(description := MAContainer new)
+		add: (MAStringDescription new
+				accessor: (MADictionaryAccessor key: #firstName);
+				comment: 'First name';
+				yourself);
+		add: (MAStringDescription new
+				accessor: (MADictionaryAccessor key: #lastName);
+				comment: 'Last name';
+				yourself).
+
+	viewModel := model asGtMagritteViewModelWithDescription: description.
+
+	viewModel
+		ignoreImplicitActions;
+		addAction: (MAActionDescription new
+			priority: 20;
+			label: 'Accept & inspect';
+			isLabelVisible: false;
+			blocIcon: BrGlamorousVectorIcons inspect;
+			action: [ :aModel :aButton :aMemento :aDescription |
+				aMemento commit.
+				aButton phlow spawnObject: aModel ] asGtMagritteCallback;
+			beToolbarAction);
+		addAction: (MAActionDescription new
+			priority: 25;
+			label: 'Cancel';
+			isLabelVisible: false;
+			blocIcon: BrGlamorousVectorIcons cancel;
+			action: [ :aModel :aButton :aMemento :aDescription |
+				aMemento reset ] asGtMagritteCallback;
+			beEnabledAndChangedAndInactiveOverallStatus;
+			beToolbarAction).
+
+	^ viewModel
+]
+
 { #category : #'examples - person with two addresses' }
 GtMagritteViewModelExamples >> elementWithPersonObjectWithTwoAddresses [
 
