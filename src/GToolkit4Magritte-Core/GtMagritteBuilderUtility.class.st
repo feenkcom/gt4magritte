@@ -307,7 +307,13 @@ GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aD
 				right: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
 				bottom: (aSpaceNumber ifNil: [ self defaultSpaceNumber ])
 				left: 0);
-		constraintsDo: [ :c | c grid vertical alignTop ]
+		constraintsDo: [ :c | c grid vertical alignTop ];
+		when: BlClickEvent
+		do: [ :anEvent | 
+			anEvent modifiers isAlt
+				ifTrue: [
+					anEvent consumed: true.
+					anEvent target phlow spawnObject: aDescription ] ]
 ]
 
 { #category : #'api - ui' }
