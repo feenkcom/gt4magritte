@@ -71,6 +71,15 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 ]
 
 { #category : #'api - memento' }
+GtMagritteBuilderUtility class >> awaitFuture: aFuture from: anElement [
+	<return: #TAsyncPromise>
+	| aPromise |
+	aPromise := aFuture asAsyncFuture await: self executionConfiguration.
+	anElement enqueueTask: (BlPromiseTask new promise: aPromise).
+	^ aPromise
+]
+
+{ #category : #'api - memento' }
 GtMagritteBuilderUtility class >> createValueFrom: aModel using: aDescription [
 
 	| aValue |
@@ -167,9 +176,9 @@ GtMagritteBuilderUtility class >> newCancelButton [
 								ifFalse: [ theButton enabled: false ] ].
 					aMemento overallStatus observe: anElementSink ] ];
 		action: [ :aModel :aButton :aMemento | 
-			aButton
-				enqueueTask: (BlPromiseTask new
-						promise: [ aMemento reset ] asAsyncFuture await) ]
+			GtMagritteBuilderUtility 
+				awaitFuture: [ aMemento reset ] asAsyncFuture 
+				from: aButton ]
 ]
 
 { #category : #'api - ui' }
@@ -484,9 +493,9 @@ GtMagritteBuilderUtility class >> newSaveButton [
 								ifFalse: [ theButton enabled: false ] ].
 					aMemento overallStatus observe: anElementSink ] ];
 		action: [ :aModel :aButton :aMemento | 
-			aButton
-				enqueueTask: (BlPromiseTask new
-						promise: [ aMemento commit ] asAsyncFuture await) ]
+			GtMagritteBuilderUtility 
+				awaitFuture: [ aMemento commit ] asAsyncFuture 
+				from: aButton ]
 ]
 
 { #category : #'private - building' }
@@ -704,10 +713,14 @@ GtMagritteBuilderUtility class >> recycleViewModels: anExistingViewModels forMod
 										icon: BrGlamorousVectorIcons remove;
 										tooltip: 'Remove';
 										action: [ :anItemModel :aButton :anItemMemento | 
-											[ self
+											| aFuture |
+											aFuture := [ self
 												removeItem: aModel
 												memento: aMemento
-												description: aDescription ] asAsyncFuture await ]) ].
+												description: aDescription ] asAsyncFuture.
+											GtMagritteBuilderUtility 
+												awaitFuture: aFuture 
+												from: aButton ]) ].
 
 					aStream nextPut: aViewModel ] ]
 ]
