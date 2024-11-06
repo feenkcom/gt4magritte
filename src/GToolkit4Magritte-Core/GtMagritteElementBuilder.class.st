@@ -160,10 +160,14 @@ GtMagritteElementBuilder >> addShortcutsTo: anElement [
 				combination: BlKeyCombination escape;
 				overrideChildren: true;
 				action: [ :anEvent | 
-					[ self
+					| aFuture |
+					aFuture := [ self
 						resetFrom: self form
 						usingModel: self memento model
-						andMemento: self memento ] asAsyncFuture await ]).
+						andMemento: self memento ] asAsyncFuture.
+					GtMagritteBuilderUtility 
+						awaitFuture: aFuture 
+						from: anEvent currentTarget ]).
 	anElement
 		addShortcut: (BlShortcutWithAction new
 				name: 'Move to next form item';
@@ -199,10 +203,14 @@ GtMagritteElementBuilder >> addShortcutsTo: anElement using: aDescription [
 				combination: BlKeyCombination escape;
 				overrideChildren: true;
 				action: [ :anEvent | 
-					[ self
+					| aFuture |
+					aFuture := [ self
 						resetFrom: self form
 						usingModel: self memento model
-						andMemento: self memento ] asAsyncFuture await ]).
+						andMemento: self memento ] asAsyncFuture.
+					GtMagritteBuilderUtility 
+						awaitFuture: aFuture 
+						from: anEvent currentTarget ]).
 	anElement
 		addShortcut: (BlShortcutWithAction new
 				name: 'Move to next form item';
