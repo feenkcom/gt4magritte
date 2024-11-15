@@ -4,17 +4,24 @@ Class {
 	#instVars : [
 		'isWithCallbacks',
 		'isWithStatusUpdates',
-		'callbackErrors'
+		'callbackErrors',
+		'futureConfiguration'
 	],
 	#category : #'GToolkit4Magritte-Core-Actions'
 }
 
 { #category : #'private - execution' }
 GtMagritteActionExecutor >> attachFutureTask: anAsyncFuture [
+	| aPromise |
 	self element ifNil: [ ^ self ].
+	
+	aPromise := anAsyncFuture asAsyncFuture await: self futureConfiguration.
+	self element enqueueTask: (BlPromiseTask new promise: aPromise)
+]
 
-	self element
-		enqueueTask: (BlPromiseTask new promise: anAsyncFuture asAsyncPromise)
+{ #category : #initialization }
+GtMagritteActionExecutor >> defaultFutureConfiguration [
+	^ GtPhlowUtility defaultFutureExecutionConfiguration
 ]
 
 { #category : #execution }
@@ -54,6 +61,17 @@ GtMagritteActionExecutor >> executeSuccessCallbacks: aResult [
 
 	self description onSuccessCallbacks
 		do: [ :aCallback | self executeCallback: aCallback object: aResult ]
+]
+
+{ #category : #accessing }
+GtMagritteActionExecutor >> futureConfiguration [
+	<return: #AsyncFutureExecutionConfiguration>
+	^ futureConfiguration ifNil: [ futureConfiguration := self defaultFutureConfiguration ]
+]
+
+{ #category : #accessing }
+GtMagritteActionExecutor >> futureConfiguration: aFutureExecutionConfiguration [
+	futureConfiguration := aFutureExecutionConfiguration
 ]
 
 { #category : #initialization }
