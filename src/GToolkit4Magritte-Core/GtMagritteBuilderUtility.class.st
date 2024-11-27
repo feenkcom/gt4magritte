@@ -273,17 +273,6 @@ GtMagritteBuilderUtility class >> newDirectoryDropdownMemento: aMemento using: a
 ]
 
 { #category : #'api - ui' }
-GtMagritteBuilderUtility class >> newEditableLabelWithMemento: aMemento using: aDescription [
-	"Currently, it is not an editable label ({{gtClass:BrEditableLabel}}).
-	We should reintroduce it if/when required."
-
-	^ GtMagritteOneLineEditorElement new
-		fieldViewModel: (GtMagritteFieldViewModel new
-				memento: aMemento;
-				description: aDescription)
-]
-
-{ #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newExecutionStatusWithMemento: aMemento [
 	| anElement |
 	anElement := GtMagritteStatusElement new
@@ -460,14 +449,6 @@ GtMagritteBuilderUtility class >> newIconWithMemento: aMemento using: aDescripti
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newOneLineEditorWithMemento: aMemento using: aDescription [
-	^ GtMagritteOneLineEditorElement new
-		fieldViewModel: (GtMagritteFieldViewModel new
-				memento: aMemento;
-				description: aDescription)
-]
-
-{ #category : #'api - ui' }
-GtMagritteBuilderUtility class >> newReadOnlyEditorWithMemento: aMemento using: aDescription [
 	^ GtMagritteOneLineEditorElement new
 		fieldViewModel: (GtMagritteFieldViewModel new
 				memento: aMemento;

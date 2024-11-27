@@ -263,60 +263,43 @@ GtMagritteElementBuilder >> addSingleOptionDropdownUsing: aDescription [
 
 { #category : #'private - building' }
 GtMagritteElementBuilder >> addStringFieldUsing: aDescription [
-
 	| aMemento anInputElement aLabel aValidationElement |
 	aMemento := self memento.
 
 	aDescription blocStencil
 		ifNotNil: [ :stencil | 
-			anInputElement := stencil 
-				memento: aMemento; 
-				description: aDescription;
-				asElement ]
-		ifNil: [ 
-			aDescription isReadOnly
-				ifTrue: [ 
-					anInputElement := GtMagritteBuilderUtility
-						                  newReadOnlyEditorWithMemento: aMemento
-						                  using: aDescription ]
-				ifFalse: [ 
-					aDescription isAlwaysEditable
-						ifFalse: [ 
-							anInputElement := GtMagritteBuilderUtility
-								                  newEditableLabelWithMemento: aMemento
-								                  using: aDescription ]
-						ifTrue: [ 
-							anInputElement := GtMagritteBuilderUtility
-								                  newOneLineEditorWithMemento: aMemento
-								                  using: aDescription ] ] ].
+			anInputElement := stencil
+					memento: aMemento;
+					description: aDescription;
+					asElement ]
+		ifNil: [ anInputElement := GtMagritteBuilderUtility
+					newOneLineEditorWithMemento: aMemento
+					using: aDescription ].
 
 	self addShortcutsTo: anInputElement using: aDescription.
 
-	aDescription blocCompletion ifNotNil: [ :aStencil | 
-		| aCompletionStrategy |
-		aCompletionStrategy := aStencil
-			                       memento: aMemento;
-			                       description: aDescription;
-			                       build.
+	aDescription blocCompletion
+		ifNotNil: [ :aStencil | 
+			| aCompletionStrategy |
+			aCompletionStrategy := aStencil
+					memento: aMemento;
+					description: aDescription;
+					build.
 
-		(GtCompletionController
-			 on: anInputElement
-			 strategy: aCompletionStrategy) install ].
+			(GtCompletionController on: anInputElement strategy: aCompletionStrategy)
+				install ].
 
 	aDescription isWithChangeIndicator
-		ifTrue: [ 
-			aValidationElement := GtMagritteBuilderUtility
-				                      newValidationContainerWith: anInputElement
-				                      memento: aMemento
-				                      using: aDescription ]
+		ifTrue: [ aValidationElement := GtMagritteBuilderUtility
+					newValidationContainerWith: anInputElement
+					memento: aMemento
+					using: aDescription ]
 		ifFalse: [ aValidationElement := anInputElement ].
 
-	aLabel := self
-		          addFieldElement: aValidationElement
-		          using: aDescription.
+	aLabel := self addFieldElement: aValidationElement using: aDescription.
 
 	aLabel padding: aLabel padding + (BlInsets top: self defaultSpacing).
-	
+
 	^ anInputElement
 ]
 
