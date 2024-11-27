@@ -140,5 +140,7 @@ GtMagritteOneLineEditorElement >> updateEditorMode [
 
 { #category : #'private - updating' }
 GtMagritteOneLineEditorElement >> updateEditorText: aGtMagritteValue [
+	self text characters = aGtMagritteValue currentValue asRopedText characters
+		ifTrue: [ ^ self ].
 	self text: aGtMagritteValue currentValue
 ]
