@@ -29,7 +29,7 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 				ifNotNil: #value).
 
 	aLabel
-		addAptitude: (BrGlamorousWithDropdownAptitude
+		addAptitude: (BrGlamorousWithExplicitDropdownAptitude
 				handle: [ BrLabel new
 						geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 						aptitude: (aDescription editorAptitude
@@ -47,7 +47,7 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 									aText := aDescription displayStringFor: aFileModel.
 									theLabel text: aText ].
 							(aMemento readObservableValueUsing: aDescription) observe: anElementSink ] ]
-				content: (aContentBlock value: aLabel)) beNotResizable;
+				content: (aContentBlock value: aLabel));
 		margin: ((BlInsets left: self defaultSpaceNumber) withBottom: self defaultSpaceNumber);
 		padding: (BlInsets all: self defaultSpaceNumber);
 		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
