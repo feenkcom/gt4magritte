@@ -28,11 +28,16 @@ Object >> gtMagritteFor: aView [
 			label: 'Memento'
 			tooltip: 'Inspect Memento'
 			action: [ :aButton :aTab | 
-				aTab viewContentElement
-					allChildrenBreadthFirstDetect: [ :anElement | anElement userData includesKey: GtMagritteViewModel gtMementoSymbol ]
-					ifFound: [ :anElement | 
-						aButton phlow
-							spawnObject: (anElement userData at: GtMagritteViewModel gtMementoSymbol) ] ]
+				| aContentElement |
+				aContentElement := aTab viewContentElement.
+				aContentElement userData
+					at: GtMagritteViewModel gtMementoSymbol
+					ifPresent: [ :aMemento | aButton phlow spawnObject: aMemento ]
+					ifAbsent: [ aContentElement
+							allChildrenBreadthFirstDetect: [ :anElement | anElement userData includesKey: GtMagritteViewModel gtMementoSymbol ]
+							ifFound: [ :anElement | 
+								aButton phlow
+									spawnObject: (anElement userData at: GtMagritteViewModel gtMementoSymbol) ] ] ]
 ]
 
 { #category : #'*GToolkit4Magritte-Core' }
