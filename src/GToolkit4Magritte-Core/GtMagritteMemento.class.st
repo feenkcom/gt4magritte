@@ -557,10 +557,19 @@ GtMagritteMemento >> write: anObject using: aDescription [
 	"must only be called in UI thread"
 
 	<return: #TAsyncFuture>
-	| anObservable aNewValue |
+	| anObservable aNewValue aFuture |
+	
+	"1. Read existing value, which is an GtMagritteValue instance."
 	anObservable := self readObservableValueUsing: aDescription.
+	
+	"2. Create a new GtMagritteValue instance with new current value."
 	aNewValue := anObservable valueOrNil copyWithCurrentValue: anObject.
+	
+	"3. Return a new validation future which validates the new value"
+	aFuture := (self validatorUsing: aDescription) observeNext next.
+	
+	"4. Set new observable value"
 	anObservable value: aNewValue.
-
-	^ (self validatorUsing: aDescription) observeNext next
+	
+	^ aFuture
 ]
