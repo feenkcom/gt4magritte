@@ -6,15 +6,12 @@ Class {
 
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> addCommentTooltip: anElement using: aDescription [
-
 	| aText |
 	aText := aDescription comment asRopedText.
 
-	aDescription isRequired ifTrue: [ 
-		aText append: ' (required)' asRopedText ].
+	aDescription isRequired ifTrue: [ aText append: ' (required)' asRopedText ].
 
-	anElement addAptitude:
-		(BrGlamorousWithLabelTooltipAptitude new text: aText)
+	anElement addAptitude: (BrGlamorousWithExplicitTooltipAptitude text: aText)
 ]
 
 { #category : #'private - ui' }
@@ -763,12 +760,11 @@ GtMagritteBuilderUtility class >> updateToolbarLabelExecutionStatus: aLabel with
 		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors errorBackgroundColor ];
 		text: aShortText.
 
-	aLabel aptitudeDo: [ :anAptitude | 
-		anAptitude - BrGlamorousWithLabelTooltipAptitude ].
-	aTooltip ifNotNil: [ 
-		aLabel aptitudeDo: [ :anAptitude | 
-			anAptitude + (BrGlamorousWithLabelTooltipAptitude new 
-				text: aString) ] ]
+	aLabel
+		aptitudeDo: [ :anAptitude | anAptitude - BrGlamorousWithExplicitTooltipAptitude ].
+	aTooltip
+		ifNotNil: [ aLabel
+				aptitudeDo: [ :anAptitude | anAptitude + (BrGlamorousWithExplicitTooltipAptitude text: aString) ] ]
 ]
 
 { #category : #accessing }
@@ -780,7 +776,7 @@ GtMagritteBuilderUtility class >> updateToolbarLabelExecutionStatus: aLabel with
 		text: aString.
 
 	aLabel aptitudeDo: [ :anAptitude | 
-		anAptitude - BrGlamorousWithLabelTooltipAptitude ]
+		anAptitude - BrGlamorousWithExplicitTooltipAptitude ]
 ]
 
 { #category : #'api - ui' }
