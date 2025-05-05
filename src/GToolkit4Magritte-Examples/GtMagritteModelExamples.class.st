@@ -6,8 +6,8 @@ Class {
 
 { #category : #'examples - address' }
 GtMagritteModelExamples >> addressObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyPostalAddress>
 	| anAddress |
 	anAddress := self basicAddressObject.
 
@@ -21,8 +21,8 @@ GtMagritteModelExamples >> addressObject [
 
 { #category : #'examples - address' }
 GtMagritteModelExamples >> addressObjectWithCallbacks [
-
 	<gtExample>
+	<return: #GtMagritteDummyPostalAddressWithCallbacks>
 	| anAddress |
 	anAddress := self basicAddressObjectWithCallbacks.
 
@@ -36,8 +36,8 @@ GtMagritteModelExamples >> addressObjectWithCallbacks [
 
 { #category : #'examples - address' }
 GtMagritteModelExamples >> addressObjectWithoutCancel [
-
 	<gtExample>
+	<return: #GtMagritteDummyPostalAddressWithoutCancel>
 	| anAddress |
 	anAddress := self basicAddressObjectWithoutCancel.
 
@@ -51,8 +51,8 @@ GtMagritteModelExamples >> addressObjectWithoutCancel [
 
 { #category : #'examples - address' }
 GtMagritteModelExamples >> addressTwoObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyPostalAddress>
 	| anAddress |
 	anAddress := self basicAddressObject.
 
@@ -65,8 +65,8 @@ GtMagritteModelExamples >> addressTwoObject [
 
 { #category : #'examples - address' }
 GtMagritteModelExamples >> basicAddressObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyPostalAddress>
 	| anAddress |
 	anAddress := GtMagritteDummyPostalAddress new.
 
@@ -75,8 +75,8 @@ GtMagritteModelExamples >> basicAddressObject [
 
 { #category : #'examples - address' }
 GtMagritteModelExamples >> basicAddressObjectWithCallbacks [
-
 	<gtExample>
+	<return: #GtMagritteDummyPostalAddressWithCallbacks>
 	| anAddress |
 	anAddress := GtMagritteDummyPostalAddressWithCallbacks new.
 
@@ -85,8 +85,8 @@ GtMagritteModelExamples >> basicAddressObjectWithCallbacks [
 
 { #category : #'examples - address' }
 GtMagritteModelExamples >> basicAddressObjectWithoutCancel [
-
 	<gtExample>
+	<return: #GtMagritteDummyPostalAddressWithoutCancel>
 	| anAddress |
 	anAddress := GtMagritteDummyPostalAddressWithoutCancel new.
 
@@ -95,8 +95,8 @@ GtMagritteModelExamples >> basicAddressObjectWithoutCancel [
 
 { #category : #'examples - broken object' }
 GtMagritteModelExamples >> basicBrokenObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyModelWithBrokenDescription>
 	| anObject |
 	anObject := GtMagritteDummyModelWithBrokenDescription new.
 
@@ -107,8 +107,8 @@ GtMagritteModelExamples >> basicBrokenObject [
 
 { #category : #'examples - person' }
 GtMagritteModelExamples >> basicPersonObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyPerson>
 	| aPerson |
 	aPerson := GtMagritteDummyPerson new.
 
@@ -120,8 +120,8 @@ GtMagritteModelExamples >> basicPersonObject [
 
 { #category : #'examples - person' }
 GtMagritteModelExamples >> basicPersonWithExtraActionsObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyPersonWithExtraActions>
 	| aPerson |
 	aPerson := GtMagritteDummyPersonWithExtraActions new.
 
@@ -134,29 +134,34 @@ GtMagritteModelExamples >> basicPersonWithExtraActionsObject [
 { #category : #'examples - server\t' }
 GtMagritteModelExamples >> basicServerObject [
 	<gtExample>
+	<return: #GtMagritteDummyServer>
 	| server |
 	server := GtMagritteDummyServer new.
-	
+
 	self assert: server name isNotNil description: 'Name must be non-nil'.
 	self assert: server port isNotNil description: 'Port must be non-nil'.
 	self assert: server port isInteger description: 'Port must be an integer'.
 	self assert: server status isNotNil description: 'Status must be non-nil'.
-	self assert: server readOnlyMode isNotNil description: 'Ready-only mode must be non-nil'.
-	self assert: server readOnlyMode isBoolean description: 'Ready-only mode must be a boolean'.
+	self
+		assert: server readOnlyMode isNotNil
+		description: 'Ready-only mode must be non-nil'.
+	self
+		assert: server readOnlyMode isBoolean
+		description: 'Ready-only mode must be a boolean'.
 
 	^ server
 ]
 
 { #category : #'examples - broken object' }
 GtMagritteModelExamples >> brokenObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyModelWithBrokenDescription>
 	| anObject |
 	anObject := self basicBrokenObject.
 	anObject value: 'I have a value'.
 	anObject comment: 'I have a comment'.
 
-	self assert: anObject value equals:'I have a value' .
+	self assert: anObject value equals: 'I have a value'.
 	self assert: anObject comment equals: 'I have a comment'.
 
 	^ anObject
@@ -164,17 +169,17 @@ GtMagritteModelExamples >> brokenObject [
 
 { #category : #'examples - person' }
 GtMagritteModelExamples >> personObjectWithTwoAddresses [
-
 	<gtExample>
+	<return: #GtMagritteDummyPerson>
 	| aPerson anAddressOne anAddressTwo |
 	aPerson := self basicPersonObject.
 
 	aPerson name: 'Adélka'.
 	anAddressOne := self primaryAddressObject.
 	anAddressTwo := self addressTwoObject.
-	aPerson addresses: { 
-			anAddressOne.
-			anAddressTwo }.
+	aPerson
+		addresses: {anAddressOne.
+				anAddressTwo}.
 
 	self assert: aPerson name equals: 'Adélka'.
 	self assert: aPerson addresses size equals: 2.
@@ -184,8 +189,8 @@ GtMagritteModelExamples >> personObjectWithTwoAddresses [
 
 { #category : #'examples - person' }
 GtMagritteModelExamples >> personWithExtraActionsObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyPersonWithExtraActions>
 	| aPerson |
 	aPerson := self basicPersonWithExtraActionsObject.
 
@@ -199,17 +204,17 @@ GtMagritteModelExamples >> personWithExtraActionsObject [
 
 { #category : #'examples - person' }
 GtMagritteModelExamples >> personWithExtraActionsObjectWithTwoAddresses [
-
 	<gtExample>
+	<return: #GtMagritteDummyPersonWithExtraActions>
 	| aPerson anAddressOne anAddressTwo |
 	aPerson := self basicPersonWithExtraActionsObject.
 
 	aPerson name: 'Adélka'.
 	anAddressOne := self primaryAddressObject.
 	anAddressTwo := self addressTwoObject.
-	aPerson addresses: { 
-			anAddressOne.
-			anAddressTwo }.
+	aPerson
+		addresses: {anAddressOne.
+				anAddressTwo}.
 
 	self assert: aPerson name equals: 'Adélka'.
 	self assert: aPerson addresses size equals: 2.
@@ -219,8 +224,8 @@ GtMagritteModelExamples >> personWithExtraActionsObjectWithTwoAddresses [
 
 { #category : #'examples - address' }
 GtMagritteModelExamples >> primaryAddressObject [
-
 	<gtExample>
+	<return: #GtMagritteDummyPostalAddress>
 	| anAddress |
 	anAddress := self addressObject.
 
@@ -231,89 +236,86 @@ GtMagritteModelExamples >> primaryAddressObject [
 
 { #category : #'examples - simple address' }
 GtMagritteModelExamples >> simpleAddressDescription [
-
 	<gtExample>
-	^ MAPriorityContainer withAll: { 
-			  (MAStringDescription new
-				   accessor: (MADictionaryAccessor key: #street);
-				   comment: 'Street name and number';
-				   addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
-				   labelled: 'Street must be non empty';
-				   addCondition: [ :aValue | 
-					   (aValue select: [ :e | e isDigit ]) isNotEmpty ]
-				   labelled: 'Street must include street number').
-			  (MAStringDescription new
-				   accessor: (MADictionaryAccessor key: #city);
-				   comment: 'City name';
-				   beRequired;
-				   addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
-				   labelled: 'City must be non empty';
-				   addCondition: [ :aValue | 
-					   aValue allSatisfy: [ :each | 
-							   each isLetter or: [ each isSeparator ] ] ]
-				   labelled: 'City must include letters only') }
+	<return: #MAPriorityContainer>
+	^ MAPriorityContainer
+		withAll: {MAStringDescription new
+					accessor: (MADictionaryAccessor key: #street);
+					comment: 'Street name and number';
+					addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
+						labelled: 'Street must be non empty';
+					addCondition: [ :aValue | (aValue select: [ :e | e isDigit ]) isNotEmpty ]
+						labelled: 'Street must include street number'.
+				MAStringDescription new
+					accessor: (MADictionaryAccessor key: #city);
+					comment: 'City name';
+					beRequired;
+					addCondition: [ :aValue | aValue trimBoth isNotEmpty ]
+						labelled: 'City must be non empty';
+					addCondition: [ :aValue | aValue allSatisfy: [ :each | each isLetter or: [ each isSeparator ] ] ]
+						labelled: 'City must include letters only'}
 ]
 
 { #category : #'examples - simple address' }
 GtMagritteModelExamples >> simpleAddressObject [
-
 	<gtExample>
-	^ { 
-		  (#street -> 'Werkstrasse 18').
-		  (#city -> 'Chamoille') } asDictionary
+	<return: #Dictionary>
+	^ {#street -> 'Werkstrasse 18'.
+		#city -> 'Chamoille'} asDictionary
 ]
 
 { #category : #'examples - simple baseline' }
 GtMagritteModelExamples >> simpleBaselineObject [
-
 	<gtExample>
-	^ { (#baseline -> 'BaselineOfMyProject') } asDictionary
+	<return: #Dictionary>
+	^ {#baseline -> 'BaselineOfMyProject'} asDictionary
 ]
 
 { #category : #'examples - simple baselines' }
 GtMagritteModelExamples >> simpleBaselinesObject [
-
 	<gtExample>
-	^ { (#baselines
-	   -> { 'BaselineOfOne'. 'BaselineOfTwo'. 'BaselineOfThree' }) }
-		  asDictionary
+	<return: #Dictionary>
+	^ {#baselines
+			-> {'BaselineOfOne'.
+					'BaselineOfTwo'.
+					'BaselineOfThree'}} asDictionary
 ]
 
 { #category : #'examples - directory' }
 GtMagritteModelExamples >> simpleDirectoryDescription [
-
 	<gtExample>
-	^ MAPriorityContainer withAll: { (MADirectoryDescription new
-			   label: 'Directory';
-			   kind: AbstractFileReference;
-			   display: #printString;
-			   accessor: (MADictionaryAccessor key: #directory);
-			   beRequired;
-			   addCondition: [ :aFileReference | 
-				   aFileReference asFileReference exists ]
-			   labelled: 'Directory must exist';
-			   comment: 'Directory name') }
+	<return: #MAPriorityContainer>
+	^ MAPriorityContainer
+		withAll: {MADirectoryDescription new
+					label: 'Directory';
+					kind: AbstractFileReference;
+					display: #printString;
+					accessor: (MADictionaryAccessor key: #directory);
+					beRequired;
+					addCondition: [ :aFileReference | aFileReference asFileReference exists ]
+						labelled: 'Directory must exist';
+					comment: 'Directory name'}
 ]
 
 { #category : #'examples - directory' }
 GtMagritteModelExamples >> simpleDirectoryObject [
-
 	<gtExample>
-	^ { (#directory -> (FileLocator imageDirectory / 'pharo-local' )) } asDictionary
+	<return: #Dictionary>
+	^ {#directory -> (FileLocator imageDirectory / 'pharo-local')} asDictionary
 ]
 
 { #category : #'examples - simple address' }
 GtMagritteModelExamples >> simpleInvalidAddressObject [
-
 	<gtExample>
-	^ { 
-		  (#street -> 'Werkstrasse').
-		  (#city -> '345 01 Chamoille') } asDictionary
+	<return: #Dictionary>
+	^ {#street -> 'Werkstrasse'.
+		#city -> '345 01 Chamoille'} asDictionary
 ]
 
 { #category : #'examples - simple password' }
 GtMagritteModelExamples >> simplePasswordDescription [
 	<gtExample>
+	<return: #MAPriorityContainer>
 	^ MAPriorityContainer
 		withAll: {MAStringDescription new
 					label: 'ID';
@@ -330,6 +332,7 @@ GtMagritteModelExamples >> simplePasswordDescription [
 { #category : #'examples - simple password' }
 GtMagritteModelExamples >> simplePasswordObject [
 	<gtExample>
+	<return: #Dictionary>
 	^ Dictionary new
 		at: 'id' put: '1233232';
 		at: 'login' put: 'joe';
