@@ -9,6 +9,7 @@ Class {
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> address [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self
 			scripterWithModel: [ GtMagritteModelExamples new addressObject ]
@@ -26,6 +27,7 @@ GtMagritteByScripterExamples >> address [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressAcceptChangedStreet [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressChangedStreet.
 
@@ -39,10 +41,7 @@ GtMagritteByScripterExamples >> addressAcceptChangedStreet [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteAcceptAction.
 
-			aStep
-				clickStep: [ :s | 
-					s
-						// aCancelId ].
+			aStep clickStep: [ :s | s // aCancelId ].
 
 			self
 				assert: aStep
@@ -63,6 +62,7 @@ GtMagritteByScripterExamples >> addressAcceptChangedStreet [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressCancelChangedStreet [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressChangedStreet.
 
@@ -76,10 +76,7 @@ GtMagritteByScripterExamples >> addressCancelChangedStreet [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteCancelAction.
 
-			aStep
-				clickStep: [ :s | 
-					s
-						// aCancelId ].
+			aStep clickStep: [ :s | s // aCancelId ].
 
 			self
 				assert: aStep
@@ -93,6 +90,7 @@ GtMagritteByScripterExamples >> addressCancelChangedStreet [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressChangedStreet [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self address.
 
@@ -125,6 +123,7 @@ GtMagritteByScripterExamples >> addressChangedStreet [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressEmptyStreet [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self address.
 
@@ -157,6 +156,7 @@ GtMagritteByScripterExamples >> addressEmptyStreet [
 { #category : #'examples - address with callbacks' }
 GtMagritteByScripterExamples >> addressObjectWithCallbacks [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self
 			scripterWithModel: [ GtMagritteModelExamples new addressObjectWithCallbacks ]
@@ -174,6 +174,7 @@ GtMagritteByScripterExamples >> addressObjectWithCallbacks [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptActionWithDefectiveCallbacks [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressWithCallbacksAndChangedStreet.
 
@@ -187,10 +188,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptActionWithDefective
 			anAcceptId := GtMagritteActionElementId new
 					description: aScripter model magritteAcceptActionWithDefectiveCallbacks.
 
-			aStep
-				clickStep: [ :s | 
-					s
-						// anAcceptId ].
+			aStep clickStep: [ :s | s // anAcceptId ].
 
 			self
 				assert: aStep
@@ -211,6 +209,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptActionWithDefective
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptChangedStreet [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressWithCallbacksAndChangedStreet.
 
@@ -224,10 +223,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptChangedStreet [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteAcceptAction.
 
-			aStep
-				clickStep: [ :s | 
-					s
-						// aCancelId ].
+			aStep clickStep: [ :s | s // aCancelId ].
 
 			self
 				assert: aStep
@@ -255,6 +251,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndAcceptChangedStreet [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndCanceledChangedStreet [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressWithCallbacksAndChangedStreet.
 
@@ -268,10 +265,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndCanceledChangedStreet [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteCancelAction.
 
-			aStep
-				clickStep: [ :s | 
-					s
-						// aCancelId ].
+			aStep clickStep: [ :s | s // aCancelId ].
 
 			self
 				assert: aStep
@@ -292,6 +286,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndCanceledChangedStreet [
 { #category : #'examples - address with callbacks' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndChangedFavorite [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressObjectWithCallbacks.
 
@@ -327,6 +322,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndChangedFavorite [
 { #category : #'examples - address with callbacks' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndChangedStreet [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressObjectWithCallbacks.
 
@@ -366,6 +362,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndChangedStreet [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveAcceptAction [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressWithCallbacksAndChangedStreet.
 
@@ -379,10 +376,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveAcceptAction [
 			anAcceptId := GtMagritteActionElementId new
 					description: aScripter model magritteDefectiveAcceptAction.
 
-			aStep
-				clickStep: [ :s | 
-					s
-						// anAcceptId ].
+			aStep clickStep: [ :s | s // anAcceptId ].
 
 			self
 				assert: aStep
@@ -403,6 +397,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveAcceptAction [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveCancelAction [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressWithCallbacksAndChangedStreet.
 
@@ -416,10 +411,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveCancelAction [
 			aCancelId := GtMagritteActionElementId new
 					description: aScripter model magritteDefectiveCancelAction.
 
-			aStep
-				clickStep: [ :s | 
-					s
-						// aCancelId ].
+			aStep clickStep: [ :s | s // aCancelId ].
 
 			self
 				assert: aStep
@@ -440,6 +432,7 @@ GtMagritteByScripterExamples >> addressWithCallbacksAndDefectiveCancelAction [
 { #category : #'examples - address' }
 GtMagritteByScripterExamples >> addressWithErrorAcceptCallbacks [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self addressWithCallbacksAndChangedFavorite.
 
@@ -453,10 +446,7 @@ GtMagritteByScripterExamples >> addressWithErrorAcceptCallbacks [
 			anAcceptId := GtMagritteActionElementId new
 					description: aScripter model magritteAcceptAction.
 
-			aStep
-				clickStep: [ :s | 
-					s
-						// anAcceptId ].
+			aStep clickStep: [ :s | s // anAcceptId ].
 
 			self
 				assert: aStep
@@ -477,6 +467,7 @@ GtMagritteByScripterExamples >> addressWithErrorAcceptCallbacks [
 { #category : #'examples - address without cancel' }
 GtMagritteByScripterExamples >> addressWithoutCancel [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self
 			scripterWithModel: [ GtMagritteModelExamples new addressObjectWithoutCancel ]
@@ -641,6 +632,7 @@ GtMagritteByScripterExamples >> assert: aParentStep successAcceptCount: successA
 { #category : #'examples - server' }
 GtMagritteByScripterExamples >> serverObject [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self
 			scripterWithModel: [ GtMagritteModelExamples new basicServerObject ]
@@ -683,6 +675,7 @@ GtMagritteByScripterExamples >> serverObject [
 { #category : #'examples - server' }
 GtMagritteByScripterExamples >> serverObjectInStartedState [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self serverObject.
 
@@ -724,6 +717,7 @@ GtMagritteByScripterExamples >> serverObjectInStartedState [
 { #category : #'examples - server' }
 GtMagritteByScripterExamples >> serverObjectInStartedStateAndAutoAcceptWidget [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self serverObjectInStartedState.
 
@@ -767,6 +761,7 @@ GtMagritteByScripterExamples >> serverObjectInStartedStateAndAutoAcceptWidget [
 { #category : #'examples - server' }
 GtMagritteByScripterExamples >> serverObjectInStartedStateAndReadOnlyPort [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self serverObjectInStartedState.
 
@@ -806,6 +801,7 @@ GtMagritteByScripterExamples >> serverObjectInStartedStateAndReadOnlyPort [
 { #category : #'examples - server' }
 GtMagritteByScripterExamples >> serverObjectInStoppedStateAndChangedPort [
 	<gtExample>
+	<return: #BlScripter>
 	| aScripter |
 	aScripter := self serverObject.
 
