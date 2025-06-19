@@ -1,8 +1,8 @@
 {
 	"repositories" : {
-		"github://feenkcom/Brick/src" : "v0.8.1589",
-		"github://feenkcom/gtoolkit-utility/src" : "v0.8.376",
-		"github://feenkcom/gtoolkit-completer/src" : "v0.8.1643",
+		"github://feenkcom/Brick/src" : "v0.8.1590",
+		"github://feenkcom/gtoolkit-utility/src" : "v0.8.377",
+		"github://feenkcom/gtoolkit-completer/src" : "v0.8.1644",
 		"github://feenkcom/magritte/source" : "v4.0.19"
 	}
 }
