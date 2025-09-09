@@ -7,6 +7,12 @@ Class {
 	#category : #'GToolkit4Magritte-Core-Support'
 }
 
+{ #category : #'api - instantiation' }
+GtMagritteFormStencilBuilder >> buildDefault [
+	<return: #BrStencil or: #BlElement>
+	^ GtMagritteBuilderUtility newHorizontalGridContainer
+]
+
 { #category : #accessing }
 GtMagritteFormStencilBuilder >> memento [
 

@@ -721,11 +721,11 @@ GtMagritteBuilderUtility class >> styleEditorWidget: aBrEditor [
 			aStyle border: BlBorder empty ];
 		hovered: [ :aStyle | 
 			aStyle border: (BlBorder 
-				paint: BrGlamorousColors disabledButtonBorderColor 
+				paint: aBrEditor theme editor borderColor 
 				width: 1) ];
 		focused: [ :aStyle | 
 			aStyle border: (BlBorder 
-				paint: BrGlamorousColors focusedEditorBorderColor 
+				paint: aBrEditor theme editor focusedBorderColor 
 				width: 1) ]).
 				
 	aBrEditor 
