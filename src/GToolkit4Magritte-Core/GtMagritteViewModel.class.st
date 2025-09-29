@@ -84,6 +84,11 @@ GtMagritteViewModel >> asElement [
 		constraintsDo: [ :c | 
 			c frame horizontal alignCenter.
 			c frame vertical alignCenter ];
+		addAptitude: (BrLayoutResizerAptitude new
+						exactToMatchParent: [ aFrame children ];
+						matchParentToMatchParent: [ aFrame children ];
+						fitContentToFitContent: [ aFrame children ];
+						fitContentLimitedToFitContentLimited: [ aFrame children ]);
 		withAsyncFutureDo: [ :anElementFuture | 
 			anElementFuture
 				whenPending: [ :theContainer | 
@@ -192,9 +197,8 @@ GtMagritteViewModel >> initializeForm: theFrame forMemento: aMemento [
 			memento: aMemento;
 			asElement.
 
-	theFrame addAptitude: (BrLayoutResizerAptitude new inherit: aContainer).
-
 	theFrame addChild: aContainer.
+	aContainer requestStyle.
 
 	GtMagritteElementBuilder new
 		includeImplicitActions: includeImplicitActions;
