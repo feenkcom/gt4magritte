@@ -140,7 +140,7 @@ GtMagritteMemento >> gtActionsFor: aView [
 			text: #priority
 			width: 50;
 		column: 'Icon'
-			icon: [ :anAction | anAction blocIcon ifNotNil: #asElement ifNil: [ BlElement new size: 0 @ 0 ] ];
+			icon: [ :anAction | anAction blocIcon ifNotNil: [ :anIcon | anIcon asElement ] ifNil: [ BlElement new size: 0 @ 0 ] ];
 		column: 'Label' text: #label;
 		column: 'Is Toolbar Action'
 			text: [ :anAction | 
@@ -183,7 +183,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 								| aValue |
 								aValue := aSink value.
 
-								theLabel text: (aValue ifNotNil: #currentValue ifNil: [ '?' ]) ].
+								theLabel text: (aValue ifNotNil: [ :aCachedValue | aCachedValue currentValue ] ifNil: [ '?' ]) ].
 						anObservable observe: anElementSink ].
 
 				aLabel ]
@@ -417,7 +417,7 @@ GtMagritteMemento >> readUsing: aDescription [
 
 	| anObservable |
 	anObservable := self readObservableValueUsing: aDescription.
-	^ anObservable valueOrNil ifNotNil: #currentValue
+	^ anObservable valueOrNil ifNotNil: [ :aValue | aValue currentValue ]
 ]
 
 { #category : #actions }

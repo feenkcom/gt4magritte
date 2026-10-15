@@ -84,6 +84,6 @@ GtMagritteOverallStatus >> printOn: aStream [
 		nextPutAll: ', valid=';
 		print: self isValid;
 		nextPutAll: ', executing=';
-		print: (self executionStatus ifNotNil: #label);
+		print: (self executionStatus ifNotNil: [ :aStatus | aStatus label ]);
 		nextPut: $)
 ]

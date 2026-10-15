@@ -126,7 +126,7 @@ GtMagritteOneLineEditorElement >> updateEditorAptitude [
 	editorAptitude := newAptitude := self description editorAptitude
 		ifNil: [ BrGlamorousRegularEditorAptitude new 
 					glamorousRegularFontAndSize ]
-		ifNotNil: #value.
+		ifNotNil: [ :anAptitude | anAptitude value ].
 
 	self addAptitude: newAptitude
 ]

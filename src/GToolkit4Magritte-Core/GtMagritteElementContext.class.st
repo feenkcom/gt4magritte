@@ -104,7 +104,7 @@ GtMagritteElementContext >> gtContainerElementsFor: aView [
 		  title: 'Container elements';
 		  priority: 2;
 		  items: [ 
-			  containerElements ifNotNil: #associations ifNil: [ #(  ) ] ];
+			  containerElements ifNotNil: [ :theElements | theElements associations ] ifNil: [ #(  ) ] ];
 		  column: 'Container Type' text: #key;
 		  column: 'Element' text: #value weight: 3;
 		  send: [ :anAssoc | 
@@ -123,7 +123,7 @@ GtMagritteElementContext >> gtContainerTypesFor: aView [
 	^ aView columnedList
 		  title: 'Container types';
 		  priority: 1;
-		  items: [ containerTypes ifNotNil: #associations ifNil: [ #(  ) ] ];
+		  items: [ containerTypes ifNotNil: [ :theTypes | theTypes associations ] ifNil: [ #(  ) ] ];
 		  column: 'Container Type' text: #key;
 		  send: #key;
 		  actionUpdateButtonTooltip: 'Update items'

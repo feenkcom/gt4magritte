@@ -23,7 +23,7 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 				ifNil: [ BrGlamorousLabelAptitude new
 						glamorousCodeFont;
 						fontSize: 10 ]
-				ifNotNil: #value).
+				ifNotNil: [ :anAptitude | anAptitude value ]).
 
 	aLabel
 		addAptitude: (BrGlamorousWithExplicitDropdownAptitude
@@ -33,7 +33,7 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 							ifNil: [ BrGlamorousLabelAptitude new
 									glamorousCodeFont;
 									fontSize: 10 ]
-							ifNotNil: #value);
+							ifNotNil: [ :anAptitude | anAptitude value ]);
 						padding: (BlInsets all: self defaultSpaceNumber);
 						withAsyncSinkDo: [ :anElementSink | 
 							anElementSink
@@ -145,7 +145,7 @@ GtMagritteBuilderUtility class >> newBasicReadOnlyEditorWithMemento: aMemento us
 		
 	aptitude := aDescription editorAptitude
 			ifNil: [ BrGlamorousRegularEditorAptitude new glamorousRegularFontAndSize ]
-			ifNotNil: #value.
+			ifNotNil: [ :anAptitude | anAptitude value ].
 
 	anEditor
 		beReadOnlyWithSelection;
@@ -290,7 +290,7 @@ GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aD
 	labelAptitude := aDescription labelAptitude
 			ifNil: [ BrGlamorousLabelAptitude new
 					foreground: BrGlamorousColors disabledButtonTextColor ]
-			ifNotNil: #value.
+			ifNotNil: [ :anAptitude | anAptitude value ].
 
 	^ BrLabel new
 		id: (GtMagritteFieldLabelId new description: aDescription);
