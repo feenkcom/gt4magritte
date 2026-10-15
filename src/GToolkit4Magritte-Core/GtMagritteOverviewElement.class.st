@@ -56,7 +56,7 @@ GtMagritteOverviewElement >> initializeOverallStatus [
 	statusContainer := self
 			newContainerWithStatus: activityStatus
 			spawning: [ :aMemento | 
-				aMemento overallStatus valueOrNil ifNotNil: #executionStatus ].
+				aMemento overallStatus valueOrNil ifNotNil: [ :aStatus | aStatus executionStatus ] ].
 
 
 	overviews addChild: (self newTitle: 'Overall status').
