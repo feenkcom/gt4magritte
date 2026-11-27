@@ -60,53 +60,49 @@ GtMagritteValidatedFieldElement >> memento: aMemento description: aDescription e
 
 { #category : #initialization }
 GtMagritteValidatedFieldElement >> newChangeElement [
-
 	^ BrFrame new
-		  hExact: self defaultThickness;
-		  vMatchParent;
-		  background: BrGlamorousColors textHighlightColor;
-		  visibility: BlVisibility hidden;
-		  margin: (BlInsets bottom: self defaultSpaceNumber);
-		  geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
-		  withAsyncSinkDo: [ :anElementSink | 
-			  anElementSink
-				  sink: AsyncPeekSink new;
-				  whenUpdate: [ :aLabel :aSink | 
-					  | aValue |
-					  aValue := aSink value.
-					  aValue isChanged
-						  ifTrue: [ aLabel visibility: BlVisibility visible ]
-						  ifFalse: [ aLabel visibility: BlVisibility hidden ] ] ]
+		hExact: self defaultThickness;
+		vMatchParent;
+		background: self theme status changesBackgroundColor;
+		visibility: BlVisibility hidden;
+		margin: (BlInsets bottom: self defaultSpaceNumber);
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeekSink new;
+				whenUpdate: [ :aLabel :aSink | 
+					| aValue |
+					aValue := aSink value.
+					aValue isChanged
+						ifTrue: [ aLabel visibility: BlVisibility visible ]
+						ifFalse: [ aLabel visibility: BlVisibility hidden ] ] ]
 ]
 
 { #category : #initialization }
 GtMagritteValidatedFieldElement >> newIssuesElement [
-
 	^ BrEditor new
-		  aptitude: (BrGlamorousRegularEditorAptitude new
-				   glamorousRegularFont;
-				   glamorousCodeSmallSize;
-				   foreground: BrGlamorousColors errorBackgroundColor);
-		  beReadOnlyWithSelection;
-		  hFitContentLimited;
-		  vFitContent;
-		  text: '';
-		  visibility: BlVisibility gone;
-		  withAsyncSinkDo: [ :anElementSink | 
-			  anElementSink
-				  sink: AsyncPeekSink new;
-				  whenUpdate: [ :aLabel :aSink | 
-					  | aValue |
-					  aValue := aSink value.
-					  aValue isSuccess
-						  ifTrue: [ 
-							  aLabel
-								  text: '';
-								  visibility: BlVisibility gone ]
-						  ifFalse: [ 
-							  aLabel
-								  text: aValue issuesDescription;
-								  visibility: BlVisibility visible ] ] ]
+		aptitude: (BrGlamorousRegularEditorAptitude new
+				glamorousRegularFont;
+				glamorousCodeSmallSize;
+				foreground: self theme status errorTextForeground);
+		beReadOnlyWithSelection;
+		hFitContentLimited;
+		vFitContent;
+		text: '';
+		visibility: BlVisibility gone;
+		withAsyncSinkDo: [ :anElementSink | 
+			anElementSink
+				sink: AsyncPeekSink new;
+				whenUpdate: [ :aLabel :aSink | 
+					| aValue |
+					aValue := aSink value.
+					aValue isSuccess
+						ifTrue: [ aLabel
+								text: '';
+								visibility: BlVisibility gone ]
+						ifFalse: [ aLabel
+								text: aValue issuesDescription;
+								visibility: BlVisibility visible ] ] ]
 ]
 
 { #category : #initialization }

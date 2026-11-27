@@ -20,24 +20,24 @@ GtMagritteStatusElement >> initialize [
 			text: '';
 			hFitContentLimited;
 			vFitContent.
-			
+
 	exceptionContainer := BrFrame new
 			visibility: BlVisibility gone;
 			margin: (BlInsets left: 3);
 			hFitContentLimited;
 			vFitContent.
-			
+
 	self
 		withAsyncSinkDo: [ :anElementSink | 
 			anElementSink
 				sink: AsyncPeekSink new;
-				whenUpdate: [ :aLabel :aSink | 
-					self onExecutionStatusChanged: aSink value ] ].
+				whenUpdate: [ :aLabel :aSink | self onExecutionStatusChanged: aSink value ] ].
 
 	self addChild: labelElement.
 	self addChild: exceptionContainer.
 
 	self
+		geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 		hFitContentLimited;
 		vFitContent
 ]
@@ -45,7 +45,19 @@ GtMagritteStatusElement >> initialize [
 { #category : #'private - event handling' }
 GtMagritteStatusElement >> onExecutionStatusChanged: aGtMagritteExecutionStatus [
 	aGtMagritteExecutionStatus updateToolbarLabelExecutionStatus: labelElement.
-	aGtMagritteExecutionStatus updateToolbarExceptionExecutionStatus: exceptionContainer
+	aGtMagritteExecutionStatus
+		updateToolbarExceptionExecutionStatus: exceptionContainer.
+	exceptionContainer isVisible
+		ifTrue: [ self
+				background: self theme status errorBackgroundColor;
+				padding: (BlInsets
+						top: 2
+						left: 5
+						bottom: 2
+						right: 3) ]
+		ifFalse: [ self
+				background: Color transparent;
+				padding: BlInsets empty ]
 ]
 
 { #category : #'api - memento view model' }

@@ -41,7 +41,7 @@ GtMagritteProgressElement class >> yellow [
 
 { #category : #initialization }
 GtMagritteProgressElement >> defaultTickBackgroundColor [
-	^ BrGlamorousColors defaultShadowColor
+	^ self theme default defaultShadowColor
 ]
 
 { #category : #initialization }
@@ -56,12 +56,12 @@ GtMagritteProgressElement >> defaultTickLength [
 
 { #category : #'api - color' }
 GtMagritteProgressElement >> gray [
-	self tickBackgroundColor: BrGlamorousColors lightBorderColor
+	self tickBackgroundColor: self theme default subtleBorderColor
 ]
 
 { #category : #'api - color' }
 GtMagritteProgressElement >> green [
-	self tickBackgroundColor: BrGlamorousColors successBackgroundColor
+	self tickBackgroundColor: self theme status successBackgroundColor
 ]
 
 { #category : #initialization }
@@ -113,7 +113,7 @@ GtMagritteProgressElement >> newTick [
 
 { #category : #'api - color' }
 GtMagritteProgressElement >> red [
-	self tickBackgroundColor: BrGlamorousColors failureBackgroundColor
+	self tickBackgroundColor: self theme status failureBackgroundColor
 ]
 
 { #category : #accessing }
@@ -139,5 +139,5 @@ GtMagritteProgressElement >> updateTicks [
 
 { #category : #'api - color' }
 GtMagritteProgressElement >> yellow [
-	self tickBackgroundColor: BrGlamorousColors failureBackgroundColor
+	self tickBackgroundColor: self theme status failureBackgroundColor
 ]

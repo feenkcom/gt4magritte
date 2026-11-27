@@ -629,6 +629,50 @@ GtMagritteByScripterExamples >> assert: aParentStep successAcceptCount: successA
 								onModel ] ] ]
 ]
 
+{ #category : #examples }
+GtMagritteByScripterExamples >> progressColorsFollowInheritedTheme [
+	<gtExample>
+	<return: #GtMagritteProgressElement>
+	| aProgress aContainer aTick aLightTheme aDarkTheme |
+	aProgress := GtMagritteProgressElement itself.
+	aContainer := BrFrame new
+			addChild: aProgress;
+			yourself.
+	aTick := aProgress childAt: 1.
+	aLightTheme := BrGlamorousLightTheme new.
+	aDarkTheme := BrGlamorousDarkTheme new.
+
+	{aLightTheme.
+		aDarkTheme}
+		do: [ :aTheme | 
+			aContainer theme: aTheme.
+			self assert: aTick theme == aTheme.
+			self
+				assert: (aTick background paint color blocResolveColorForTheme: aTick theme)
+				equals: aTheme default defaultShadowColor rawColor ].
+
+	{{#gray.
+			aDarkTheme default subtleBorderColor}.
+		{#green.
+			aDarkTheme status successBackgroundColor}.
+		{#red.
+			aDarkTheme status failureBackgroundColor}.
+		{#yellow.
+			aDarkTheme status failureBackgroundColor}}
+		do: [ :aPair | 
+			aProgress perform: aPair first.
+			self
+				assert: (aTick background paint color blocResolveColorForTheme: aTick theme)
+				equals: aPair second rawColor ].
+
+	aContainer theme: aLightTheme.
+	self
+		assert: (aTick background paint color blocResolveColorForTheme: aTick theme)
+		equals: aLightTheme status failureBackgroundColor rawColor.
+
+	^ aProgress
+]
+
 { #category : #'examples - server' }
 GtMagritteByScripterExamples >> serverObject [
 	<gtExample>

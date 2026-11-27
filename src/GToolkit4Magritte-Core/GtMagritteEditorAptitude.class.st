@@ -27,7 +27,7 @@ GtMagritteEditorAptitude >> defaultBackground: anObject [
 
 { #category : #accessing }
 GtMagritteEditorAptitude >> defaultForeground [
-	^ defaultForeground
+	^ defaultForeground ifNil: [ self theme editor defaultTextForeground ]
 ]
 
 { #category : #accessing }
@@ -38,8 +38,7 @@ GtMagritteEditorAptitude >> defaultForeground: anObject [
 { #category : #initialization }
 GtMagritteEditorAptitude >> initialize [
 	super initialize.
-	defaultBackground := Color transparent.
-	defaultForeground := Color black.
+	defaultBackground := BlBackground transparent.
 	minWidth := 5.
 	self addChangeProperty: #(widget constraints minWidth) with: [ self minWidth ].
 	self
@@ -49,16 +48,16 @@ GtMagritteEditorAptitude >> initialize [
 						aStyle background: self defaultBackground.
 						aStyle border: BlBorder empty ];
 					when: BrEditorModeState editable
-						style: [ :aStyle | aStyle background: Color transparent ];
+						style: [ :aStyle | aStyle background: BlBackground transparent ];
 					when: [ :aState | aState focused and: BrEditorModeState editable ]
 						style: [ :aStyle | aStyle border: (BlBorder paint: self theme editor focusedBorderColor width: 1) ];
 					when: [ :aState | aState hovered and: BrEditorModeState readOnly ]
-						style: [ :aStyle | aStyle background: BrGlamorousColors disabledButtonBackgroundColor ];
+						style: [ :aStyle | aStyle background: self theme button disabledBackgroundColor ];
 					when: [ :aState | aState focused and: BrEditorModeState readOnly ]
 						style: [ :aStyle | 
 							aStyle background: self theme editor focusedBorderColor.
 							aStyle
-								do: [ self foreground: Color white ]
+								do: [ self foreground: self theme editor focusedReadOnlyTextForeground ]
 								after: [ self foreground: self defaultForeground ] ])
 ]
 

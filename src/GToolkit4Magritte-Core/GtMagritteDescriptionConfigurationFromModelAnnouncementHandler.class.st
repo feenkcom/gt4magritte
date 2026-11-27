@@ -42,15 +42,15 @@ GtMagritteDescriptionConfigurationFromModelAnnouncementHandler >> descriptionSet
 
 { #category : #ui }
 GtMagritteDescriptionConfigurationFromModelAnnouncementHandler >> label [
-	| aText |
+	| aText aForeground |
+	aForeground := BlTheme default label metadataTextForeground.
 	aText := 'Change ' asRopedText.
-	aText foreground: BrGlamorousColors disabledButtonTextColor.
-	aText append: (self context description label) asRopedText.
-	aText append: ('''s ' asRopedText).
+	aText foreground: aForeground.
+	aText append: self context description label asRopedText.
+	aText append: '''s ' asRopedText.
 	aText append: (self descriptionSetterSelector copyWithout: $:) asRopedText.
-	aText append: (' property value on ' asRopedText
-		foreground: BrGlamorousColors disabledButtonTextColor).
-	aText append: (self announcementClass name asRopedText).
+	aText append: (' property value on ' asRopedText foreground: aForeground).
+	aText append: self announcementClass name asRopedText.
 
 	^ aText
 ]

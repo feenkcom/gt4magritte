@@ -112,9 +112,11 @@ GtMagritteOverviewElement >> newContainerWithStatus: anElement spawning: aSpawnB
 
 { #category : #initialization }
 GtMagritteOverviewElement >> newLabel: aString [
-	^ BrLabel new
+	| aLabel |
+	aLabel := BrLabel new.
+	^ aLabel
 		aptitude: (BrGlamorousLabelAptitude new
-				foreground: BrGlamorousColors disabledButtonTextColor);
+				foreground: aLabel theme label metadataTextForeground);
 		text: aString;
 		margin: (BlInsets
 				top: 0
@@ -140,10 +142,12 @@ GtMagritteOverviewElement >> newLabelObserving: aSelector [
 
 { #category : #initialization }
 GtMagritteOverviewElement >> newTitle: aString [
-	^ (self newLabel: aString)
+	| aLabel |
+	aLabel := self newLabel: aString.
+	^ aLabel
 		aptitudeDo: [ :anAptitude | 
 			anAptitude
-				foreground: BrGlamorousColors defaultHeaderTextColor;
+				foreground: aLabel theme header defaultTextColor;
 				fontSize: 18;
 				bold ];
 		constraintsDo: [ :c | c grid horizontal span: 2 ]

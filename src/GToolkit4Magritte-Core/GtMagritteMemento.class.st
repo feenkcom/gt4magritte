@@ -140,13 +140,16 @@ GtMagritteMemento >> gtActionsFor: aView [
 			text: #priority
 			width: 50;
 		column: 'Icon'
-			icon: [ :anAction | anAction blocIcon ifNotNil: [ :anIcon | anIcon asElement ] ifNil: [ BlElement new size: 0 @ 0 ] ];
+			icon: [ :anAction | 
+				anAction blocIcon
+					ifNotNil: [ :anIcon | anIcon asElement ]
+					ifNil: [ BlElement new size: 0 @ 0 ] ];
 		column: 'Label' text: #label;
 		column: 'Is Toolbar Action'
 			text: [ :anAction | 
 				anAction isToolbarAction
 					ifTrue: [ 'yes' asRopedText ]
-					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ];
+					ifFalse: [ 'no' asRopedText foreground: BlTheme default label metadataTextForeground ] ];
 		column: 'Subscribed'
 			text: [ :anAction | 
 				| isSubscribed |
@@ -154,8 +157,8 @@ GtMagritteMemento >> gtActionsFor: aView [
 				subscriptionHandlers
 					ifNotNil: [ :aDictionary | (aDictionary includesKey: anAction) ifTrue: [ isSubscribed := true ] ].
 				isSubscribed
-					ifTrue: [ 'yes' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
-					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
+					ifTrue: [ 'yes' asRopedText foreground: BlTheme default status successTextForeground ]
+					ifFalse: [ 'no' asRopedText foreground: BlTheme default label metadataTextForeground ] ]
 			width: 75
 ]
 
@@ -183,7 +186,8 @@ GtMagritteMemento >> gtCacheFor: aView [
 								| aValue |
 								aValue := aSink value.
 
-								theLabel text: (aValue ifNotNil: [ :aCachedValue | aCachedValue currentValue ] ifNil: [ '?' ]) ].
+								theLabel
+									text: (aValue ifNotNil: [ :aCachedValue | aCachedValue currentValue ] ifNil: [ '?' ]) ].
 						anObservable observe: anElementSink ].
 
 				aLabel ]
@@ -206,7 +210,7 @@ GtMagritteMemento >> gtCacheFor: aView [
 											ifFalse: [ theLabel text: '' ]
 											ifTrue: [ theLabel
 													text: (aValue originalValue asString asRopedText
-															foreground: BrGlamorousColors disabledButtonTextColor) ] ] ].
+															foreground: theLabel theme label metadataTextForeground) ] ] ].
 						anObservable observe: anElementSink ].
 
 				aLabel ]
@@ -227,18 +231,19 @@ GtMagritteMemento >> gtCacheFor: aView [
 								aText := aValue
 										ifNil: [ '?' ]
 										ifNotNil: [ aValue isSuccess
-												ifTrue: [ 'ok' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
+												ifTrue: [ 'ok' asRopedText foreground: theLabel theme status successTextForeground ]
 												ifFalse: [ aValue issuesDescription asRopedText
-														foreground: BrGlamorousColors errorBackgroundColor ] ].
+														foreground: theLabel theme status errorTextForeground ] ].
 								theLabel text: aText ].
 						(self validatorUsing: anAssoc key) observe: anElementSink ].
 
 				aLabel ]
 			weight: 2;
 		column: 'Auto-accept'
-			text: [ :anAssoc | anAssoc key autoAccept
-				ifTrue: [ 'yes' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
-				ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
+			text: [ :anAssoc | 
+				anAssoc key autoAccept
+					ifTrue: [ 'yes' asRopedText foreground: BlTheme default status successTextForeground ]
+					ifFalse: [ 'no' asRopedText foreground: BlTheme default label metadataTextForeground ] ]
 			width: 80;
 		column: 'Subscribed'
 			text: [ :anAssoc | 
@@ -247,8 +252,8 @@ GtMagritteMemento >> gtCacheFor: aView [
 				subscriptionHandlers
 					ifNotNil: [ :aDictionary | (aDictionary includesKey: anAssoc key) ifTrue: [ isSubscribed := true ] ].
 				isSubscribed
-					ifTrue: [ 'yes' asRopedText foreground: BrGlamorousColors successBackgroundColor ]
-					ifFalse: [ 'no' asRopedText foreground: BrGlamorousColors disabledButtonTextColor ] ]
+					ifTrue: [ 'yes' asRopedText foreground: BlTheme default status successTextForeground ]
+					ifFalse: [ 'no' asRopedText foreground: BlTheme default label metadataTextForeground ] ]
 			width: 75;
 		contextItemLabel: 'Inspect current value'
 			action: [ :anElement :anAssoc | 
@@ -284,32 +289,28 @@ GtMagritteMemento >> gtOverallStatusFor: aView [
 
 { #category : #'gt - extensions' }
 GtMagritteMemento >> gtSubscriptionsFor: aView [
-
 	<gtView>
 	subscriptionHandlers ifNil: [ ^ aView empty ].
 	subscriptionHandlers ifEmpty: [ ^ aView empty ].
 
 	^ aView tree
-		  title: 'Subscriptions';
-		  priority: 13;
-		  items: [ subscriptionHandlers keys sorted: [ :a :b | a priority < b priority ] ];
-		  children: [ :anItem | 
-			  (anItem isKindOf: MAObject)
-				  ifTrue: [ subscriptionHandlers at: anItem ifAbsent: [ #(  ) ] ]
-				  ifFalse: [ #(  ) ] ];
-		  itemText: [ :anItem | 
-			  (anItem isKindOf: MAObject)
-				  ifTrue: [ 
-					  '' asRopedText
-						  foreground: BrGlamorousColors disabledButtonTextColor;
-						  append: anItem label asRopedText;
-						  append:
-							  (' description handlers:'
-								   asRopedText foreground:
-									   BrGlamorousColors disabledButtonTextColor) ]
-				  ifFalse: [ anItem label asRopedText ] ];
-		  expandAll;
-		  actionUpdateButton
+		title: 'Subscriptions';
+		priority: 13;
+		items: [ subscriptionHandlers keys sorted: [ :a :b | a priority < b priority ] ];
+		children: [ :anItem | 
+			(anItem isKindOf: MAObject)
+				ifTrue: [ subscriptionHandlers at: anItem ifAbsent: [ #() ] ]
+				ifFalse: [ #() ] ];
+		itemText: [ :anItem | 
+			(anItem isKindOf: MAObject)
+				ifTrue: [ '' asRopedText
+						foreground: BlTheme default label metadataTextForeground;
+						append: anItem label asRopedText;
+						append: (' description handlers:' asRopedText
+								foreground: BlTheme default label metadataTextForeground) ]
+				ifFalse: [ anItem label asRopedText ] ];
+		expandAll;
+		actionUpdateButton
 ]
 
 { #category : #initialization }

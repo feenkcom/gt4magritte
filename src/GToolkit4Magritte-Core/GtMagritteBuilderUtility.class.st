@@ -30,10 +30,10 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 				handle: [ BrLabel new
 						geometry: (BlRoundedRectangleGeometry cornerRadius: 4);
 						aptitude: (aDescription editorAptitude
-							ifNil: [ BrGlamorousLabelAptitude new
-									glamorousCodeFont;
-									fontSize: 10 ]
-							ifNotNil: [ :anAptitude | anAptitude value ]);
+								ifNil: [ BrGlamorousLabelAptitude new
+										glamorousCodeFont;
+										fontSize: 10 ]
+								ifNotNil: [ :anAptitude | anAptitude value ]);
 						padding: (BlInsets all: self defaultSpaceNumber);
 						withAsyncSinkDo: [ :anElementSink | 
 							anElementSink
@@ -51,7 +51,7 @@ GtMagritteBuilderUtility class >> addDropdownMemento: aMemento using: aDescripti
 		constraintsDo: [ :c | 
 			c grid horizontal alignCenter.
 			c grid vertical alignCenter ];
-		background: BrGlamorousColors disabledButtonBackgroundColor.
+		background: aLabel theme button disabledBackgroundColor.
 
 	aLabel
 		withAsyncSinkDo: [ :anElementSink | 
@@ -89,21 +89,17 @@ GtMagritteBuilderUtility class >> createValueFrom: aModel using: aDescription [
 ]
 
 { #category : #'api - ui' }
-GtMagritteBuilderUtility class >> debugButtonForException: anException [ 
-
+GtMagritteBuilderUtility class >> debugButtonForException: anException [
 	^ BrButton new
 		beFocusable;
 		beTinySize;
 		hFitContent;
 		vFitContent;
 		aptitude: BrGlamorousButtonWithIconAptitude new;
-		icon: [ BrGlamorousVectorIcons debug asElement 
-			background: BrGlamorousColors errorBackgroundColor ] asStencil;
+		icon: BrGlamorousVectorIcons debug;
 		label: 'Open debugger';
-		constraintsDo: [ :c | 
-			c linear vertical alignCenter ];
+		constraintsDo: [ :c | c linear vertical alignCenter ];
 		action: (self debugClickActionForException: anException)
-
 ]
 
 { #category : #'api - ui' }
@@ -283,16 +279,17 @@ GtMagritteBuilderUtility class >> newExecutionStatusWithMemento: aMemento [
 { #category : #'api - ui' }
 GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aDescription [
 	<return: #BrLabel>
-	| aText labelAptitude |
+	| aText aLabel labelAptitude |
 	aText := aDescription label asRopedText.
 	aDescription isRequired ifTrue: [ aText append: '*' asRopedText ].
 	aText append: ':' asRopedText.
+	aLabel := BrLabel new.
 	labelAptitude := aDescription labelAptitude
 			ifNil: [ BrGlamorousLabelAptitude new
-					foreground: BrGlamorousColors disabledButtonTextColor ]
+					foreground: aLabel theme label metadataTextForeground ]
 			ifNotNil: [ :anAptitude | anAptitude value ].
 
-	^ BrLabel new
+	^ aLabel
 		id: (GtMagritteFieldLabelId new description: aDescription);
 		text: aText;
 		aptitude: labelAptitude;
@@ -304,11 +301,10 @@ GtMagritteBuilderUtility class >> newFieldLabelWithSpace: aSpaceNumber using: aD
 				left: 0);
 		constraintsDo: [ :c | c grid vertical alignTop ];
 		when: BlClickEvent
-		do: [ :anEvent | 
-			anEvent modifiers isAlt
-				ifTrue: [
-					anEvent consumed: true.
-					anEvent target phlow spawnObject: aDescription ] ]
+			do: [ :anEvent | 
+				anEvent modifiers isAlt
+					ifTrue: [ anEvent consumed: true.
+						anEvent target phlow spawnObject: aDescription ] ]
 ]
 
 { #category : #'api - ui' }
@@ -561,7 +557,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	aChangeElement := BrFrame new.
 	aChangeElement hExact: self defaultThickness.
 	aChangeElement vMatchParent.
-	aChangeElement background: BrGlamorousColors textHighlightColor.
+	aChangeElement background: aChangeElement theme status changesBackgroundColor.
 	aChangeElement visibility: BlVisibility hidden.
 	aChangeElement margin: (BlInsets bottom: self defaultSpaceNumber).
 	aChangeElement geometry: (BlRoundedRectangleGeometry cornerRadius: 4).
@@ -580,7 +576,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 	anErrorElement := BrFrame new.
 	anErrorElement hExact: self defaultThickness.
 	anErrorElement vMatchParent.
-	anErrorElement background: BrGlamorousColors errorBackgroundColor.
+	anErrorElement background: anErrorElement theme status errorBackgroundColor.
 	anErrorElement visibility: BlVisibility hidden.
 	anErrorElement margin: (BlInsets bottom: self defaultSpaceNumber).
 	anErrorElement geometry: (BlRoundedRectangleGeometry cornerRadius: 4).
@@ -602,7 +598,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 		aptitude: (BrGlamorousRegularEditorAptitude new
 				glamorousRegularFont;
 				glamorousCodeSmallSize;
-				foreground: BrGlamorousColors errorBackgroundColor);
+				foreground: anIssuesElement theme status errorTextForeground);
 		beNotFocusable;
 		hFitContentLimited;
 		vFitContent;
@@ -629,7 +625,9 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 			(aMemento validatorUsing: aDescription) observe: anElementSink ].
 
 	aContainer addChild: aChangeElement as: GtMagritteChangeIndicatorId.
-	aContainer addChild: aFieldElement as: (GtMagritteFieldElementId new description: aDescription).
+	aContainer
+		addChild: aFieldElement
+		as: (GtMagritteFieldElementId new description: aDescription).
 	aContainer addChild: anErrorElement as: GtMagritteChangeErrorIndicatorId.
 	aContainer
 		addChild: (BlElement new
@@ -637,7 +635,7 @@ GtMagritteBuilderUtility class >> newValidationContainerWith: aFieldElement meme
 				addChild: anIssuesElement;
 				constraintsDo: [ :c | 
 					c horizontal fitContent.
-					c vertical matchParent])
+					c vertical matchParent ])
 		as: #issues.
 
 	^ aContainer
@@ -757,7 +755,7 @@ GtMagritteBuilderUtility class >> updateToolbarLabelExecutionStatus: aLabel with
 
 	aLabel
 		visibility: BlVisibility visible;
-		aptitudeDo: [ :anAptitude | anAptitude foreground: BrGlamorousColors errorBackgroundColor ];
+		aptitudeDo: [ :anAptitude | anAptitude foreground: aLabel theme label defaultTextForeground ];
 		text: aShortText.
 
 	aLabel
@@ -771,12 +769,11 @@ GtMagritteBuilderUtility class >> updateToolbarLabelExecutionStatus: aLabel with
 GtMagritteBuilderUtility class >> updateToolbarLabelExecutionStatus: aLabel withText: aString [
 	aLabel
 		visibility: BlVisibility visible;
-		aptitudeDo: [ :anAptitude | 
-			anAptitude foreground: BrGlamorousColors disabledButtonTextColor ];
+		aptitudeDo: [ :anAptitude | anAptitude foreground: aLabel theme label metadataTextForeground ];
 		text: aString.
 
-	aLabel aptitudeDo: [ :anAptitude | 
-		anAptitude - BrGlamorousWithExplicitTooltipAptitude ]
+	aLabel
+		aptitudeDo: [ :anAptitude | anAptitude - BrGlamorousWithExplicitTooltipAptitude ]
 ]
 
 { #category : #'api - ui' }
