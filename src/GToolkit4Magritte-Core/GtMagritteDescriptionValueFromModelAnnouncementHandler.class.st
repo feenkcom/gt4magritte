@@ -42,13 +42,13 @@ GtMagritteDescriptionValueFromModelAnnouncementHandler >> gtDescriptionFor: aVie
 
 { #category : #ui }
 GtMagritteDescriptionValueFromModelAnnouncementHandler >> label [
-	| aText |
+	| aText aForeground |
+	aForeground := BlTheme default label metadataTextForeground.
 	aText := 'Change ' asRopedText.
-	aText foreground: BrGlamorousColors disabledButtonTextColor.
-	aText append: (self context description label) asRopedText.
-	aText append: (' current value on ' asRopedText
-		foreground: BrGlamorousColors disabledButtonTextColor).
-	aText append: (self announcementClass name asRopedText).
+	aText foreground: aForeground.
+	aText append: self context description label asRopedText.
+	aText append: (' current value on ' asRopedText foreground: aForeground).
+	aText append: self announcementClass name asRopedText.
 
 	^ aText
 ]

@@ -85,10 +85,10 @@ GtMagritteViewModel >> asElement [
 			c frame horizontal alignCenter.
 			c frame vertical alignCenter ];
 		addAptitude: (BrLayoutResizerAptitude new
-						exactToMatchParent: [ aFrame children ];
-						matchParentToMatchParent: [ aFrame children ];
-						fitContentToFitContent: [ aFrame children ];
-						fitContentLimitedToFitContentLimited: [ aFrame children ]);
+				exactToMatchParent: [ aFrame children ];
+				matchParentToMatchParent: [ aFrame children ];
+				fitContentToFitContent: [ aFrame children ];
+				fitContentLimitedToFitContentLimited: [ aFrame children ]);
 		withAsyncFutureDo: [ :anElementFuture | 
 			anElementFuture
 				whenPending: [ :theContainer | 
@@ -96,7 +96,7 @@ GtMagritteViewModel >> asElement [
 						addChild: (BrLabel new
 								fitContent;
 								aptitude: (BrGlamorousLabelAptitude new
-										foreground: BrGlamorousColors disabledButtonTextColor);
+										foreground: theContainer theme label metadataTextForeground);
 								text: 'Preparing...';
 								constraintsDo: [ :c | 
 									c frame horizontal alignCenter.
